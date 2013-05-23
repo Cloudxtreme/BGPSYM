@@ -81,7 +81,8 @@ public class BGPProcess extends ShutdownadbleThread {
         this.neighbors = neighbors;
     }
 
-    public void uponReceive(BGPUpdate update) {
+    @SuppressWarnings("unused")
+	public void uponReceive(BGPUpdate update) {
 
         callback.updateReceived(update.getSender(), update);
         // add to prefix store
@@ -105,7 +106,8 @@ public class BGPProcess extends ShutdownadbleThread {
         }
     }
 
-    @Override
+    @SuppressWarnings("unused")
+	@Override
     public void run() {
         init();
         

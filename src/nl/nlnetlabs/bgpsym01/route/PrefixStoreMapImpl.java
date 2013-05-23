@@ -3,10 +3,14 @@ package nl.nlnetlabs.bgpsym01.route;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import nl.nlnetlabs.bgpsym01.cache.PrefixCache;
 import nl.nlnetlabs.bgpsym01.cache.PrefixInfo;
+import nl.nlnetlabs.bgpsym01.cache.PrefixCacheImplBlock;
 import nl.nlnetlabs.bgpsym01.callback.Callback;
 import nl.nlnetlabs.bgpsym01.command.RouteViewDataResponse;
 import nl.nlnetlabs.bgpsym01.main.EL;
@@ -66,6 +70,24 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
 	public Collection<RouteViewDataResponse> getPrefixDataList() {
 		return map.values();
+	}
+	
+	public void removePrefixesFromSender(ASIdentifier origin) {
+		if (cache instanceof PrefixCacheImplBlock) {
+			LinkedHashMap<Prefix, PrefixInfo> prefixes = ((PrefixCacheImplBlock) cache).getTable();
+			
+			Iterator<Entry<Prefix, PrefixInfo>> iterator = prefixes.entrySet().iterator();;
+			
+			while(iterator.hasNext()) {
+				Entry<Prefix, PrefixInfo> current = iterator.next();
+				PrefixInfo info = current.getValue();
+				
+				if (info.getCurrentEntry().getRoute().isFrom(origin)) {
+					prefixRemove(asIdentifier, current.getKey());
+				}
+			}
+		}
+		
 	}
 
 	private Pair<ASIdentifier, Prefix> getPair(ASIdentifier origin, Prefix prefix) {
@@ -191,8 +213,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
      * @param prefixInfo
      *            prefix for which we are working
      * @param currentRoute
-     *            TODO
-     * @return TODO
+     * @return
      */
     boolean runDecision(ASIdentifier originator, PrefixInfo prefixInfo, Route currentRoute) {
         /*
@@ -406,7 +427,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
         outputBuffer.flush(asId);
     }
 
-    public void unflap(Prefix prefix, ASIdentifier neighborsAsId) {
+    @SuppressWarnings("unused")
+	public void unflap(Prefix prefix, ASIdentifier neighborsAsId) {
 
         if (EL.flapLogging && log.isInfoEnabled()) {
             log.info("unflapping " + prefix + " for " + neighborsAsId);

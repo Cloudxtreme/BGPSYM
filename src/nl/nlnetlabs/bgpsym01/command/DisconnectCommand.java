@@ -13,6 +13,7 @@ import nl.nlnetlabs.bgpsym01.primitives.bgp.Update;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataInputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 import nl.nlnetlabs.bgpsym01.process.BGPProcess;
+import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 
 import org.apache.log4j.Logger;
 
@@ -41,8 +42,6 @@ public class DisconnectCommand extends MasterCommand {
          * 2. remove given neighbors
          * 3. remove prefixes
          */
-        //BGPProcess process = jvm.getProcesses().get(asIdentifier);
-		//BGPProcess process = asIdentifier.getProcess();
         Update update = new RunnableUpdate() {
 
             @Override
@@ -52,10 +51,10 @@ public class DisconnectCommand extends MasterCommand {
                     process.getNeighbors().remove(asId);
                     
 					// TODO change this to accomodate dynamic announcement/withdrawal of prefixes
-					if (prefixes != null && prefixes.length > 0) {
-                        // TODO change this prefix to list!
+					/*if (prefixes != null && prefixes.length > 0) {
                         process.getStore().prefixRemove(asId, Arrays.asList(prefixes));
-                    }
+                    }*/
+                    ((PrefixStoreMapImpl) process.getStore()).removePrefixesFromSender(asId);
                 }
 
 				//log.info("total neighbors after: "+process.getNeighbors().size());
