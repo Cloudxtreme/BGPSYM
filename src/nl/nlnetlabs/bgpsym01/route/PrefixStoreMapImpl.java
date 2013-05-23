@@ -88,11 +88,9 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				Entry<Prefix, PrefixInfo> current = iterator.next();
 				PrefixInfo info = current.getValue();
 				
-				log.info("checking "+info+" with route: "+info.getCurrentEntry().getRoute());
-				
 				if (info.getCurrentEntry().getRoute().isFrom(origin)) {
 					Prefix currentPrefix = current.getKey();
-					log.info("origin: "+origin+" remove: "+currentPrefix);
+					
 					map.remove(getPair(origin,currentPrefix));
 					prefixesToDelete.add(currentPrefix);
 				}
@@ -181,8 +179,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
         entry.invalidate(false);
 
         if (wasCurrent) {
-            if (log.isInfoEnabled()) {
-                log.info("removing prefix " + prefix + " from " + originator + ", is current, size=" + neighborsForPrefix.size());
+            if (log.isDebugEnabled()) {
+                log.debug("removing prefix " + prefix + " from " + originator + ", is current, size=" + neighborsForPrefix.size());
             }
 
             runDecision(originator, prefixInfo, oldRoute);
