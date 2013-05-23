@@ -77,7 +77,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		if (cache instanceof PrefixCacheImplBlock) {
 			LinkedHashMap<Prefix, PrefixInfo> prefixes = ((PrefixCacheImplBlock) cache).getTable();
 			
-			Iterator<Entry<Prefix, PrefixInfo>> iterator = prefixes.entrySet().iterator();;
+			Iterator<Entry<Prefix, PrefixInfo>> iterator = prefixes.entrySet().iterator();
 			
 			ArrayList<Prefix> prefixesToDelete = new ArrayList<Prefix>();
 			
@@ -86,11 +86,13 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				PrefixInfo info = current.getValue();
 				
 				if (info.getCurrentEntry().getRoute().isFrom(origin)) {
+					log.info("origin: "+origin+" remove: "+current.getKey());
 					prefixesToDelete.add(current.getKey());
 				}
 			}
 			
 			if (prefixesToDelete.size() > 0) {
+				
 				prefixRemove(origin, prefixesToDelete);
 			}
 		}
@@ -289,6 +291,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
     void prefixReceived(ASIdentifier originator, Prefix prefix, Route route) {
         callback.prefixReceived(originator, prefix, route);
+        
+        log.info("origin: "+originator+" prefix: "+prefix+" route: "+route);
 
         PrefixInfo prefixInfo = cache.getPrefixInfo(prefix);
         // prefixInfo.setLastSeen(timeController.getCurrentTime());
