@@ -14,7 +14,8 @@ public class PolicyImplRel implements Policy {
     private static Logger log = Logger.getLogger(PolicyImplRel.class);
     private static XProperties properties = XProperties.getInstance();
 
-    public boolean isBetter(ASIdentifier myAsId, Prefix prefix, Route route1, Neighbor n1, Route route2, Neighbor n2) {
+    @SuppressWarnings("unused")
+	public boolean isBetter(ASIdentifier myAsId, Prefix prefix, Route route1, Neighbor n1, Route route2, Neighbor n2) {
 
         boolean outcome = false;
         PeerRelation pr1 = n1 == null ? null : (PeerRelation) n1.getAttachment();

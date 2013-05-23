@@ -46,7 +46,7 @@ public class DisconnectCommand extends MasterCommand {
 
             @Override
             public void run(BGPProcess process) {
-				//log.info("received disconnect command with ases: "+asIds+" "+process.getNeighbors().size());
+				log.info("received disconnect command with ases: "+asIds+" "+process.getNeighbors().size());
                 for (ASIdentifier asId : asIds) {
                     process.getNeighbors().remove(asId);
                     

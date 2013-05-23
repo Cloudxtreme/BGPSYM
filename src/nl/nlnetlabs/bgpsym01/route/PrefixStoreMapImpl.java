@@ -91,8 +91,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				}
 			}
 			
-			if (prefixesToDelete.size() > 0) {
-				
+			if (prefixesToDelete.size() > 0) {				
 				prefixRemove(origin, prefixesToDelete);
 			}
 		}
@@ -170,7 +169,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
         boolean wasCurrent = prefixInfo.getCurrentEntry() == entry;
 
-        // write test for it!!!
+        // TODO write test for it!!!
         Route oldRoute = prefixInfo.getCurrentEntry() == null ? null : prefixInfo.getCurrentEntry().getRoute();
         entry.invalidate(false);
 
@@ -282,7 +281,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
             output = true;
         }
         return output;
-
     }
 
     private Neighbor getNeighbor(PrefixTableEntry entry) {
@@ -291,8 +289,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
     void prefixReceived(ASIdentifier originator, Prefix prefix, Route route) {
         callback.prefixReceived(originator, prefix, route);
-        
-        log.info("origin: "+originator+" prefix: "+prefix+" route: "+route);
 
         PrefixInfo prefixInfo = cache.getPrefixInfo(prefix);
         // prefixInfo.setLastSeen(timeController.getCurrentTime());
