@@ -1,6 +1,7 @@
 package nl.nlnetlabs.bgpsym01.route;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -78,14 +79,18 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			
 			Iterator<Entry<Prefix, PrefixInfo>> iterator = prefixes.entrySet().iterator();;
 			
+			ArrayList<Prefix> prefixesToDelete = new ArrayList<Prefix>();
+			
 			while(iterator.hasNext()) {
 				Entry<Prefix, PrefixInfo> current = iterator.next();
 				PrefixInfo info = current.getValue();
 				
 				if (info.getCurrentEntry().getRoute().isFrom(origin)) {
-					prefixRemove(asIdentifier, current.getKey());
+					prefixesToDelete.add(current.getKey());
 				}
 			}
+			
+			prefixRemove(origin, prefixesToDelete);
 		}
 		
 	}
