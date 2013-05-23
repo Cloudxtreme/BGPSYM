@@ -90,7 +90,9 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				}
 			}
 			
-			prefixRemove(origin, prefixesToDelete);
+			if (prefixesToDelete.size() > 0) {
+				prefixRemove(origin, prefixesToDelete);
+			}
 		}
 		
 	}
