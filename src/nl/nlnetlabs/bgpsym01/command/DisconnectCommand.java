@@ -51,8 +51,7 @@ public class DisconnectCommand extends MasterCommand {
                 for (ASIdentifier asId : asIds) {
                     process.getNeighbors().remove(asId);
                     
-					// have to specify the prefixes?
-					// @TODO change this to accomodate dynamic announcement/withdrawal of prefixes
+					// TODO change this to accomodate dynamic announcement/withdrawal of prefixes
 					if (prefixes != null && prefixes.length > 0) {
                         // TODO change this prefix to list!
                         process.getStore().prefixRemove(asId, Arrays.asList(prefixes));

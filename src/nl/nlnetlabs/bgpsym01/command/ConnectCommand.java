@@ -74,6 +74,7 @@ public class ConnectCommand extends MasterCommand {
         asIdentifier.getProcess().getQueue().addMessage(update);
     }
 
+	@SuppressWarnings("unused")
 	private MRAITimer getMRAITimer (NeighborImplTCP n, boolean hasRealMRAITimer) {
 		if (1 < 2) {
 			MRAITimerImpl timer = new MRAITimerImpl();
