@@ -74,13 +74,15 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	}
 	
 	public void removePrefixesFromSender(ASIdentifier origin) {
-		log.info("attempting to remove prefixes originating from "+origin);
+		
 		if (cache instanceof PrefixCacheImplBlock) {
 			LinkedHashMap<Prefix, PrefixInfo> prefixes = ((PrefixCacheImplBlock) cache).getTable();
 			
 			Iterator<Entry<Prefix, PrefixInfo>> iterator = prefixes.entrySet().iterator();
 			
 			ArrayList<Prefix> prefixesToDelete = new ArrayList<Prefix>();
+			
+			log.info("attempting to remove prefixes originating from "+origin+" total prefixes: "+prefixes.size());
 			
 			while(iterator.hasNext()) {
 				Entry<Prefix, PrefixInfo> current = iterator.next();
