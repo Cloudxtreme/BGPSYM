@@ -47,14 +47,13 @@ public class DisconnectCommand extends MasterCommand {
             @Override
             public void run(BGPProcess process) {
 				log.info("received disconnect command with ases: "+asIds+" "+process.getNeighbors().size());
-                for (ASIdentifier asId : asIds) {
-                    process.getNeighbors().remove(asId);
-                    
+                for (ASIdentifier asId : asIds) {                    
 					// TODO change this to accomodate dynamic announcement/withdrawal of prefixes
 					/*if (prefixes != null && prefixes.length > 0) {
                         process.getStore().prefixRemove(asId, Arrays.asList(prefixes));
                     }*/
                     ((PrefixStoreMapImpl) process.getStore()).removePrefixesFromSender(asId);
+                    process.getNeighbors().remove(asId);
                 }
 
 				//log.info("total neighbors after: "+process.getNeighbors().size());
