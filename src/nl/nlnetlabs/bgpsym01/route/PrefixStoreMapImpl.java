@@ -74,6 +74,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	}
 	
 	public void removePrefixesFromSender(ASIdentifier origin) {
+		log.info("attempting to remove prefixes originating from "+origin);
 		if (cache instanceof PrefixCacheImplBlock) {
 			LinkedHashMap<Prefix, PrefixInfo> prefixes = ((PrefixCacheImplBlock) cache).getTable();
 			
@@ -84,6 +85,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			while(iterator.hasNext()) {
 				Entry<Prefix, PrefixInfo> current = iterator.next();
 				PrefixInfo info = current.getValue();
+				
+				log.info("checking "+info+" with route: "+info.getCurrentEntry().getRoute());
 				
 				if (info.getCurrentEntry().getRoute().isFrom(origin)) {
 					log.info("origin: "+origin+" remove: "+current.getKey());
