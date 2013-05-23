@@ -1,0 +1,107 @@
+Starting BGPSIM
+Properties file: 
+Number of nodes: 17
+Options: -t 00:15:00
+
+
+Reservation number 605376: Reserved 17 hosts for 900 seconds 
+Run on 17 hosts for 960 seconds from Wed May 22 15:55:40 2013
+: node020/0 node021/0 node022/0 node034/0 node035/0 node036/0 node037/0 node039/0 node040/0 node042/0 node050/0 node051/0 node052/0 node053/0 node054/0 node055/0 node056/0 
+Running sanity checks
+working dir: /home/jlf200/env
+inst count: 1
+<dasNodes><coordinator><host>node020</host><port>29999</port></coordinator>
+		<registries>
+<registry><host>node021</host><port>29999</port></registry>
+<registry><host>node022</host><port>29999</port></registry>
+<registry><host>node034</host><port>29999</port></registry>
+<registry><host>node035</host><port>29999</port></registry>
+<registry><host>node036</host><port>29999</port></registry>
+<registry><host>node037</host><port>29999</port></registry>
+<registry><host>node039</host><port>29999</port></registry>
+<registry><host>node040</host><port>29999</port></registry>
+<registry><host>node042</host><port>29999</port></registry>
+<registry><host>node050</host><port>29999</port></registry>
+<registry><host>node051</host><port>29999</port></registry>
+<registry><host>node052</host><port>29999</port></registry>
+<registry><host>node053</host><port>29999</port></registry>
+<registry><host>node054</host><port>29999</port></registry>
+<registry><host>node055</host><port>29999</port></registry>
+<registry><host>node056</host><port>29999</port></registry>
+</registries></dasNodes>
+coordinator on node020
+slave on node021
+slave on node022
+slave on node034
+slave on node035
+slave on node036
+slave on node037
+slave on node039
+slave on node040
+slave on node042
+slave on node050
+slave on node051
+slave on node052
+slave on node053
+slave on node054
+slave on node055
+slave on node056
+coordinator 22/05 15:55:41.517  INFO coordinator.RunMonitor (start line 19): START, props=<properties>
+  <mraiProc>70</mraiProc>
+  <mraiEmpty>0</mraiEmpty>
+  <flapPercentage>70</flapPercentage>
+  <iBgpMaxValue>120000</iBgpMaxValue>
+  <iBgpMaxNeighbors>750</iBgpMaxNeighbors>
+  <iBGPLog>true</iBGPLog>
+  <flapDistribution>70</flapDistribution>
+  <policyMulti>10</policyMulti>
+  <policyMultiPref>0</policyMultiPref>
+  <hostCount>16</hostCount>
+  <sleepingTime>40</sleepingTime>
+  <workingDir>/home/jlf200/large_48/</workingDir>
+  <prefixStartingPoint>0</prefixStartingPoint>
+  <useInputHandlerThread>false</useInputHandlerThread>
+  <prefixCount>100000</prefixCount>
+  <prefixArraySize>100000</prefixArraySize>
+  <storageDir>/var/scratch/jlf200/storage/</storageDir>
+  <prefixCacheSize>7000</prefixCacheSize>
+  <diskCacheDir>/var/scratch/jlf200/data/</diskCacheDir>
+  <nodesFileName>nodes_caida_16.xml</nodesFileName>
+  <prefixesFile>prefixes.xml</prefixesFile>
+  <useEventsFile>true</useEventsFile>
+  <eventsFileName>/home/jlf200/env/events_test.xml</eventsFileName>
+  <prefixAggregationSize>0</prefixAggregationSize>
+  <diagnosticThreadSleep>2500</diagnosticThreadSleep>
+  <createdLoggingInterval>10</createdLoggingInterval>
+  <bogusPrefixMin>0</bogusPrefixMin>
+  <timeScaler>30</timeScaler>
+  <resultDirectory>/var/scratch/jlf200/results</resultDirectory>
+  <introducedLoggingInterval>10</introducedLoggingInterval>
+  <neighborsContainerCaching>false</neighborsContainerCaching>
+  <useNeighborsMap>false</useNeighborsMap>
+  <noiseSleepTime>61000</noiseSleepTime>
+</properties>
+coordinator 22/05 15:55:41.558  INFO coordinator.CoordinatorMain (init line 91): socket created set
+coordinator 22/05 15:55:44.404  INFO coordinator.Coordinator (controlTheGame line 68): sending acks
+coordinator 22/05 15:55:45.902  INFO coordinator.Coordinator (controlTheGame line 88): all set
+eventProcessor 22/05 15:55:45.904  INFO framework.EventProcessor (run line 43): waitingTime: 422
+eventProcessor 22/05 15:55:46.328  INFO framework.EventProcessor (run line 57): @30;#0;LOG;E-0.
+eventProcessor 22/05 15:55:48.883  INFO framework.EventProcessor (run line 43): waitingTime: 776
+eventProcessor 22/05 15:55:49.659  INFO framework.EventProcessor (run line 57): @99990;#1;DISCONNECT;E-100000; AS1200|3421|13 with neighbors[AS3303|1149|13].
+eventProcessor 22/05 15:55:49.660  INFO framework.EventProcessor (run line 43): waitingTime: 3332
+eventProcessor 22/05 15:55:52.993  INFO framework.EventProcessor (run line 57): @200010;#2;LOG;E-200000.
+eventProcessor 22/05 15:55:54.203  INFO framework.EventProcessor (run line 43): waitingTime: 5456
+eventProcessor 22/05 15:55:59.660  INFO framework.EventProcessor (run line 57): @399990;#3;ANN;E-400000;as=AS24600|1200|0; prefs=msg_2000, ; with=NULL
+eventProcessor 22/05 15:55:59.663  INFO framework.EventProcessor (run line 43): waitingTime: 6663
+eventProcessor 22/05 15:56:06.326  INFO framework.EventProcessor (run line 57): @600000;#4;CONNECT;E-600000; AS1200|3421|13 with neighbors[AS3303|1149|13].
+eventProcessor 22/05 15:56:06.327  INFO command.ConnectCommand (writeInternalData line 114): pr: CUSTOMER
+eventProcessor 22/05 15:56:06.328  INFO command.ConnectCommand (writeInternalData line 114): pr: null
+eventProcessor 22/05 15:56:06.328  INFO framework.EventProcessor (run line 43): waitingTime: 6664
+AS1200|3421|13 22/05 15:56:06.331  INFO command.ConnectCommand (run line 55): received connect command with as: AS1200|3421|13 ases: [AS3303|1149|13]
+AS3303|1149|13 22/05 15:56:06.331  INFO command.ConnectCommand (run line 55): received connect command with as: AS3303|1149|13 ases: [AS1200|3421|13]
+eventProcessor 22/05 15:56:12.993  INFO framework.EventProcessor (run line 57): @800010;#5;LOG;E-800000.
+AS25017|12322|2 22/05 15:56:14.310  INFO route.PrefixStoreMapImpl (prefixReceived line 399): 0, 702, count=1, longest=0
+AS26820|15432|8 22/05 15:56:14.658  INFO route.PrefixStoreMapImpl (prefixReceived line 399): 0, 877, count=1, longest=0
+coordinator 22/05 15:56:15.162  INFO coordinator.Coordinator (controlTheGame line 95): job's done
+coordinator 22/05 15:56:16.164  INFO coordinator.RunMonitor (finish line 36): DONE(time=34645)
+coordinator 22/05 15:56:16.164  INFO coordinator.Coordinator (controlTheGame line 101): coordinator finished

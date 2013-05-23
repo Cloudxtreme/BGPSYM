@@ -1,0 +1,62 @@
+package nl.nlnetlabs.bgpsym01.primitives.factories;
+
+import nl.nlnetlabs.bgpsym01.coordinator.events.Event;
+import nl.nlnetlabs.bgpsym01.coordinator.events.EventAnnounce;
+import nl.nlnetlabs.bgpsym01.coordinator.events.EventInvalidate;
+import nl.nlnetlabs.bgpsym01.coordinator.events.EventLastSeen;
+import nl.nlnetlabs.bgpsym01.coordinator.events.EventNoise;
+import nl.nlnetlabs.bgpsym01.coordinator.events.EventRISCollect;
+import nl.nlnetlabs.bgpsym01.coordinator.events.EventResetData;
+import nl.nlnetlabs.bgpsym01.coordinator.events.EventSleep;
+import nl.nlnetlabs.bgpsym01.coordinator.events.EventWriteInfo;
+import nl.nlnetlabs.bgpsym01.coordinator.events.PrefixData;
+import nl.nlnetlabs.bgpsym01.coordinator.events.RTTEvent;
+import nl.nlnetlabs.bgpsym01.coordinator.events.framework.EventScheduleImpl;
+import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
+import nl.nlnetlabs.bgpsym01.route.PeerRelation;
+import nl.nlnetlabs.bgpsym01.xstream.XComputeNodes;
+import nl.nlnetlabs.bgpsym01.xstream.XNeighbor;
+import nl.nlnetlabs.bgpsym01.xstream.XNode;
+import nl.nlnetlabs.bgpsym01.xstream.XPrefix;
+import nl.nlnetlabs.bgpsym01.xstream.XProperties;
+import nl.nlnetlabs.bgpsym01.xstream.XRegistry;
+import nl.nlnetlabs.bgpsym01.xstream.XSystem;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.annotations.Annotations;
+
+public class XStreamFactory {
+
+    private static XStream xStream;
+
+    static {
+        xStream = new XStream();
+        Annotations.configureAliases(xStream, XNode.class);
+        Annotations.configureAliases(xStream, XNeighbor.class);
+        Annotations.configureAliases(xStream, XRegistry.class);
+        Annotations.configureAliases(xStream, ASIdentifier.class);
+        Annotations.configureAliases(xStream, XSystem.class);
+        Annotations.configureAliases(xStream, XComputeNodes.class);
+        Annotations.configureAliases(xStream, XProperties.class);
+        Annotations.configureAliases(xStream, XPrefix.class);
+        Annotations.configureAliases(xStream, PeerRelation.class);
+        Annotations.configureAliases(xStream, Event.class);
+        Annotations.configureAliases(xStream, EventAnnounce.class);
+        Annotations.configureAliases(xStream, EventScheduleImpl.class);
+        Annotations.configureAliases(xStream, EventSleep.class);
+        Annotations.configureAliases(xStream, EventLastSeen.class);
+        Annotations.configureAliases(xStream, RTTEvent.class);
+        Annotations.configureAliases(xStream, EventNoise.class);
+        Annotations.configureAliases(xStream, EventWriteInfo.class);
+        Annotations.configureAliases(xStream, EventResetData.class);
+        Annotations.configureAliases(xStream, EventRISCollect.class);
+        Annotations.configureAliases(xStream, EventInvalidate.class);
+        Annotations.configureAliases(xStream, PrefixData.class);
+
+    }
+
+    public static XStream getXStream() {
+        return xStream;
+    }
+
+}

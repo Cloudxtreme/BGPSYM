@@ -1,0 +1,110 @@
+Starting BGPSIM
+Properties file: 
+Number of nodes: 17
+Options: -t 00:15:00
+
+
+Reservation number 605330: Reserved 17 hosts for 900 seconds 
+Run on 17 hosts for 960 seconds from Wed May 22 14:18:17 2013
+: node008/0 node013/0 node014/0 node015/0 node016/0 node017/0 node018/0 node019/0 node020/0 node021/0 node022/0 node034/0 node035/0 node036/0 node037/0 node039/0 node040/0 
+Running sanity checks
+working dir: /home/jlf200/env
+inst count: 1
+<dasNodes><coordinator><host>node008</host><port>29999</port></coordinator>
+		<registries>
+<registry><host>node013</host><port>29999</port></registry>
+<registry><host>node014</host><port>29999</port></registry>
+<registry><host>node015</host><port>29999</port></registry>
+<registry><host>node016</host><port>29999</port></registry>
+<registry><host>node017</host><port>29999</port></registry>
+<registry><host>node018</host><port>29999</port></registry>
+<registry><host>node019</host><port>29999</port></registry>
+<registry><host>node020</host><port>29999</port></registry>
+<registry><host>node021</host><port>29999</port></registry>
+<registry><host>node022</host><port>29999</port></registry>
+<registry><host>node034</host><port>29999</port></registry>
+<registry><host>node035</host><port>29999</port></registry>
+<registry><host>node036</host><port>29999</port></registry>
+<registry><host>node037</host><port>29999</port></registry>
+<registry><host>node039</host><port>29999</port></registry>
+<registry><host>node040</host><port>29999</port></registry>
+</registries></dasNodes>
+coordinator on node008
+slave on node013
+slave on node014
+slave on node015
+slave on node016
+slave on node017
+slave on node018
+slave on node019
+slave on node020
+slave on node021
+slave on node022
+slave on node034
+slave on node035
+slave on node036
+slave on node037
+slave on node039
+slave on node040
+coordinator 22/05 14:18:19.761  INFO coordinator.RunMonitor (start line 19): START, props=<properties>
+  <mraiProc>70</mraiProc>
+  <mraiEmpty>0</mraiEmpty>
+  <flapPercentage>70</flapPercentage>
+  <iBgpMaxValue>120000</iBgpMaxValue>
+  <iBgpMaxNeighbors>750</iBgpMaxNeighbors>
+  <iBGPLog>true</iBGPLog>
+  <flapDistribution>70</flapDistribution>
+  <policyMulti>10</policyMulti>
+  <policyMultiPref>0</policyMultiPref>
+  <hostCount>16</hostCount>
+  <sleepingTime>40</sleepingTime>
+  <workingDir>/home/jlf200/large_48/</workingDir>
+  <prefixStartingPoint>0</prefixStartingPoint>
+  <useInputHandlerThread>false</useInputHandlerThread>
+  <prefixCount>100000</prefixCount>
+  <prefixArraySize>100000</prefixArraySize>
+  <storageDir>/var/scratch/jlf200/storage/</storageDir>
+  <prefixCacheSize>7000</prefixCacheSize>
+  <diskCacheDir>/var/scratch/jlf200/data/</diskCacheDir>
+  <nodesFileName>nodes_caida_16.xml</nodesFileName>
+  <prefixesFile>prefixes.xml</prefixesFile>
+  <useEventsFile>true</useEventsFile>
+  <eventsFileName>/home/jlf200/env/events_test.xml</eventsFileName>
+  <prefixAggregationSize>0</prefixAggregationSize>
+  <diagnosticThreadSleep>2500</diagnosticThreadSleep>
+  <createdLoggingInterval>10</createdLoggingInterval>
+  <bogusPrefixMin>0</bogusPrefixMin>
+  <timeScaler>30</timeScaler>
+  <resultDirectory>/var/scratch/jlf200/results</resultDirectory>
+  <introducedLoggingInterval>10</introducedLoggingInterval>
+  <neighborsContainerCaching>false</neighborsContainerCaching>
+  <useNeighborsMap>false</useNeighborsMap>
+  <noiseSleepTime>61000</noiseSleepTime>
+</properties>
+coordinator 22/05 14:18:19.808  INFO coordinator.CoordinatorMain (init line 91): socket created set
+coordinator 22/05 14:18:22.817  INFO coordinator.Coordinator (controlTheGame line 68): sending acks
+coordinator 22/05 14:18:32.165  INFO coordinator.Coordinator (controlTheGame line 88): all set
+eventProcessor 22/05 14:18:32.171  INFO framework.EventProcessor (run line 43): waitingTime: 414
+eventProcessor 22/05 14:18:32.587  INFO framework.EventProcessor (run line 57): @30;#0;LOG;E-0.
+eventProcessor 22/05 14:18:36.325  INFO framework.EventProcessor (run line 43): waitingTime: -406
+eventProcessor 22/05 14:18:36.325  INFO framework.EventProcessor (run line 57): @112200;#1;DISCONNECT;E-100000; AS1200|3421|13 with neighbors[AS3303|1149|13].
+eventProcessor 22/05 14:18:36.326  INFO framework.EventProcessor (run line 43): waitingTime: 2925
+AS1200|3421|13 22/05 14:18:36.332  INFO command.DisconnectCommand (run line 49): received disconnect command with ases: [AS3303|1149|13] 11
+AS3303|1149|13 22/05 14:18:36.332  INFO command.DisconnectCommand (run line 49): received disconnect command with ases: [AS1200|3421|13] 429
+AS1200|3421|13 22/05 14:18:36.339  INFO neighbor.Neighbors (remove line 94): removing: AS3303|1149|13
+AS3303|1149|13 22/05 14:18:36.341  INFO neighbor.Neighbors (remove line 94): removing: AS1200|3421|13
+AS1200|3421|13 22/05 14:18:36.341  INFO neighbor.Neighbors (remove line 104): remove succeeded
+AS3303|1149|13 22/05 14:18:36.342  INFO neighbor.Neighbors (remove line 104): remove succeeded
+AS3303|1149|13 22/05 14:18:36.342  INFO command.DisconnectCommand (run line 61): total neighbors after: 428
+AS1200|3421|13 22/05 14:18:36.342  INFO command.DisconnectCommand (run line 61): total neighbors after: 10
+eventProcessor 22/05 14:18:39.252  INFO framework.EventProcessor (run line 57): @200010;#2;LOG;E-200000.
+eventProcessor 22/05 14:18:40.988  INFO framework.EventProcessor (run line 43): waitingTime: 4930
+eventProcessor 22/05 14:18:45.919  INFO framework.EventProcessor (run line 57): @400020;#3;ANN;E-400000;as=AS24600|1200|0; prefs=msg_2000, ; with=NULL
+eventProcessor 22/05 14:18:45.936  INFO framework.EventProcessor (run line 43): waitingTime: 6649
+AS24600|1200|0 22/05 14:18:46.552  WARN process.BGPProcess (run line 130): processingTime=197; size=2
+eventProcessor 22/05 14:18:52.585  INFO framework.EventProcessor (run line 57): @600000;#4;CONNECT;E-600000; AS1200|3421|13 with neighbors[AS3303|1149|13].
+eventProcessor 22/05 14:18:52.586  INFO framework.EventProcessor (run line 43): waitingTime: 6665
+AS1200|3421|13 22/05 14:18:54.298  INFO cache.PrefixCacheImplBlock (createNewPrefix line 127): last= msg_2000, created 1
+AS16319|6819|3 22/05 14:18:57.068  WARN process.BGPProcess (run line 130): processingTime=139; size=2
+eventProcessor 22/05 14:18:59.252  INFO framework.EventProcessor (run line 57): @800010;#5;LOG;E-800000.
+AS8928|13324|12 22/05 14:19:00.662  WARN process.BGPProcess (run line 130): processingTime=116; size=39

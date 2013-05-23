@@ -1,0 +1,103 @@
+Starting BGPSIM
+Properties file: 
+Number of nodes: 17
+Options: -t 00:15:00
+
+
+Reservation number 605351: Reserved 17 hosts for 900 seconds 
+Run on 17 hosts for 960 seconds from Wed May 22 14:47:55 2013
+: node051/0 node052/0 node053/0 node054/0 node055/0 node056/0 node059/0 node002/0 node003/0 node004/0 node005/0 node006/0 node007/0 node008/0 node013/0 node014/0 node015/0 
+Running sanity checks
+working dir: /home/jlf200/env
+inst count: 1
+<dasNodes><coordinator><host>node051</host><port>29999</port></coordinator>
+		<registries>
+<registry><host>node052</host><port>29999</port></registry>
+<registry><host>node053</host><port>29999</port></registry>
+<registry><host>node054</host><port>29999</port></registry>
+<registry><host>node055</host><port>29999</port></registry>
+<registry><host>node056</host><port>29999</port></registry>
+<registry><host>node059</host><port>29999</port></registry>
+<registry><host>node002</host><port>29999</port></registry>
+<registry><host>node003</host><port>29999</port></registry>
+<registry><host>node004</host><port>29999</port></registry>
+<registry><host>node005</host><port>29999</port></registry>
+<registry><host>node006</host><port>29999</port></registry>
+<registry><host>node007</host><port>29999</port></registry>
+<registry><host>node008</host><port>29999</port></registry>
+<registry><host>node013</host><port>29999</port></registry>
+<registry><host>node014</host><port>29999</port></registry>
+<registry><host>node015</host><port>29999</port></registry>
+</registries></dasNodes>
+coordinator on node051
+slave on node052
+slave on node053
+slave on node054
+slave on node055
+slave on node056
+slave on node059
+slave on node002
+slave on node003
+slave on node004
+slave on node005
+slave on node006
+slave on node007
+slave on node008
+slave on node013
+slave on node014
+slave on node015
+coordinator 22/05 14:47:56.397  INFO coordinator.RunMonitor (start line 19): START, props=<properties>
+  <mraiProc>70</mraiProc>
+  <mraiEmpty>0</mraiEmpty>
+  <flapPercentage>70</flapPercentage>
+  <iBgpMaxValue>120000</iBgpMaxValue>
+  <iBgpMaxNeighbors>750</iBgpMaxNeighbors>
+  <iBGPLog>true</iBGPLog>
+  <flapDistribution>70</flapDistribution>
+  <policyMulti>10</policyMulti>
+  <policyMultiPref>0</policyMultiPref>
+  <hostCount>16</hostCount>
+  <sleepingTime>40</sleepingTime>
+  <workingDir>/home/jlf200/large_48/</workingDir>
+  <prefixStartingPoint>0</prefixStartingPoint>
+  <useInputHandlerThread>false</useInputHandlerThread>
+  <prefixCount>100000</prefixCount>
+  <prefixArraySize>100000</prefixArraySize>
+  <storageDir>/var/scratch/jlf200/storage/</storageDir>
+  <prefixCacheSize>7000</prefixCacheSize>
+  <diskCacheDir>/var/scratch/jlf200/data/</diskCacheDir>
+  <nodesFileName>nodes_caida_16.xml</nodesFileName>
+  <prefixesFile>prefixes.xml</prefixesFile>
+  <useEventsFile>true</useEventsFile>
+  <eventsFileName>/home/jlf200/env/events_test.xml</eventsFileName>
+  <prefixAggregationSize>0</prefixAggregationSize>
+  <diagnosticThreadSleep>2500</diagnosticThreadSleep>
+  <createdLoggingInterval>10</createdLoggingInterval>
+  <bogusPrefixMin>0</bogusPrefixMin>
+  <timeScaler>30</timeScaler>
+  <resultDirectory>/var/scratch/jlf200/results</resultDirectory>
+  <introducedLoggingInterval>10</introducedLoggingInterval>
+  <neighborsContainerCaching>false</neighborsContainerCaching>
+  <useNeighborsMap>false</useNeighborsMap>
+  <noiseSleepTime>61000</noiseSleepTime>
+</properties>
+coordinator 22/05 14:47:56.438  INFO coordinator.CoordinatorMain (init line 91): socket created set
+coordinator 22/05 14:47:59.306  INFO coordinator.Coordinator (controlTheGame line 68): sending acks
+coordinator 22/05 14:48:00.801  INFO coordinator.Coordinator (controlTheGame line 88): all set
+eventProcessor 22/05 14:48:00.803  INFO framework.EventProcessor (run line 43): waitingTime: 423
+eventProcessor 22/05 14:48:01.227  INFO framework.EventProcessor (run line 57): @30;#0;LOG;E-0.
+command_recv_8 22/05 14:48:01.462  INFO coordinator.AbstractChannelAttachment (read line 163): timeX=215
+command_recv_6 22/05 14:48:01.751  INFO coordinator.AbstractChannelAttachment (read line 163): timeX=219
+eventProcessor 22/05 14:48:03.705  INFO framework.EventProcessor (run line 43): waitingTime: 854
+eventProcessor 22/05 14:48:04.559  INFO framework.EventProcessor (run line 57): @99990;#1;DISCONNECT;E-100000; AS1200|3421|13 with neighbors[AS3303|1149|13].
+eventProcessor 22/05 14:48:04.560  INFO framework.EventProcessor (run line 43): waitingTime: 3332
+eventProcessor 22/05 14:48:07.893  INFO framework.EventProcessor (run line 57): @200010;#2;LOG;E-200000.
+eventProcessor 22/05 14:48:09.062  INFO framework.EventProcessor (run line 43): waitingTime: 5497
+eventProcessor 22/05 14:48:14.559  INFO framework.EventProcessor (run line 57): @399990;#3;ANN;E-400000;as=AS24600|1200|0; prefs=msg_2000, ; with=NULL
+eventProcessor 22/05 14:48:14.562  INFO framework.EventProcessor (run line 43): waitingTime: 6664
+eventProcessor 22/05 14:48:21.227  INFO framework.EventProcessor (run line 57): @600030;#4;CONNECT;E-600000; AS1200|3421|13 with neighbors[AS3303|1149|13].
+eventProcessor 22/05 14:48:21.228  INFO framework.EventProcessor (run line 43): waitingTime: 6664
+eventProcessor 22/05 14:48:27.892  INFO framework.EventProcessor (run line 57): @799980;#5;LOG;E-800000.
+AS8928|13324|12 22/05 14:48:28.460  INFO route.PrefixStoreMapImpl (prefixReceived line 399): 0, 319, count=1, longest=0
+AS26234|8248|8 22/05 14:48:28.779  INFO route.PrefixStoreMapImpl (prefixReceived line 399): 0, 495, count=1, longest=0
+AS8678|5848|8 22/05 14:48:28.815  INFO route.PrefixStoreMapImpl (prefixReceived line 399): 0, 593, count=1, longest=0

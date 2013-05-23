@@ -1,0 +1,32 @@
+<project name="BGP simulator" default="build">
+
+	<property name="tmp.dir" value="tmp" />
+	<property name="lib.dir" value="lib" />
+	<property name="src.dir" value="src" />
+	<property name="test.dir" value="test" />
+	<property name="dest.jar" value="${lib.dir}/bgpsym.jar" />
+
+	<path id="cp">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="build">
+
+		<delete dir="${tmp.dir}" />
+		<mkdir dir="${tmp.dir}" />
+		<javac debug="on" deprecation="on" destdir="${tmp.dir}" classpathref="cp">
+			<src path="${src.dir}" />
+			<compilerarg value="-Xlint:unchecked"/>
+			<!--<src path="${test.dir}" />-->
+		</javac>
+
+		<jar destfile="${dest.jar}" basedir="${tmp.dir}" />
+
+		<delete dir="${tmp.dir}" />
+
+
+	</target>
+
+</project>

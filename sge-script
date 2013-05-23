@@ -1,0 +1,78 @@
+#!/bin/sh
+# SGE default annotations:
+#$ -pe prun 1
+#$ -cwd
+#$ -S /bin/sh
+
+echo -e "Running sanity checks"
+
+# Sanity checks to make sure we are running under SGE:
+if [ "X$JOB_ID" = X ]; then
+    echo "No JOB_ID in environment; not running under SGE?" >&2
+    exit 1
+fi
+if [ "X$PRUN_PE_HOSTS" = X ]; then
+    echo "No PRUN_PE_HOSTS in environment; not running under prun/SGE?" >&2
+    exit 1
+fi
+if [ "X$PRUN_PROG" = X ]; then
+    echo "No PRUN_PROG in environment; not running under prun/SGE?" >&2
+    exit 1
+fi
+
+# Construct host file for MPICH's mpirun:
+mkdir -p ~/.gmpi
+NODEFILE=~/.gmpi/hosts.$JOB_ID
+PRUNFILE=~/.gmpi/hosts_prun.$JOB_ID
+
+PROP_FILE=$PRUN_PROGARGS
+WORKING_DIR=`dirname $PROP_FILE`
+# by default one instance per jvm
+INST_COUNT=1
+
+echo "working dir: $WORKING_DIR"
+echo "inst count: $INST_COUNT"
+
+echo $PRUN_PE_HOSTS > $PRUNFILE
+
+RMIPORT=29999
+(
+echo -n "<dasNodes>"
+MARK="0"
+for i in $PRUN_PE_HOSTS; do
+	if [ "$MARK" == "0" ]; then
+		echo "<coordinator><host>$i</host><port>$RMIPORT</port></coordinator>
+		<registries>"
+		MARK=1
+	else
+		for j in `seq 1 $INST_COUNT`; do
+			PORT=$[RMIPORT+j-1]
+			echo "<registry><host>$i</host><port>$PORT</port></registry>"
+		done
+	fi
+  done
+echo "</registries></dasNodes>"
+) > $NODEFILE
+
+cat $NODEFILE
+
+
+#rm -f ../data/log.info
+
+num=0
+for i in $PRUN_PE_HOSTS; do
+        #echo "going into $i node..."
+        #rsh $i $PRUN_PROG $PRUN_PROGARGS &
+        #rsh $i rmiregistry $RMIPORT &
+	#if [ "$[num+1]" == "$PRUN_CPUS" ]; then
+	if [ "$num" == "0" ]; then
+		echo "coordinator on $i"
+		/usr/bin/ssh $i "cd `pwd` && ./run_coordinator.sh $NODEFILE $PROP_FILE" &
+		num=$[num+1]
+	else
+		# we cannot start two scripts because we have to cleanup before start (once)
+		echo "slave on $i"
+		/usr/bin/ssh $i "cd `pwd` && ./rmi_on_das.sh $[num-1] $NODEFILE $PROP_FILE" &
+		num=$[num+INST_COUNT]
+	fi
+done
