@@ -104,6 +104,11 @@ public class ConnectCommand extends MasterCommand {
         for (int i = 0; i < size; i++) {
             asIds.add(ASIdentifier.staticReadExternal(in));
         }
+        for (int j = 0; j < size; j++) {
+        	int value = in.readInt();
+        	asIds.get(j).setAttachment(PeerRelation.getByValue(value));
+        	log.info("as: "+asIds.get(j)+" pr: "+(PeerRelation)asIds.get(j).getAttachment()+" val: "+value);
+        }
     }
 
     @Override
@@ -112,7 +117,8 @@ public class ConnectCommand extends MasterCommand {
         out.writeList(asIds);
 		for (ASIdentifier as : asIds) {
 			PeerRelation pr = (PeerRelation) as.getAttachment();
-			log.info(as+" pr: "+pr);
+			log.info("as: "+as+" pr: "+pr+" value: "+pr.getValue());
+			out.writeInt(pr.getValue());
 		}
     }
 
