@@ -52,13 +52,13 @@ public class ConnectCommand extends MasterCommand {
 
             @Override
             public void run(BGPProcess process) {
-				log.info("received connect command with as: "+asIdentifier+" ases: "+asIds);
+				//log.info("received connect command with as: "+asIdentifier+" ases: "+asIds);
                 
 				for (ASIdentifier asId : asIds) {
 					XRegistry xRegistry = process.getRegistries().get(asId.getProcessId());
 					TCPConnection connection = (TCPConnection) xRegistry.getAttachment();
 					if (connection == null) {
-						log.info("no connection yet with "+asId);
+						//log.info("no connection yet with "+asId);
 					}
 
 					NeighborImplTCP n = new NeighborImplTCP(asId, connection);
@@ -107,7 +107,6 @@ public class ConnectCommand extends MasterCommand {
         for (int j = 0; j < size; j++) {
         	int value = in.readInt();
         	asIds.get(j).setAttachment(PeerRelation.getByValue(value));
-        	log.info("as: "+asIds.get(j)+" pr: "+(PeerRelation)asIds.get(j).getAttachment()+" val: "+value);
         }
     }
 
@@ -117,7 +116,6 @@ public class ConnectCommand extends MasterCommand {
         out.writeList(asIds);
 		for (ASIdentifier as : asIds) {
 			PeerRelation pr = (PeerRelation) as.getAttachment();
-			log.info("as: "+as+" pr: "+pr+" value: "+pr.getValue());
 			out.writeInt(pr.getValue());
 		}
     }

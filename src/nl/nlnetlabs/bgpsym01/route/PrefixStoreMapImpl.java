@@ -82,8 +82,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			
 			ArrayList<Prefix> prefixesToDelete = new ArrayList<Prefix>();
 			
-			log.info("attempting to remove prefixes originating from "+origin+" total prefixes: "+prefixes.size());
-			
 			while(iterator.hasNext()) {
 				Entry<Prefix, PrefixInfo> current = iterator.next();
 				PrefixInfo info = current.getValue();
