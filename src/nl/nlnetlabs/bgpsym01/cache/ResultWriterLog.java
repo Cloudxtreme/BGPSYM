@@ -29,6 +29,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.Pair;
 import nl.nlnetlabs.bgpsym01.cache.PrefixInfo;
 import nl.nlnetlabs.bgpsym01.cache.PrefixCacheImplBlock;
 import nl.nlnetlabs.bgpsym01.cache.DiskStorageBlock;
+import nl.nlnetlabs.bgpsym01.route.PeerRelation;
 import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 import nl.nlnetlabs.bgpsym01.route.output.OutputStateImpl;
 import nl.nlnetlabs.bgpsym01.route.output.OutputBuffer;
@@ -91,7 +92,8 @@ public class ResultWriterLog {
 				Iterator<Neighbor> neighbors = process.getNeighbors().iterator();
 
 				while (neighbors.hasNext()) {
-					state += "\t\t<neighbor>"+neighbors.next().getASIdentifier().getId()+"</neighbor>\n";
+					Neighbor neighbor = neighbors.next();
+					state += "\t\t<neighbor rel=\""+(PeerRelation)neighbor.getAttachment()+"\">"+neighbor.getASIdentifier().getId()+"</neighbor>\n";
 				}
 
 				state += "\t</neighbors>\n";
