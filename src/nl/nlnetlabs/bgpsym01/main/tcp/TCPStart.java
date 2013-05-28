@@ -19,7 +19,6 @@ import java.util.Random;
 import nl.nlnetlabs.bgpsym01.cache.ResultWriterLog;
 import nl.nlnetlabs.bgpsym01.callback.Callback;
 import nl.nlnetlabs.bgpsym01.command.AckCommand;
-import nl.nlnetlabs.bgpsym01.command.AnnounceCommand;
 import nl.nlnetlabs.bgpsym01.command.SetRegistryCommand;
 import nl.nlnetlabs.bgpsym01.main.StorageCompressor;
 import nl.nlnetlabs.bgpsym01.main.Tools;
@@ -389,7 +388,8 @@ public class TCPStart {
         serverSocketThread.start();
     }
 
-    private MRAITimer getMRAITimer(NeighborImplTCP n, boolean hasRealMRAITimer) {
+    @SuppressWarnings("unused")
+	private MRAITimer getMRAITimer(NeighborImplTCP n, boolean hasRealMRAITimer) {
         if (1 < 2) {
             MRAITimerImpl timer = new MRAITimerImpl();
             int threshhold = hasRealMRAITimer ? 30000 : 0;
@@ -478,7 +478,7 @@ public class TCPStart {
      
         List<XPrefix> ourPrefixes = new ArrayList<XPrefix>();
        
-        log.info("total internalids: "+internalIds.size()+" loaded "+prefixes.size()+" prefixes from file");
+        //log.info("total internalids: "+internalIds.size()+" loaded "+prefixes.size()+" prefixes from file");
         
         for (XPrefix xPrefix : prefixes) {
         	if (internalIds.contains(Integer.valueOf(xPrefix.getAsInternalId()))) {
@@ -486,7 +486,7 @@ public class TCPStart {
         	}
         }
         
-        log.info("This slave has "+ourPrefixes.size()+" prefixes");
+        //log.info("This slave has "+ourPrefixes.size()+" prefixes");
         
         this.prefixes = ourPrefixes;
     }
