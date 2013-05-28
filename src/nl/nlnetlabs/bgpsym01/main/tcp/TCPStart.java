@@ -459,6 +459,8 @@ public class TCPStart {
             throw new BGPSymException(e);
         }
         
+        log.info("total internalids: "+internalIds.size()+" loaded "+prefixes.size()+" prefixes from file");
+        
         for (XPrefix xPrefix : prefixes) {
         	if (internalIds.contains(Integer.valueOf(xPrefix.getAsInternalId()))) {
         		ourPrefixes.add(xPrefix);
