@@ -19,6 +19,7 @@ import java.util.Random;
 import nl.nlnetlabs.bgpsym01.cache.ResultWriterLog;
 import nl.nlnetlabs.bgpsym01.callback.Callback;
 import nl.nlnetlabs.bgpsym01.command.AckCommand;
+import nl.nlnetlabs.bgpsym01.command.AnnounceCommand;
 import nl.nlnetlabs.bgpsym01.command.SetRegistryCommand;
 import nl.nlnetlabs.bgpsym01.main.StorageCompressor;
 import nl.nlnetlabs.bgpsym01.main.Tools;
@@ -28,7 +29,9 @@ import nl.nlnetlabs.bgpsym01.neighbor.impl.TCPConnection;
 import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
 import nl.nlnetlabs.bgpsym01.primitives.DiagnosticThread;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
+import nl.nlnetlabs.bgpsym01.primitives.bgp.BGPUpdate;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
+import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
 import nl.nlnetlabs.bgpsym01.primitives.factories.ASFactory;
 import nl.nlnetlabs.bgpsym01.primitives.factories.CallbackFactory;
 import nl.nlnetlabs.bgpsym01.primitives.factories.PrefixStoreFactory;
@@ -41,6 +44,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.IBGPModelImpl;
 import nl.nlnetlabs.bgpsym01.primitives.types.MessageInputGenerator;
 import nl.nlnetlabs.bgpsym01.primitives.types.MessageQueue;
 import nl.nlnetlabs.bgpsym01.primitives.types.MessageQueueImpl;
+import nl.nlnetlabs.bgpsym01.primitives.types.StaticThread;
 import nl.nlnetlabs.bgpsym01.process.BGPProcess;
 import nl.nlnetlabs.bgpsym01.route.MRAIStoreImpl;
 import nl.nlnetlabs.bgpsym01.route.MRAITimer;
@@ -94,6 +98,13 @@ public class TCPStart {
     private XRegistry coordinator;
 
     private XProperties properties;
+    
+    public int prefixAggregationSize = 1;
+    
+    /*
+     *  how many prefix do we require in one message to double the sleeping time
+     */
+    private int prefixAggreagationSleeperMultiplier = 6;
 
     public TCPStart() {
         xStream = XStreamFactory.getXStream();
@@ -480,8 +491,72 @@ public class TCPStart {
         this.prefixes = ourPrefixes;
     }
     
+    private BGPUpdate getUpdate (List<Prefix> prefixList, ASIdentifier asId) {
+    	BGPUpdate u = new BGPUpdate();
+        u.setPrefixes(prefixList);
+        Route route = new Route();
+        route.createEmptyHops();
+        u.setRoute(route);
+        u.setSender(asId);
+        
+        return u;
+    }
+    
     private void registerPrefixes() {
-    	// TODO add announcements for spreading prefixes
+    	long sleepingTime = properties.sleepingTime;
+    	
+    	Map<ASIdentifier, ArrayList<XPrefix>> prefixesMap = generatePrefixMap();
+    	
+    	List<Prefix> prefixList = new ArrayList<Prefix>(prefixAggregationSize);
+    	
+    	for (Map.Entry<ASIdentifier, ArrayList<XPrefix>> entry : prefixesMap.entrySet()) {
+    		ASIdentifier asId = entry.getKey();
+    		Iterator<XPrefix> iterator = entry.getValue().iterator();
+            XPrefix last = null;
+            while (iterator.hasNext()) {
+            	last = iterator.next();
+            	prefixList.add(Prefix.getInstance(last.getPrefixNum()));
+            	
+            	if (prefixList.size() == prefixAggregationSize || !iterator.hasNext()) {
+            		asId.getProcess().getQueue().addMessage(getUpdate(prefixList, asId));
+            		
+            		long sleepTime = (long) (sleepingTime * getSleepingTimeMultiplier(prefixList));
+            		StaticThread.sleep(sleepTime);
+            	}
+            }    		
+    	}
+    }
+    
+    /**
+     * Generate prefixes map - we can send prefixes from one neighbor together
+     * 
+     * @return map of prefixes {@link ASIdentifier} -> {@link ArrayList}
+     */
+    private Map<ASIdentifier, ArrayList<XPrefix>> generatePrefixMap() {
+        int count = properties.prefixStartingPoint;
+
+        Map<ASIdentifier, ArrayList<XPrefix>> prefixesMap = new LinkedHashMap<ASIdentifier, ArrayList<XPrefix>>();
+
+        // skip first X prefixes
+        Iterator<XPrefix> iterator = prefixes.iterator();
+        for (int i = 0; i < properties.prefixStartingPoint; i++) {
+            iterator.next();
+        }
+
+        while (iterator.hasNext() && count < properties.prefixCount) {
+            XPrefix prefix = iterator.next();
+
+            ASIdentifier asId = ASFactory.getInstance(prefix.getAsInternalId());
+            ArrayList<XPrefix> list = prefixesMap.get(asId);
+            if (list == null) {
+                list = new ArrayList<XPrefix>();
+                prefixesMap.put(asId, list);
+            }
+            list.add(prefix);
+            count++;
+        }
+        
+        return prefixesMap;
     }
 
     public int getMyNum() {
@@ -502,6 +577,10 @@ public class TCPStart {
 
     public void setProcesses(Map<ASIdentifier, BGPProcess> processes) {
         this.processes = processes;
+    }
+    
+    private double getSleepingTimeMultiplier(List<Prefix> prefixList) {
+        return (1 + ((double) (prefixList.size() - 1) / (double) prefixAggreagationSleeperMultiplier));
     }
 
 }
