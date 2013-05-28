@@ -515,7 +515,14 @@ public class TCPStart {
             XPrefix last = null;
             while (iterator.hasNext()) {
             	last = iterator.next();
-            	prefixList.add(Prefix.getInstance(last.getPrefixNum()));
+            	Prefix prefix = null;
+            	try {
+            		 prefix = Prefix.getInstance(last.getPrefixNum());
+            	}
+            	catch (ArrayIndexOutOfBoundsException e) {
+            		log.info("OutOfBounds: "+last.getPrefixNum());
+            	}
+            	prefixList.add(prefix);
             	
             	if (prefixList.size() == prefixAggregationSize || !iterator.hasNext()) {
             		asId.getProcess().getQueue().addMessage(getUpdate(prefixList, asId));
