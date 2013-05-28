@@ -131,7 +131,10 @@ public class TCPStart {
         nodes = null;
         xStream = null;
         
-        registerPrefixes();
+        if (properties.hasPrefixFile()) {
+        	loadOurPrefixes();
+        	registerPrefixes();
+        }       
 
         // send ack to coordinator - he will start sending us repropagation
         // commands
@@ -226,7 +229,7 @@ public class TCPStart {
             loadNodes();
             Prefix.init(properties.getPrefixArraySize());
             if (properties.hasPrefixFile()) {
-            	loadOurPrefixesFromFile();
+            	loadPrefixesFromFile();
             }
         } catch (FileNotFoundException e) {
             throw new BGPSymException(e);
@@ -426,7 +429,6 @@ public class TCPStart {
         }
 
         nodes = xSystem.getNodes();
-
     }
 
     private void loadRegistries() throws FileNotFoundException {
@@ -440,26 +442,31 @@ public class TCPStart {
     }
     
     @SuppressWarnings("unchecked")
-    private void loadOurPrefixesFromFile() {
-        String prefixesFile = properties.getPrefixesFileName();
-        
+	private void loadPrefixesFromFile() {
+    	String prefixesFile = properties.getPrefixesFileName();
+    	
+    	List<XPrefix> prefixes;
+    	
+    	 try {
+             prefixes = (List<XPrefix>) XStreamFactory.getXStream().fromXML(new FileInputStream(prefixesFile));
+         } catch (FileNotFoundException e) {
+             log.error(e);
+             throw new BGPSymException(e);
+         }
+    	 
+    	 this.prefixes = prefixes;
+    }
+    
+    private void loadOurPrefixes() {
         ArrayList<Integer> internalIds = new ArrayList<Integer>();
-       
-             
-        List<XPrefix> prefixes;
-        List<XPrefix> ourPrefixes = new ArrayList<XPrefix>();
-        try {
-            prefixes = (List<XPrefix>) XStreamFactory.getXStream().fromXML(new FileInputStream(prefixesFile));
-        } catch (FileNotFoundException e) {
-            log.error(e);
-            throw new BGPSymException(e);
-        }
         
         Iterator<ASIdentifier> iterator = processes.keySet().iterator();
         while (iterator.hasNext()) {
         	internalIds.add(iterator.next().getInternalId());
         }
-        
+     
+        List<XPrefix> ourPrefixes = new ArrayList<XPrefix>();
+       
         log.info("total internalids: "+internalIds.size()+" loaded "+prefixes.size()+" prefixes from file");
         
         for (XPrefix xPrefix : prefixes) {
