@@ -10,7 +10,9 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -47,6 +49,7 @@ import nl.nlnetlabs.bgpsym01.route.Policy;
 import nl.nlnetlabs.bgpsym01.xstream.XComputeNodes;
 import nl.nlnetlabs.bgpsym01.xstream.XNeighbor;
 import nl.nlnetlabs.bgpsym01.xstream.XNode;
+import nl.nlnetlabs.bgpsym01.xstream.XPrefix;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 import nl.nlnetlabs.bgpsym01.xstream.XRegistry;
 import nl.nlnetlabs.bgpsym01.xstream.XSystem;
@@ -73,6 +76,8 @@ public class TCPStart {
     private ArrayList<XRegistry> registries;
 
     private ArrayList<XNode> nodes;
+    
+    private List<XPrefix> prefixes;
 
     private Map<ASIdentifier, BGPProcess> processes = new LinkedHashMap<ASIdentifier, BGPProcess>();
 
@@ -125,6 +130,8 @@ public class TCPStart {
         // help GC :)
         nodes = null;
         xStream = null;
+        
+        registerPrefixes();
 
         // send ack to coordinator - he will start sending us repropagation
         // commands
@@ -218,6 +225,9 @@ public class TCPStart {
             }
             loadNodes();
             Prefix.init(properties.getPrefixArraySize());
+            if (properties.hasPrefixFile()) {
+            	loadOurPrefixesFromFile();
+            }
         } catch (FileNotFoundException e) {
             throw new BGPSymException(e);
         }
@@ -253,10 +263,6 @@ public class TCPStart {
         for (XNode node : nodes) {
             if (node.getAsIdentifier().getProcessId() != myNum) {
                 continue;
-            }
-
-            if (log.isInfoEnabled()) {
-                //log.info("binding " + node + " to " + registry.getHost());
             }
 
             Callback callback = CallbackFactory.getCallback(node.getAsIdentifier());
@@ -431,6 +437,41 @@ public class TCPStart {
             log.error("registries.size() == " + registries.size() + ", hostCount=" + XProperties.getInstance().hostCount);
             System.exit(1);
         }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void loadOurPrefixesFromFile() {
+        String prefixesFile = properties.getPrefixesFileName();
+        
+        ArrayList<Integer> internalIds = new ArrayList<Integer>();
+        
+        Iterator<ASIdentifier> iterator = processes.keySet().iterator();
+        while (iterator.hasNext()) {
+        	internalIds.add(iterator.next().getInternalId());
+        }
+             
+        List<XPrefix> prefixes;
+        List<XPrefix> ourPrefixes = new ArrayList<XPrefix>();
+        try {
+            prefixes = (List<XPrefix>) XStreamFactory.getXStream().fromXML(new FileInputStream(prefixesFile));
+        } catch (FileNotFoundException e) {
+            log.error(e);
+            throw new BGPSymException(e);
+        }
+        
+        for (XPrefix xPrefix : prefixes) {
+        	if (internalIds.contains(Integer.valueOf(xPrefix.getAsInternalId()))) {
+        		ourPrefixes.add(xPrefix);
+        	}
+        }
+        
+        log.info("This slave has "+ourPrefixes.size()+" prefixes");
+        
+        this.prefixes = ourPrefixes;
+    }
+    
+    private void registerPrefixes() {
+    	// TODO add announcements for spreading prefixes
     }
 
     public int getMyNum() {

@@ -133,6 +133,7 @@ public class CoordinatorMain {
             EventProcessor processor = new EventProcessor();
             processor.setDataMeasurement(new DataMeasurementImpl());
             EventStreamImpl stream = new EventStreamImpl();
+            
             EventBackendXStreamImpl backend = null;
             try {
                 backend = new EventBackendXStreamImpl(new FileReader(properties.getEventsFileName()));
@@ -143,12 +144,16 @@ public class CoordinatorMain {
                 log.error(e);
                 throw new BGPSymException(e);
             }
+            
             stream.setBackend(backend);
-            processor.setEventStream(stream);
-            helper.setProcessor(processor);
             stream.setCommandSenderHelper(commandSenderHelper);
 			stream.setDisconnectHelper(disconnectHelper);
 			stream.setConnectHelper(connectHelper);
+			
+            processor.setEventStream(stream);
+            
+            helper.setProcessor(processor);
+			
             return helper;
         } else {
             PropagationHelperImpl propagationHelper = new PropagationHelperImpl();
@@ -158,6 +163,7 @@ public class CoordinatorMain {
                 List<XPrefix> prefixes = loadPrefixesFromFile();
                 propagationHelper.setPrefixes(prefixes);
             }
+            
             return propagationHelper;
         }
     }
@@ -165,6 +171,7 @@ public class CoordinatorMain {
     @SuppressWarnings("unchecked")
     private List<XPrefix> loadPrefixesFromFile() {
         String prefixesFile = XProperties.getInstance().getPrefixesFileName();
+        
         List<XPrefix> prefixes;
         try {
             prefixes = (List<XPrefix>) XStreamFactory.getXStream().fromXML(new FileInputStream(prefixesFile));
@@ -172,6 +179,7 @@ public class CoordinatorMain {
             log.error(e);
             throw new BGPSymException(e);
         }
+        
         return prefixes;
     }
 
