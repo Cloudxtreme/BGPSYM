@@ -444,11 +444,7 @@ public class TCPStart {
         String prefixesFile = properties.getPrefixesFileName();
         
         ArrayList<Integer> internalIds = new ArrayList<Integer>();
-        
-        Iterator<ASIdentifier> iterator = processes.keySet().iterator();
-        while (iterator.hasNext()) {
-        	internalIds.add(iterator.next().getInternalId());
-        }
+       
              
         List<XPrefix> prefixes;
         List<XPrefix> ourPrefixes = new ArrayList<XPrefix>();
@@ -457,6 +453,11 @@ public class TCPStart {
         } catch (FileNotFoundException e) {
             log.error(e);
             throw new BGPSymException(e);
+        }
+        
+        Iterator<ASIdentifier> iterator = processes.keySet().iterator();
+        while (iterator.hasNext()) {
+        	internalIds.add(iterator.next().getInternalId());
         }
         
         log.info("total internalids: "+internalIds.size()+" loaded "+prefixes.size()+" prefixes from file");
