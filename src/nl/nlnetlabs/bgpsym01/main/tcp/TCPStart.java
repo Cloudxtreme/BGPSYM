@@ -520,7 +520,7 @@ public class TCPStart {
             		 prefix = Prefix.getInstance(last.getPrefixNum());
             	}
             	catch (ArrayIndexOutOfBoundsException e) {
-            		log.info("OutOfBounds: "+last.getPrefixNum());
+            		//log.info("OutOfBounds: "+last.getPrefixNum());
             	}
             	prefixList.add(prefix);
             	
