@@ -50,7 +50,7 @@ public class EDataOutputStream {
     public final void writeBits(int v, int size) throws IOException {
         if (v >= 1 << size) {
             String msg = "value is too big, v=" + v + ", size=" + size + " bits";
-            log.error("msg");
+            log.error(msg);
             throw new BGPSymException(msg);
         }
 

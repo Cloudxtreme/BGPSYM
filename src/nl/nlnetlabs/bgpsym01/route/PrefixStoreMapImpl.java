@@ -97,8 +97,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			if (prefixesToDelete.size() > 0) {				
 				prefixRemove(origin, prefixesToDelete);
 			}
-		}
-		
+		}		
 	}
 
 	private Pair<ASIdentifier, Prefix> getPair(ASIdentifier origin, Prefix prefix) {

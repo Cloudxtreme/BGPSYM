@@ -478,7 +478,7 @@ public class TCPStart {
      
         List<XPrefix> ourPrefixes = new ArrayList<XPrefix>();
        
-        //log.info("total internalids: "+internalIds.size()+" loaded "+prefixes.size()+" prefixes from file");
+        log.info("total internalids: "+internalIds.size()+" loaded "+prefixes.size()+" prefixes from file");
         
         for (XPrefix xPrefix : prefixes) {
         	if (internalIds.contains(Integer.valueOf(xPrefix.getAsInternalId()))) {
@@ -526,7 +526,7 @@ public class TCPStart {
             		 prefix = Prefix.getInstance(last.getPrefixNum());
             	}
             	catch (ArrayIndexOutOfBoundsException e) {
-            		//log.info("OutOfBounds: "+last.getPrefixNum());
+            		log.info("OutOfBounds: "+last.getPrefixNum());
             	}
             	prefixList.add(prefix);
             	
@@ -535,7 +535,7 @@ public class TCPStart {
             		
             		long sleepTime = (long) (sleepingTime * getSleepingTimeMultiplier(prefixList));
             		prefixList.clear();
-            		StaticThread.sleep(sleepTime);            		
+            		StaticThread.sleep(sleepTime);        		
             	}
             }    		
     	}
