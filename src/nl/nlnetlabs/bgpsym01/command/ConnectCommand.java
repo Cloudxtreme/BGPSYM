@@ -64,7 +64,6 @@ public class ConnectCommand extends MasterCommand {
 					NeighborImplTCP n = new NeighborImplTCP(asId, connection);
 					n.setTimer(getMRAITimer(n, hasRealMRAITimer));
 
-					// @TODO accomodate transfer of peer relation
 					n.setAttachment(PeerRelation.PEER);
 
                     process.getNeighbors().addNeighbor(n);

@@ -513,6 +513,7 @@ public class TCPStart {
     		ASIdentifier asId = entry.getKey();
     		Iterator<XPrefix> iterator = entry.getValue().iterator();
             XPrefix last = null;
+            
             while (iterator.hasNext()) {
             	last = iterator.next();
             	Prefix prefix = null;
@@ -528,7 +529,8 @@ public class TCPStart {
             		asId.getProcess().getQueue().addMessage(getUpdate(prefixList, asId));
             		
             		long sleepTime = (long) (sleepingTime * getSleepingTimeMultiplier(prefixList));
-            		StaticThread.sleep(sleepTime);
+            		prefixList.clear();
+            		StaticThread.sleep(sleepTime);            		
             	}
             }    		
     	}
