@@ -161,7 +161,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
         PrefixTableEntry entry = neighborsForPrefix.get(originator);
         if (entry == null || !entry.isValid()) {
             if (entry == null || !entry.isContainsMe()) {
-                log.warn("don't have entry for " + prefix + ", entry=" + entry + ", me=" + (entry == null ? "ERROR" : entry.isContainsMe()));
+                //log.warn("don't have entry for " + prefix + ", entry=" + entry + ", me=" + (entry == null ? "ERROR" : entry.isContainsMe()));
             }
             return false;
         }
@@ -187,7 +187,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
         } else {
             return false;
         }
-
     }
 
     /**
@@ -427,7 +426,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
         long s3 = System.currentTimeMillis();
         if (s3 - start > 300) {
             if (log.isInfoEnabled()) {
-                log.info(s2 - start + ", " + (s3 - s2) + ", count=" + prefixes.size() + ", longest=" + longest);
+                //log.info(s2 - start + ", " + (s3 - s2) + ", count=" + prefixes.size() + ", longest=" + longest);
             }
         }
 
