@@ -15,7 +15,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("u")
 public class BGPUpdate implements Cloneable, Update {
 
-    private static final int PREFIXES_LENGTH_BITS = 16;
+    private static final int PREFIXES_LENGTH_BITS = 18;
     private static final int WITHDRAWAL_LENGTH_BITS = 10;
 
     /* 
