@@ -144,7 +144,12 @@ public class TCPStart {
         if (properties.hasPrefixFile()) {
         	loadOurPrefixes();
         	registerPrefixes();
-        }       
+        }
+        
+        for (BGPProcess process : processes.values()) {
+        	process.start();
+        	Thread.yield();
+        }
 
         // send ack to coordinator - he will start sending us repropagation
         // commands
@@ -381,8 +386,8 @@ public class TCPStart {
 
             process.setNeighbors(neighbors);
             process.setStore(PrefixStoreFactory.createStore(process.getAsIdentifier(), neighbors, process.getCallback(), policy, mraiStore, flapStoreImpl));
-            process.start();
-            Thread.yield();
+            /*process.start();
+            Thread.yield();*/
         }
 
         serverSocketThread.start();

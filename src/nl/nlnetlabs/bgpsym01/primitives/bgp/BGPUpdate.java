@@ -16,7 +16,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class BGPUpdate implements Cloneable, Update {
 
     private static final int PREFIXES_LENGTH_BITS = 18;
-    private static final int WITHDRAWAL_LENGTH_BITS = 10;
+    private static final int WITHDRAWAL_LENGTH_BITS = 18;
 
     /* 
      * though having an array instead of prefixes here would be better in some aspects,
