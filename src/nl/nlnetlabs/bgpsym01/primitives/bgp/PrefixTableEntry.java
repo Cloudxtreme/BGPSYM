@@ -115,7 +115,7 @@ public class PrefixTableEntry implements EExternalizable {
 
         // TODO - magic stuff where to find who is CISCO and who's not...
         boolean isFlapTimerImpl = in.readBoolean();
-        log.warn("read flap timer!!!");
+        //log.warn("read flap timer!!!");
 
         if (isFlapTimerImpl) {
             flapTimer = new FlapTimerImpl();
