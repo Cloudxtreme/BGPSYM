@@ -492,8 +492,13 @@ public class TCPStart {
     }
     
     private BGPUpdate getUpdate (List<Prefix> prefixList, ASIdentifier asId) {
+    	ArrayList<Prefix> newPrefixList = new ArrayList<Prefix>();
+    	for (Prefix prefix : prefixList) {
+    		newPrefixList.add(prefix);
+    	}
+    	
     	BGPUpdate u = new BGPUpdate();
-        u.setPrefixes(prefixList);
+        u.setPrefixes(newPrefixList);
         Route route = new Route();
         route.createEmptyHops();
         u.setRoute(route);

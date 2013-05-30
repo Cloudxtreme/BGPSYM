@@ -30,7 +30,8 @@ public class MessageInputGenerator implements InputGenerator {
 
     private FIFOQueue<Update> immediateUpdates = new FIFOQueueImpl<Update>();
 
-    public void addMessage(Update update) {
+    @SuppressWarnings("unused")
+	public void addMessage(Update update) {
         synchronized (this) {
             if (update.getType() == UpdateType.BGPUPDATE) {
                 addBGPUpdate((BGPUpdate) update);
