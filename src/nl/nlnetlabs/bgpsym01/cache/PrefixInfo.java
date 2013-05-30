@@ -112,7 +112,7 @@ public class PrefixInfo implements EExternalizable {
         }
 
         if (getCurrentEntry() == null && neighborsMap.size() != 0) {
-            log.warn("no current entry found! prefix=" + prefix + ", map.size()=" + neighborsMap.size());
+            //log.warn("no current entry found! prefix=" + prefix + ", map.size()=" + neighborsMap.size());
         }
     }
 
