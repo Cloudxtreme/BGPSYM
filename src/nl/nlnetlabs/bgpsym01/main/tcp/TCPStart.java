@@ -141,15 +141,10 @@ public class TCPStart {
         nodes = null;
         xStream = null;
         
-        if (properties.hasPrefixFile()) {
+        /*if (properties.hasPrefixFile()) {
         	loadOurPrefixes();
         	registerPrefixes();
-        }
-        
-        for (BGPProcess process : processes.values()) {
-        	process.start();
-        	Thread.yield();
-        }
+        }*/
 
         // send ack to coordinator - he will start sending us repropagation
         // commands
@@ -244,7 +239,7 @@ public class TCPStart {
             loadNodes();
             Prefix.init(properties.getPrefixArraySize());
             if (properties.hasPrefixFile()) {
-            	loadPrefixesFromFile();
+            	//loadPrefixesFromFile();
             }
         } catch (FileNotFoundException e) {
             throw new BGPSymException(e);
@@ -386,8 +381,8 @@ public class TCPStart {
 
             process.setNeighbors(neighbors);
             process.setStore(PrefixStoreFactory.createStore(process.getAsIdentifier(), neighbors, process.getCallback(), policy, mraiStore, flapStoreImpl));
-            /*process.start();
-            Thread.yield();*/
+            process.start();
+            Thread.yield();
         }
 
         serverSocketThread.start();

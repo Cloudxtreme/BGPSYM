@@ -65,11 +65,10 @@ public class Coordinator {
         commandSenderHelper.waitForAllHosts();
 
         if (log.isInfoEnabled()) {
-            log.info("sending acks");
+            log.info("sending master ACK");
         }
 
         commandSenderHelper.sendToAllHosts(new MasterAckCommand());
-
         commandSenderHelper.waitForAllHosts();
 
         // sync the time
