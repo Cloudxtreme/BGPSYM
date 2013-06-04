@@ -141,14 +141,17 @@ public class TCPStart {
         nodes = null;
         xStream = null;
         
-        /*if (properties.hasPrefixFile()) {
+        // send ack to coordinator
+        AckCommand ack = new AckCommand();
+        cst.sendCommand(ack);
+        
+        if (properties.hasPrefixFile()) {
         	loadOurPrefixes();
         	registerPrefixes();
-        }*/
-
-        // send ack to coordinator - he will start sending us repropagation
-        // commands
-        AckCommand ack = new AckCommand();
+        }
+        
+        // send ack to coordinator
+        ack = new AckCommand();
         cst.sendCommand(ack);
 
         // Now I can already start diagnostic thread
@@ -239,7 +242,7 @@ public class TCPStart {
             loadNodes();
             Prefix.init(properties.getPrefixArraySize());
             if (properties.hasPrefixFile()) {
-            	//loadPrefixesFromFile();
+            	loadPrefixesFromFile();
             }
         } catch (FileNotFoundException e) {
             throw new BGPSymException(e);

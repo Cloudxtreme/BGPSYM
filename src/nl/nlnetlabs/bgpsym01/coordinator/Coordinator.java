@@ -83,6 +83,9 @@ public class Coordinator {
 		if (!directory.exists() && !directory.mkdirs()) {
 			throw new BGPSymException("Unable to make directory: "+dirName);
 		}
+		
+		commandSenderHelper.sendToAllHosts(new MasterAckCommand());
+        commandSenderHelper.waitForAllHosts();
 
         log.info("all set");
 
