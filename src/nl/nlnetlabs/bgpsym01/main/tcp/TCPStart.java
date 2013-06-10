@@ -140,18 +140,14 @@ public class TCPStart {
         // help GC :)
         nodes = null;
         xStream = null;
-        
-        // send ack to coordinator
-        AckCommand ack = new AckCommand();
-        cst.sendCommand(ack);
-        
+       
         if (properties.hasPrefixFile()) {
         	loadOurPrefixes();
         	registerPrefixes();
         }
         
         // send ack to coordinator
-        ack = new AckCommand();
+        AckCommand ack = new AckCommand();
         cst.sendCommand(ack);
 
         // Now I can already start diagnostic thread
