@@ -85,13 +85,14 @@ public class PolicyImplRel implements Policy {
 					return true;
 				}
 				
-				log.info("route: "+route+" route sender: "+route.getSender());
+				//log.info("route: "+route+" route sender: "+route.getSender());
 	
 				Neighbor sender = neighbors.getNeighbor(route.getSender());
-				if (sender == null) {
-					log.info("sender is null at "+new Date());
+				/*if (sender == null) {
+					//log.info("sender is null at "+new Date());
 					//return false;
-				}
+				}*/
+				
 				PeerRelation relation = (PeerRelation) sender.getAttachment();
 				if (relation == PeerRelation.CUSTOMER || relation == PeerRelation.SIBLING) {
 					// I want to send things from my customer and sibling to my
