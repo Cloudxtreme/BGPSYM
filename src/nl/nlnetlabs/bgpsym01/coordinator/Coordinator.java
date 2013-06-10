@@ -90,6 +90,12 @@ public class Coordinator {
 		
 		commandSenderHelper.sendToAllHosts(new MasterAckCommand());
         commandSenderHelper.waitForAllHosts();
+        
+        // sync the time
+        if (!syncTheTime()) {
+            shutdown();
+            return;
+        }
 
         log.info("all set");
 
