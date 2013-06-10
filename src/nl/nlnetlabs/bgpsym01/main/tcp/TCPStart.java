@@ -146,8 +146,8 @@ public class TCPStart {
         cst.sendCommand(ack);
         
         if (properties.hasPrefixFile()) {
-        	loadOurPrefixes();
-        	registerPrefixes();
+        	//loadOurPrefixes();
+        	//registerPrefixes();
         }
         
         // send ack to coordinator
