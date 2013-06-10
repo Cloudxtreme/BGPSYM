@@ -146,8 +146,8 @@ public class TCPStart {
         cst.sendCommand(ack);
         
         if (properties.hasPrefixFile()) {
-        	//loadOurPrefixes();
-        	//registerPrefixes();
+        	loadOurPrefixes();
+        	registerPrefixes();
         }
         
         // send ack to coordinator
@@ -476,18 +476,18 @@ public class TCPStart {
         
         Iterator<ASIdentifier> iterator = processes.keySet().iterator();
         while (iterator.hasNext()) {
-        	internalIds.add(iterator.next().getInternalId());
+        	internalIds.add(Integer.valueOf(iterator.next().getInternalId()));
         }
      
         List<XPrefix> ourPrefixes = new ArrayList<XPrefix>();
-       
-        log.info("total internalids: "+internalIds.size()+" loaded "+prefixes.size()+" prefixes from file");
         
         for (XPrefix xPrefix : prefixes) {
         	if (internalIds.contains(Integer.valueOf(xPrefix.getAsInternalId()))) {
         		ourPrefixes.add(xPrefix);
         	}
         }
+        
+        log.info("total internalids: "+internalIds.size()+" loaded "+prefixes.size()+" prefixes from file of which "+ourPrefixes.size()+" are ours.");
         
         //log.info("This slave has "+ourPrefixes.size()+" prefixes");
         
