@@ -82,6 +82,8 @@ public class PolicyImplRel implements Policy {
 				if (route.getPathLength() == 0) {
 					return true;
 				}
+				
+				log.info("route: "+route+" route sender: "+route.getSender());
 	
 				Neighbor sender = neighbors.getNeighbor(route.getSender());
 				/*if (sender == null) {

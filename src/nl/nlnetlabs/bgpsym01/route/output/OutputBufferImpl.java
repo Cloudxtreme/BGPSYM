@@ -169,6 +169,7 @@ public class OutputBufferImpl implements OutputBuffer {
         ArrayList<Prefix> withdrawals = new ArrayList<Prefix>();
         while (iterator.hasNext()) {
             OutputAddEntity entity = iterator.next();
+            log.info("processing: "+entity.getPrefix()+ " route: "+entity.getRoute() + "last route: "+entity.getLastRoute());
             UpdateToSendType updateType = outputState.getUpdateType(neighbor, entity.getPrefix(), entity.getRoute(), entity.getLastRoute());
 
 
