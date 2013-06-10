@@ -1,5 +1,7 @@
 package nl.nlnetlabs.bgpsym01.route;
 
+import java.util.Date;
+
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbors;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
@@ -86,10 +88,10 @@ public class PolicyImplRel implements Policy {
 				log.info("route: "+route+" route sender: "+route.getSender());
 	
 				Neighbor sender = neighbors.getNeighbor(route.getSender());
-				/*if (sender == null) {
-					//log.info("sender is null");
-					return false;
-				}*/
+				if (sender == null) {
+					log.info("sender is null at "+new Date());
+					//return false;
+				}
 				PeerRelation relation = (PeerRelation) sender.getAttachment();
 				if (relation == PeerRelation.CUSTOMER || relation == PeerRelation.SIBLING) {
 					// I want to send things from my customer and sibling to my
