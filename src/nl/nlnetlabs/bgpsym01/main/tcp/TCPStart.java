@@ -435,7 +435,6 @@ public class TCPStart {
 
         ASFactory.init(xSystem.getAses().size());
         for (ASIdentifier as : xSystem.getAses()) {
-        	log.info("registering AS: "+as.toString());
             ASFactory.registerAS(as, as.getInternalId());
         }
 
