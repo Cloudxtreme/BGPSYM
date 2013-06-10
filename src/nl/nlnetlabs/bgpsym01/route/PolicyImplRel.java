@@ -84,7 +84,7 @@ public class PolicyImplRel implements Policy {
 	
 				Neighbor sender = neighbors.getNeighbor(route.getSender());
 				if (sender == null) {
-					log.info("sender is null");
+					//log.info("sender is null");
 					return false;
 				}
 				PeerRelation relation = (PeerRelation) sender.getAttachment();
