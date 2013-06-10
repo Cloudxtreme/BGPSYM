@@ -223,7 +223,7 @@ public class OutputBufferImpl implements OutputBuffer {
     }
 
     private boolean createAndSendUpdate(Neighbor neighbor, Route route, List<Prefix> list, List<Prefix> withdrawals) {
-        if (EL.queueDebug && log.isInfoEnabled()) {
+        if (log.isInfoEnabled()) { // EL.queueDebug &&
             log.info("X7, send " + list + " to " + neighbor.getASIdentifier());
         }
         BGPUpdate update = new BGPUpdate(asIdentifier, route == null ? null : route.copyWithMeOnPath(asIdentifier));

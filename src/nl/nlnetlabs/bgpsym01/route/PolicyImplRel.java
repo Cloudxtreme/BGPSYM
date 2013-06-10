@@ -75,7 +75,7 @@ public class PolicyImplRel implements Policy {
 			case PROVIDER:
 				// get the sender neighbor
 	
-				log.info("path length: "+route.getPathLength());
+				//log.info("path length: "+route.getPathLength());
 	
 				// if it is mine route - send it to everybody
 				if (route.getPathLength() == 0) {
