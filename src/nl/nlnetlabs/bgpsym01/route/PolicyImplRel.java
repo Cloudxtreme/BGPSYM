@@ -65,37 +65,39 @@ public class PolicyImplRel implements Policy {
 			return false;
 		}
 
-        switch (pr) {
-        case CUSTOMER:
-        case SIBLING:
-        case ROUTEVIEWMONITOR:
-        case RISMONITOR:
-            return true;
-        case PEER:
-        case PROVIDER:
-            // get the sender neighbor
-
-            // if it is mine route - send it to everybody
-            if (route.getPathLength() == 0) {
-                return true;
-            }
-
-            Neighbor sender = neighbors.getNeighbor(route.getSender());
-            if (sender == null) {
-            	log.info("sender is null");
-            	return false;
-            }
-            PeerRelation relation = (PeerRelation) sender.getAttachment();
-            if (relation == PeerRelation.CUSTOMER || relation == PeerRelation.SIBLING) {
-                // I want to send things from my customer and sibling to my
-                // provider and my peer
-                return true;
-            }
-            return false;
-
-        default:
-            throw new RuntimeException("WTF, pr=" + pr);
-        }
+		switch (pr) {
+			case CUSTOMER:
+			case SIBLING:
+			case ROUTEVIEWMONITOR:
+			case RISMONITOR:
+				return true;
+			case PEER:
+			case PROVIDER:
+				// get the sender neighbor
+	
+				log.info("path length: "+route.getPathLength());
+	
+				// if it is mine route - send it to everybody
+				if (route.getPathLength() == 0) {
+					return true;
+				}
+	
+				Neighbor sender = neighbors.getNeighbor(route.getSender());
+				if (sender == null) {
+					log.info("sender is null");
+					return false;
+				}
+				PeerRelation relation = (PeerRelation) sender.getAttachment();
+				if (relation == PeerRelation.CUSTOMER || relation == PeerRelation.SIBLING) {
+					// I want to send things from my customer and sibling to my
+					// provider and my peer
+					return true;
+				}
+				return false;
+	
+			default:
+				throw new RuntimeException("WTF, pr=" + pr);
+		}
     }
 
 }
