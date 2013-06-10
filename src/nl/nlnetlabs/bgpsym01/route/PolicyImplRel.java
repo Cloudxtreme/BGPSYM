@@ -78,22 +78,14 @@ public class PolicyImplRel implements Policy {
 			case PROVIDER:
 				// get the sender neighbor
 	
-				//log.info("path length: "+route.getPathLength());
-	
 				// if it is mine route - send it to everybody
 				if (route.getPathLength() == 0) {
 					return true;
 				}
-				
-				//log.info("route: "+route+" route sender: "+route.getSender());
-	
+
 				Neighbor sender = neighbors.getNeighbor(route.getSender());
-				/*if (sender == null) {
-					//log.info("sender is null at "+new Date());
-					//return false;
-				}*/
-				
 				PeerRelation relation = (PeerRelation) sender.getAttachment();
+				
 				if (relation == PeerRelation.CUSTOMER || relation == PeerRelation.SIBLING) {
 					// I want to send things from my customer and sibling to my
 					// provider and my peer

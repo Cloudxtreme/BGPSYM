@@ -84,8 +84,12 @@ public class Coordinator {
 			throw new BGPSymException("Unable to make directory: "+dirName);
 		}
 		
-		//commandSenderHelper.sendToAllHosts(new MasterAckCommand());
-        //commandSenderHelper.waitForAllHosts();
+		if (log.isInfoEnabled()) {
+            log.info("sending second master ACK");
+        }
+		
+		commandSenderHelper.sendToAllHosts(new MasterAckCommand());
+        commandSenderHelper.waitForAllHosts();
 
         log.info("all set");
 
