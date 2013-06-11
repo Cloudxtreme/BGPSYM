@@ -100,6 +100,7 @@ public class PolicyImplRel implements Policy {
 					// provider and my peer
 					return true;
 				}
+				
 				return false;
 	
 			default:

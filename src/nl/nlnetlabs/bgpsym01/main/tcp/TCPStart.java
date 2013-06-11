@@ -505,7 +505,7 @@ public class TCPStart {
         Route route = new Route();
         route.createEmptyHops();
         u.setRoute(route);
-        //u.setSender(asId);
+        u.setSender(asId);
         
         return u;
     }
