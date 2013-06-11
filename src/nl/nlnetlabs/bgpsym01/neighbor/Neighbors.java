@@ -119,7 +119,14 @@ public class Neighbors implements Iterable<Neighbor> {
     }
     
     public String toString () {
-    	return map.toString();
+    	String neighborString = "";
+    	
+    	Iterator<Neighbor> iterator = iterator();
+    	while (iterator.hasNext()) {
+    		neighborString += iterator.next().getASIdentifier()+" ";
+    	}
+    	
+    	return neighborString;
     }
 
 }
