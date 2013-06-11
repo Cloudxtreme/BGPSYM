@@ -4,6 +4,7 @@ import java.util.Date;
 
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbors;
+import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
@@ -84,11 +85,14 @@ public class PolicyImplRel implements Policy {
 				}
 
 				Neighbor sender = neighbors.getNeighbor(route.getSender());
-				if (sender == null) {
-					log.info("sender is null. neighbor: "+neighbor+" route: "+route);
+
+				PeerRelation relation = null;
+				try {
+					relation = (PeerRelation) sender.getAttachment();
 				}
-				
-				PeerRelation relation = (PeerRelation) sender.getAttachment();
+				catch (NullPointerException e) {
+					throw new BGPSymException("sender is null. neighbor: "+neighbor.getASIdentifier()+" route: "+route);
+				}
 				
 				if (relation == PeerRelation.CUSTOMER || relation == PeerRelation.SIBLING) {
 					// I want to send things from my customer and sibling to my
