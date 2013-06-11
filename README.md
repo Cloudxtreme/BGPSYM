@@ -6,7 +6,8 @@
 Possibly some warnings might appear: 
 
 [javac] /home/$USER/bgpsym/src/nl/nlnetlabs/bgpsym01/primitives/types/ByteFIFO.java:12: warning: unmappable character for encoding ASCII
-...
+
+
 [javac] /home/$USER/bgpsym/src/nl/nlnetlabs/bgpsym01/primitives/types/ByteFIFO.java:99: warning: unmappable character for encoding ASCII
 
 This is due to **LANG=en_US.UTF-8** in the settings or failing to set **LANG** properly. These warnings can be ignored.
@@ -21,8 +22,7 @@ After changing directory you can start an experiment by making use of the shell 
 
 # Configuration
 
-###
-Configuration files
+### Configuration files
 
 The parameters for the simulator are specified in an XML formatted file, as mentioned above.
 The properties file describes various parameter values that can be set for the simulation.
