@@ -53,6 +53,8 @@ public class Route implements EExternalizable {
             n.hops = new ASIdentifier[1];
             n.hops[0] = asIdentifier;
         }
+        log.info("old route: "+hops+" new route: "+n);
+        
         return n;
     }
 
