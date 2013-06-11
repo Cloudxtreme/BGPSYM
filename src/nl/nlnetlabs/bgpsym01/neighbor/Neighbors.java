@@ -117,5 +117,9 @@ public class Neighbors implements Iterable<Neighbor> {
         }
         return info.num;
     }
+    
+    public String toString () {
+    	return map.toString();
+    }
 
 }

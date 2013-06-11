@@ -91,7 +91,7 @@ public class PolicyImplRel implements Policy {
 					relation = (PeerRelation) sender.getAttachment();
 				}
 				catch (NullPointerException e) {
-					throw new BGPSymException("sender is null. neighbor: "+neighbor.getASIdentifier()+" route: "+route);
+					throw new BGPSymException("sender is null. neighbor: "+neighbor.getASIdentifier()+" route: "+route+" neighbors: "+ neighbors.toString());
 				}
 				
 				if (relation == PeerRelation.CUSTOMER || relation == PeerRelation.SIBLING) {
