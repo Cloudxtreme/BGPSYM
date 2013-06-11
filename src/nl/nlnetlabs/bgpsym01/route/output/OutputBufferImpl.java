@@ -224,16 +224,17 @@ public class OutputBufferImpl implements OutputBuffer {
     }
 
     //@SuppressWarnings("unused")
-	private boolean createAndSendUpdate(Neighbor neighbor, Route route, List<Prefix> list, List<Prefix> withdrawals) {
-        if (log.isInfoEnabled()) {
-            log.info("X7, send " + list + " and withdrawals: "+withdrawals+" to " + neighbor.getASIdentifier() + "route: "+route);
-        }
-        
+	private boolean createAndSendUpdate(Neighbor neighbor, Route route, List<Prefix> list, List<Prefix> withdrawals) {        
         BGPUpdate update = new BGPUpdate(asIdentifier, route == null ? null : route.copyWithMeOnPath(asIdentifier));
         update.setPrefixes(list);
         update.setWithdrawals(withdrawals);
         callback.updateSend(neighbor.getASIdentifier(), update);
         neighbor.send(update);
+        
+        if (log.isInfoEnabled()) {
+            log.info("X7, send " + list + " and withdrawals: "+withdrawals+" to " + neighbor.getASIdentifier() + "route: "+update.getRoute());
+        }
+        
         return true;
     }
 
