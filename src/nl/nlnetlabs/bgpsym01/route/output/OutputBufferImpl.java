@@ -114,7 +114,8 @@ public class OutputBufferImpl implements OutputBuffer {
     private int allAnn;
     private int defAnn;
 
-    private void annProcess(boolean deferred) {
+    @SuppressWarnings("unused")
+	private void annProcess(boolean deferred) {
         allAnn++;
         if (deferred) {
             defAnn++;
@@ -126,7 +127,8 @@ public class OutputBufferImpl implements OutputBuffer {
         }
     }
 
-    private void processForANeighbor(Neighbor neighbor, Iterator<OutputAddEntity> iterator, boolean unflushing) {
+    @SuppressWarnings("unused")
+	private void processForANeighbor(Neighbor neighbor, Iterator<OutputAddEntity> iterator, boolean unflushing) {
         // if timer - rewrite it all to store
 
         if (EL.queueDebug && log.isInfoEnabled()) {

@@ -1,10 +1,7 @@
 package nl.nlnetlabs.bgpsym01.route;
 
-import java.util.Date;
-
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbors;
-import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
@@ -59,15 +56,6 @@ public class PolicyImplRel implements Policy {
         if (route.isFrom(neighbor.getASIdentifier())) {
             return false;
         }
-        // if (route.getPathLength() > 18) {
-        // log.info("size=" + route.getPathLength());
-        // }
-
-		if (pr == null) {
-			log.info("peer relation is null");
-			
-			return false;
-		}
 
 		switch (pr) {
 			case CUSTOMER:
@@ -87,13 +75,7 @@ public class PolicyImplRel implements Policy {
 				Neighbor sender = neighbors.getNeighbor(route.getSender());
 
 				PeerRelation relation = null;
-				try {
-					relation = (PeerRelation) sender.getAttachment();
-				}
-				catch (NullPointerException e) {
-					//log.error("", e);
-					throw new BGPSymException("sender is null. neighbor: "+neighbor.getASIdentifier()+" route: "+route+" neighbors: "+ neighbors.toString());
-				}
+				relation = (PeerRelation) sender.getAttachment();
 				
 				if (relation == PeerRelation.CUSTOMER || relation == PeerRelation.SIBLING) {
 					// I want to send things from my customer and sibling to my
