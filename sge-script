@@ -30,6 +30,7 @@ WORKING_DIR=`dirname $PROP_FILE`
 # by default one instance per jvm
 INST_COUNT=1
 
+echo "hosts: $PRUN_PE_HOSTS"
 echo "working dir: $WORKING_DIR"
 echo "inst count: $INST_COUNT"
 
@@ -43,7 +44,7 @@ for i in $PRUN_PE_HOSTS; do
 	if [ "$MARK" == "0" ]; then
 		echo "<coordinator><host>$i</host><port>$RMIPORT</port></coordinator>
 		<registries>"
-		MARK=1
+		MARK="1"
 	else
 		for j in `seq 1 $INST_COUNT`; do
 			PORT=$[RMIPORT+j-1]

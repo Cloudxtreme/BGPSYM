@@ -11,5 +11,4 @@ rm *
 echo -e "Removing results"
 cd /var/scratch/$USER/results/
 rm -rf *
-echo -e "Returning"
-cd ~/MSC-SYM012
+echo -e "Done"

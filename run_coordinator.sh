@@ -28,4 +28,4 @@ PWD=`pwd`
 
 DEBUG="-XX:+PrintGCDetails -verbose:gc -XX:+PrintGCTimeStamps -Xloggc:$WORKING_DIR/log/gc_logfile_coordinator"
 #-XX:+UseConcMarkSweepGC
-java $MEMORY -Xmx3330m -Xms3000m -XX:NewSize=700m -XX:MaxNewSize=700m -server $DEBUG -enableassertions  -cp $CP $LOG4J -XX:+UseConcMarkSweepGC nl.nlnetlabs.bgpsym01.coordinator.CoordinatorMain $1 $2 2> "logs/coordinator" &
+java $MEMORY -Xmx16g -Xms16g -XX:NewSize=700m -XX:MaxNewSize=700m -server $DEBUG -enableassertions  -cp $CP $LOG4J -XX:+UseConcMarkSweepGC nl.nlnetlabs.bgpsym01.coordinator.CoordinatorMain $1 $2 2> "logs/coordinator" &
