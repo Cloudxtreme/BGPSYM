@@ -232,7 +232,7 @@ public class OutputBufferImpl implements OutputBuffer {
         neighbor.send(update);
         
         if (log.isInfoEnabled()) {
-            log.info("X7, send " + list + " and withdrawals: "+withdrawals+" to " + neighbor.getASIdentifier() + "route: "+update.getRoute());
+            //log.info("X7, send " + list + " and withdrawals: "+withdrawals+" to " + neighbor.getASIdentifier() + "route: "+update.getRoute());
         }
         
         return true;
