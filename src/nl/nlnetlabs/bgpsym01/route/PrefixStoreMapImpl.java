@@ -405,7 +405,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
         this.cache = cache;
     }
 
-    public void prefixReceived(ASIdentifier asIdentifier, Collection<Prefix> prefixes, Route route) {
+    @SuppressWarnings("unused")
+	public void prefixReceived(ASIdentifier asIdentifier, Collection<Prefix> prefixes, Route route) {
 
         assert prefixes != null && prefixes.size() > 0;
 		refreshMap(asIdentifier, prefixes, route);
