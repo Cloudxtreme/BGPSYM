@@ -32,7 +32,6 @@ import nl.nlnetlabs.bgpsym01.primitives.timers.FlapTimerImpl;
 import nl.nlnetlabs.bgpsym01.primitives.timers.TimeController;
 import nl.nlnetlabs.bgpsym01.primitives.types.Pair;
 import nl.nlnetlabs.bgpsym01.route.output.OutputBuffer;
-import nl.nlnetlabs.bgpsym01.route.output.OutputBufferImpl;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 
 import org.apache.log4j.Logger;

@@ -316,12 +316,19 @@ public class OutputBufferImpl implements OutputBuffer {
          *  3. OutputState does not need to be notified
          */
 
-        // 1
-        for (Prefix prefix: prefixList) {
-            bufferStore.removeAnnouncement(neighbor, prefix);
-        }
+        // 1. if prefixList is empty we want to remove ALL announcements for this neighbor
+    	if (prefixList == null) {
+    		bufferStore.removeAllAnnouncements(neighbor);
+    	}
+    	else {
+	        for (Prefix prefix: prefixList) {
+	            bufferStore.removeAnnouncement(neighbor, prefix);
+	        }
+    	}
         // 2
-        createAndSendUpdate(neighbor, null, null, prefixList);
+    	if (prefixList != null) {
+    		createAndSendUpdate(neighbor, null, null, prefixList);
+    	}
     }
 
     void addAnnouncements(Neighbor neighbor, List<Pair<Prefix, Route>> prefixes) {

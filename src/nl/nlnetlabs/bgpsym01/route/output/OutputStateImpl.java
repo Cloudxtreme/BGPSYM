@@ -58,10 +58,18 @@ public class OutputStateImpl implements OutputState {
             filteredPrefixes.put(neighbor, list);
         }
         // remove saved data about prefixes
-        for (Prefix prefix : prefixes) {
-            map.remove(new Pair<Neighbor, Prefix>(neighbor, prefix));
+        if (prefixes == null) {
+        	map.clear();
+        	list.clear();
         }
-        list.addAll(prefixes);
+        else {
+	        for (Prefix prefix : prefixes) {
+	            map.remove(new Pair<Neighbor, Prefix>(neighbor, prefix));
+	        }
+	        
+	        list.addAll(prefixes);
+        }
+        
     }
 
     public OutputState.UpdateToSendType getUpdateType(Neighbor neighbor, Prefix prefix, Route route, Route lastRoute) {
@@ -179,7 +187,12 @@ public class OutputStateImpl implements OutputState {
         if (list == null) {
             return;
         }
-        list.removeAll(prefixes);
+        if (prefixes == null) {
+        	list.clear();
+        }
+        else {
+        	list.removeAll(prefixes);
+        }
     }
 
     public boolean hasRegisteredPrefixes(Neighbor neighbor) {
