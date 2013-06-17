@@ -92,6 +92,8 @@ public class XProperties {
     private boolean useNeighborsMap;
 
     public long noiseSleepTime;
+    
+    public int maxPrefixes;
 
     public static XProperties getInstance() {
         return instance;
@@ -252,6 +254,10 @@ public class XProperties {
 
     public void setResultDirectory(String resultDirectory) {
         this.resultDirectory = resultDirectory;
+    }
+    
+    public int getMaxPrefixes() {
+    	return this.maxPrefixes;
     }
 
 }
