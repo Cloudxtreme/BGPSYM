@@ -63,7 +63,7 @@ public class ResultWriterLog {
 				stream = getStream();
 			}
 			
-			log.info("ResultWriterLog: writing log to list");
+			log.info("ResultWriterLog: retrieving info");
 
 			XStream xStream = XStreamFactory.getXStream();
 
@@ -93,6 +93,8 @@ public class ResultWriterLog {
 
 			state += "\n\t</responses>\n</log>\n";
 			logs.add(state);
+			
+			log.info("ResultWriterLog: written to list");
 	}
 
 	public void close () {
