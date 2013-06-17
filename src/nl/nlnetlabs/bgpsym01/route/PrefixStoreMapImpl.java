@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -71,7 +72,17 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	}
 
 	public Collection<RouteViewDataResponse> getPrefixDataList() {
-		return map.values();
+		
+		List<RouteViewDataResponse> mapCopy = new ArrayList<RouteViewDataResponse>();
+		
+		synchronized(map) {
+			Iterator<RouteViewDataResponse> iterator = map.values().iterator();
+			while (iterator.hasNext()) {
+				mapCopy.add((RouteViewDataResponse) iterator.next());
+			}
+		}
+		
+		return mapCopy;
 	}
 	
 	public void removePrefixesFromSender(ASIdentifier origin) {
@@ -89,8 +100,9 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				
 				if (info.getCurrentEntry().getRoute().isFrom(origin)) {
 					Prefix currentPrefix = current.getKey();
-					
-					map.remove(getPair(origin,currentPrefix));
+					synchronized(map) {
+						map.remove(getPair(origin,currentPrefix));
+					}
 					prefixesToDelete.add(currentPrefix);
 				}
 			}
@@ -109,20 +121,22 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		long now = timeController.getCurrentTime();
 		for (Prefix prefix : prefixList) {
 			Pair<ASIdentifier, Prefix> pair = getPair(origin, prefix);
-			RouteViewDataResponse response = map.get(pair);
-			if (response == null) {
-				response = new RouteViewDataResponse(origin, prefix, now, now, route);
-				response.length++;
-				map.put(pair, response);
-			}
-			else {
-				if (response.firstSeen == -1) {
-					response.firstSeen = now;
+			synchronized(map) {
+				RouteViewDataResponse response = map.get(pair);
+				if (response == null) {
+					response = new RouteViewDataResponse(origin, prefix, now, now, route);
+					response.length++;
+					map.put(pair, response);
 				}
-
-				response.lastSeen = now;
-				response.route = route;
-				response.length++;
+				else {
+					if (response.firstSeen == -1) {
+						response.firstSeen = now;
+					}
+	
+					response.lastSeen = now;
+					response.route = route;
+					response.length++;
+				}
 			}
 		}
 	}
