@@ -31,6 +31,7 @@ import nl.nlnetlabs.bgpsym01.primitives.timers.FlapTimerImpl;
 import nl.nlnetlabs.bgpsym01.primitives.timers.TimeController;
 import nl.nlnetlabs.bgpsym01.primitives.types.Pair;
 import nl.nlnetlabs.bgpsym01.route.output.OutputBuffer;
+import nl.nlnetlabs.bgpsym01.route.output.OutputBufferImpl;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 
 import org.apache.log4j.Logger;
@@ -416,8 +417,10 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
 			for (Neighbor n : neighbors) {
 				log.info("PrefixStoreMapImpl: Too many prefixes, going down");
-				removePrefixesFromSender(n.getASIdentifier());
-				asIdentifier.getProcess().getNeighbors().remove(n.getASIdentifier());
+				// TODO send InvalidateUpdate
+				
+				//removePrefixesFromSender(n.getASIdentifier());
+				//neighbors.remove(n.getASIdentifier());
 			}
 			return;
 		}
