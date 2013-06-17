@@ -70,6 +70,7 @@ public class DisconnectHelper {
     	InvalidateCommand ic = new InvalidateCommand();
     	ic.setAsIdentifier(user);
     	ic.setValidate(false);
+    	ic.setProcessId(user.getProcessId());
     	communicator.sendCommand(ic);
     	
     	for (ASIdentifier asId : neighbors) {
@@ -79,6 +80,7 @@ public class DisconnectHelper {
 	    	icNeighbor.setAsIdentifier(asId);
 	    	icNeighbor.setValidate(false);
 	    	icNeighbor.setNeighborsIdentifier(user);
+	    	icNeighbor.setProcessId(asId.getProcessId());
 	    	communicator.sendCommand(icNeighbor);
     	}
 
