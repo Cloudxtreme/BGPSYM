@@ -35,9 +35,12 @@ public class ResultWriterLog {
 	
 	private List<String> logs;
 
+	private XStream xStream; 
+	
 	public ResultWriterLog(ASIdentifier asId) {
 		this.asId = asId;
 		this.logs = new ArrayList<String>();
+		xStream = XStreamFactory.getXStream();
 	}
 
     OutputStream getStream() {
@@ -64,15 +67,14 @@ public class ResultWriterLog {
 			}
 			
 			log.info("ResultWriterLog: retrieving info");
-
-			XStream xStream = XStreamFactory.getXStream();
-
 			String state = "<log time=\""+currentTime+"\">\n";
 			state += "\t<neighbors>\n";
 
 			PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
 			//PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
 			Iterator<Neighbor> neighbors = process.getNeighbors().iterator();
+			
+			log.info(neighbors);
 
 			while (neighbors.hasNext()) {
 				Neighbor neighbor = neighbors.next();
@@ -84,6 +86,8 @@ public class ResultWriterLog {
 
 			Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
 			Iterator<RouteViewDataResponse> iterator = prefixDataList.iterator();
+			
+			log.info("responses: "+prefixDataList.size()+"");
 
 			RouteViewDataResponse currentResponse;
 			while (iterator.hasNext()) {
