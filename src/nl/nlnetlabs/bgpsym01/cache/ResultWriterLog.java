@@ -62,6 +62,8 @@ public class ResultWriterLog {
 			if (stream == null) {
 				stream = getStream();
 			}
+			
+			log.info("ResultWriterLog: writing log to list");
 
 			XStream xStream = XStreamFactory.getXStream();
 
