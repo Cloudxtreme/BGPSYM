@@ -25,6 +25,8 @@ public interface OutputBufferStore {
      */
     public void addAnnouncement(Neighbor neighbor, OutputAddEntity entity);
 
+    
+    public void removeAllAnnouncements (Neighbor neighbor);
     /**
      * Removes announcement that should be sent to a particular neighbor
      * 
@@ -34,6 +36,7 @@ public interface OutputBufferStore {
      */
     public OutputAddEntity removeAnnouncement(Neighbor neighbor, Prefix prefix);
 
+   
     public Iterator<OutputAddEntity> announcementsIterator(Neighbor neighbor);
 
     public Iterator<OutputAddEntity> announcementsIterator();
