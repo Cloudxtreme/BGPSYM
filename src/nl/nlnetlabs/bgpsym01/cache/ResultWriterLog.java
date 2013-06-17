@@ -48,8 +48,7 @@ public class ResultWriterLog {
 
     OutputStream getStream() {
         try {
-            boolean append = true;
-            return new FileOutputStream(new File(getFilename(this.asId)), append);
+            return new FileOutputStream(new File(getFilename(this.asId)), true);
         } catch (FileNotFoundException e) {
             log.error(e);
             throw new BGPSymException(e);

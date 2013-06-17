@@ -25,7 +25,7 @@ public class Tools {
 
     public String getStartAsString() {
         //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HH:mm:ss.SSS");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HH:mm");
         return dateFormat.format(new Date(TimeControllerImpl.getStartTime()));
     }
 
