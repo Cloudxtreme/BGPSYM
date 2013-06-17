@@ -410,6 +410,17 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
         assert prefixes != null && prefixes.size() > 0;
 		refreshMap(asIdentifier, prefixes, route);
+		
+		PrefixCacheImplBlock cacheRef = (PrefixCacheImplBlock) cache;
+		
+		if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
+			for (Neighbor n : neighbors) {
+				log.info("PrefixStoreMapImpl: Too many prefixes, going down");
+				removePrefixesFromSender(n.getASIdentifier());
+				asIdentifier.getProcess().getNeighbors().remove(n.getASIdentifier());
+			}
+			return;
+		}
 
         long start = System.currentTimeMillis();
         long longest = 0;

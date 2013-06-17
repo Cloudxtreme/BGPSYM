@@ -59,6 +59,10 @@ public class PrefixCacheImplBlock implements PrefixCache {
 	public LinkedHashMap<Prefix, PrefixInfo> getTable() {
 		return this.table;
 	}
+	
+	public int size () {
+		return table.size();
+	}
 
     private void storeBlock() {
         try {
