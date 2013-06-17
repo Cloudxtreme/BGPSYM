@@ -37,12 +37,13 @@ public class OutputBufferStoreImpl implements OutputBufferStore {
     
     public void removeAllAnnouncements(Neighbor neighbor) {
     	ArrayList<OutputAddEntity> list = neighborAnnouncements.get(neighbor);
-        if (list == null) {
+        if (list == null || list.size() == 0) {
             return;
         }
         
         Iterator<OutputAddEntity> iterator = list.iterator();
         while (iterator.hasNext()) {
+        	iterator.next();
             iterator.remove();
         }
     }
