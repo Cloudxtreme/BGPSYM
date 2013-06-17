@@ -5,14 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.List;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 
 import nl.nlnetlabs.bgpsym01.main.Tools;
 import nl.nlnetlabs.bgpsym01.command.RouteViewDataResponse;
@@ -22,18 +18,8 @@ import nl.nlnetlabs.bgpsym01.primitives.factories.XStreamFactory;
 import nl.nlnetlabs.bgpsym01.process.BGPProcess;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
-import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
-import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
-import nl.nlnetlabs.bgpsym01.primitives.bgp.PrefixTableEntry;
-import nl.nlnetlabs.bgpsym01.primitives.types.Pair;
-import nl.nlnetlabs.bgpsym01.cache.PrefixInfo;
-import nl.nlnetlabs.bgpsym01.cache.PrefixCacheImplBlock;
-import nl.nlnetlabs.bgpsym01.cache.DiskStorageBlock;
 import nl.nlnetlabs.bgpsym01.route.PeerRelation;
 import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
-import nl.nlnetlabs.bgpsym01.route.output.OutputStateImpl;
-import nl.nlnetlabs.bgpsym01.route.output.OutputBuffer;
-import nl.nlnetlabs.bgpsym01.route.output.OutputBufferImpl;
 
 import org.apache.log4j.Logger;
 import com.thoughtworks.xstream.XStream;
@@ -46,9 +32,12 @@ public class ResultWriterLog {
 	private ASIdentifier asId;
 
 	private OutputStream stream;
+	
+	private List<String> logs;
 
 	public ResultWriterLog(ASIdentifier asId) {
 		this.asId = asId;
+		this.logs = new ArrayList<String>();
 	}
 
     OutputStream getStream() {
@@ -69,56 +58,48 @@ public class ResultWriterLog {
 		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString();
 	}
 
-	@SuppressWarnings("unchecked")
 	public void writeLog (BGPProcess process, long currentTime) {
 			if (stream == null) {
 				stream = getStream();
-				try {
-					stream.write("<logs>\n".getBytes());
-				}
-				catch (IOException e) {
-					throw new BGPSymException(e);
-				}
 			}
 
-			try {
-				XStream xStream = XStreamFactory.getXStream();
+			XStream xStream = XStreamFactory.getXStream();
 
-				String state = "<log time=\""+currentTime+"\">\n";
-				state += "\t<neighbors>\n";
+			String state = "<log time=\""+currentTime+"\">\n";
+			state += "\t<neighbors>\n";
 
-				PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
-				PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
-				Iterator<Neighbor> neighbors = process.getNeighbors().iterator();
+			PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
+			//PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
+			Iterator<Neighbor> neighbors = process.getNeighbors().iterator();
 
-				while (neighbors.hasNext()) {
-					Neighbor neighbor = neighbors.next();
-					state += "\t\t<neighbor rel=\""+(PeerRelation)neighbor.getAttachment()+"\">"+neighbor.getASIdentifier().getId()+"</neighbor>\n";
-				}
-
-				state += "\t</neighbors>\n";
-				state += "\n\t<responses>\n";
-
-				Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
-				Iterator<RouteViewDataResponse> iterator = prefixDataList.iterator();
-
-				RouteViewDataResponse currentResponse;
-				while (iterator.hasNext()) {
-					currentResponse = iterator.next();
-					state += xStream.toXML(currentResponse);
-				}
-
-				state += "\n\t</responses>\n</log>\n";
-				stream.write(state.getBytes());
-			} catch(IOException e) {
-				log.info(e);
-				throw new BGPSymException(e);
+			while (neighbors.hasNext()) {
+				Neighbor neighbor = neighbors.next();
+				state += "\t\t<neighbor rel=\""+(PeerRelation)neighbor.getAttachment()+"\">"+neighbor.getASIdentifier().getId()+"</neighbor>\n";
 			}
+
+			state += "\t</neighbors>\n";
+			state += "\n\t<responses>\n";
+
+			Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
+			Iterator<RouteViewDataResponse> iterator = prefixDataList.iterator();
+
+			RouteViewDataResponse currentResponse;
+			while (iterator.hasNext()) {
+				currentResponse = iterator.next();
+				state += xStream.toXML(currentResponse);
+			}
+
+			state += "\n\t</responses>\n</log>\n";
+			logs.add(state);
 	}
 
 	public void close () {
 		try {
 			if (stream != null) {
+				stream.write("<logs>\n".getBytes());
+				for (String log : logs) {
+					stream.write(log.getBytes());
+				}
 				stream.write("</logs>".getBytes());
 				stream.close();
 			}
