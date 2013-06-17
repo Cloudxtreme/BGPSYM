@@ -3,6 +3,8 @@ package nl.nlnetlabs.bgpsym01.command;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataInputStream;
@@ -12,6 +14,8 @@ import nl.nlnetlabs.bgpsym01.process.BGPProcess;
 
 public class InvalidateCommand extends MasterCommand {
 
+	static Logger log = Logger.getLogger(InvalidateCommand.class);
+	
     private ASIdentifier asIdentifier;
     private List<Prefix> prefixes;
     private boolean validate;
@@ -38,6 +42,17 @@ public class InvalidateCommand extends MasterCommand {
     public void process() {
         BGPProcess process = jvm.getProcesses().get(asIdentifier);
         InvalidateUpdate update = getUpdate();
+        if (process == null) {
+        	log.info("process is null");
+        }
+        if (process != null && process.getQueue() == null) {
+        	log.info("queue is null");
+        }
+        
+        if (update == null) {
+        	log.info("update is null");
+        }
+        
         process.getQueue().addMessage(update);
     }
 

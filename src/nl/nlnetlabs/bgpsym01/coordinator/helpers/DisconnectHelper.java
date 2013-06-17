@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import nl.nlnetlabs.bgpsym01.command.DisconnectCommand;
 import nl.nlnetlabs.bgpsym01.command.InvalidateCommand;
 import nl.nlnetlabs.bgpsym01.coordinator.Communicator;
@@ -20,6 +22,8 @@ import nl.nlnetlabs.bgpsym01.xstream.XNode;
  * @see DisconnectHelperTest
  */
 public class DisconnectHelper {
+	
+	static Logger log = Logger.getLogger(DisconnectHelper.class);
 
     private ArrayList<XNode> nodes;
 
@@ -69,6 +73,8 @@ public class DisconnectHelper {
     	communicator.sendCommand(ic);
     	
     	for (ASIdentifier asId : neighbors) {
+    		log.info("sending invalidate from: "+user+" to: "+asId);
+    		
 	    	InvalidateCommand icNeighbor = new InvalidateCommand();
 	    	icNeighbor.setAsIdentifier(asId);
 	    	icNeighbor.setValidate(false);
