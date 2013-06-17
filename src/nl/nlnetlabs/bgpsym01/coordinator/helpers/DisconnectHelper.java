@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import nl.nlnetlabs.bgpsym01.command.DisconnectCommand;
+import nl.nlnetlabs.bgpsym01.command.InvalidateCommand;
 import nl.nlnetlabs.bgpsym01.coordinator.Communicator;
 import nl.nlnetlabs.bgpsym01.coordinator.Coordinator;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
@@ -61,8 +62,21 @@ public class DisconnectHelper {
          * 1. send disconnect to this user with neighbors queue
          * 2. send info to his neighbors
          */
+    	 
+    	InvalidateCommand ic = new InvalidateCommand();
+    	ic.setAsIdentifier(user);
+    	ic.setValidate(false);
+    	communicator.sendCommand(ic);
+    	
+    	for (ASIdentifier asId : neighbors) {
+	    	InvalidateCommand icNeighbor = new InvalidateCommand();
+	    	icNeighbor.setAsIdentifier(asId);
+	    	icNeighbor.setValidate(false);
+	    	icNeighbor.setNeighborsIdentifier(user);
+	    	communicator.sendCommand(icNeighbor);
+    	}
 
-        DisconnectCommand dc = new DisconnectCommand();
+        /*DisconnectCommand dc = new DisconnectCommand();
         // send to the user
         dc.setAsIdentifier(user);
         dc.setAsIds(neighbors);
@@ -76,10 +90,10 @@ public class DisconnectHelper {
             dc.setProcessId(asId.getProcessId());
             dc.setAsIds(tmpList);
             communicator.sendCommand(dc);
-        }
+        }*/
 
         // delete from nodes
-        nodes.get(user.getInternalId()).getNeighbors().removeAll(neighbors);
+        /*nodes.get(user.getInternalId()).getNeighbors().removeAll(neighbors);
         for (ASIdentifier asId : neighbors) {
             Iterator<XNeighbor> iterator = nodes.get(asId.getInternalId()).getNeighbors().iterator();
             while (iterator.hasNext()) {
@@ -89,7 +103,7 @@ public class DisconnectHelper {
                     break;
                 }
             }
-        }
+        }*/
     }
 
     public void setNodes(ArrayList<XNode> nodes) {
