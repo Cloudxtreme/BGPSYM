@@ -42,8 +42,11 @@ public class InvalidateCommand extends MasterCommand {
     }
 
     @Override
-    protected void readInternalData(EDataInputStream in) throws IOException {
-        prefixes = in.readPrefixList();
+    protected void readInternalData(EDataInputStream in) throws IOException { 
+    	int totalPrefixes = in.readInt();
+    	if (totalPrefixes > 0) {
+    		prefixes = in.readPrefixList();
+    	}
         if (in.readBoolean()) {
             neighborsIdentifier = ASIdentifier.staticReadExternal(in);
         }
@@ -53,6 +56,7 @@ public class InvalidateCommand extends MasterCommand {
 
     @Override
     protected void writeInternalData(EDataOutputStream out) throws IOException {
+    	out.writeInt(prefixes == null ? 0 : prefixes.size());
         out.writePrefixList(prefixes);
         out.writeBoolean(neighborsIdentifier != null);
         if (neighborsIdentifier != null) {
