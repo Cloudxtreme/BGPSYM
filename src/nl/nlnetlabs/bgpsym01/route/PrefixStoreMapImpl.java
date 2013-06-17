@@ -414,7 +414,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		
 		PrefixCacheImplBlock cacheRef = (PrefixCacheImplBlock) cache;
 		
-		if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
+		/*if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
 			for (Neighbor n : neighbors) {
 				log.info("PrefixStoreMapImpl: Too many prefixes, going down");
 				// TODO send InvalidateUpdate
@@ -423,7 +423,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				//neighbors.remove(n.getASIdentifier());
 			}
 			return;
-		}
+		}*/
 
         long start = System.currentTimeMillis();
         long longest = 0;
