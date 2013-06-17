@@ -35,12 +35,15 @@ public class ResultWriterLog {
 	
 	private List<String> logs;
 
-	private XStream xStream; 
+	private XStream xStream;
+
+	private List<Collection<RouteViewDataResponse>> responseList;
 	
 	public ResultWriterLog(ASIdentifier asId) {
 		this.asId = asId;
 		this.logs = new ArrayList<String>();
 		xStream = XStreamFactory.getXStream();
+		responseList = new ArrayList<Collection<RouteViewDataResponse>>();
 	}
 
     OutputStream getStream() {
@@ -82,13 +85,15 @@ public class ResultWriterLog {
 			}
 
 			state += "\t</neighbors>\n";
-			/*state += "\n\t<responses>\n";
+			state += "\n\t<responses>\n";
 
 			Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
-			Iterator<RouteViewDataResponse> iterator = prefixDataList.iterator();
+			responseList.add(prefixDataList);
+			//Iterator<RouteViewDataResponse> iterator = prefixDataList.iterator();
 			
 			log.info("responses: "+prefixDataList.size()+"");
 
+			/*
 			RouteViewDataResponse currentResponse;
 			while (iterator.hasNext()) {
 				currentResponse = iterator.next();
