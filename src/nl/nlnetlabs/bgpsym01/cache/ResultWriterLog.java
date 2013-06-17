@@ -74,7 +74,7 @@ public class ResultWriterLog {
 
 			while (neighbors.hasNext()) {
 				Neighbor neighbor = neighbors.next();
-				state += "\t\t<neighbor rel=\""+(PeerRelation)neighbor.getAttachment()+"\">"+neighbor.getASIdentifier().getId()+"</neighbor>\n";
+				state += "\t\t<neighbor rel=\""+(PeerRelation)neighbor.getAttachment()+"\" valid=\""+neighbor.isValid()+"\">"+neighbor.getASIdentifier().getId()+"</neighbor>\n";
 			}
 
 			state += "\t</neighbors>\n";
