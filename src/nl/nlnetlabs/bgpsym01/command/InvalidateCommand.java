@@ -56,8 +56,11 @@ public class InvalidateCommand extends MasterCommand {
 
     @Override
     protected void writeInternalData(EDataOutputStream out) throws IOException {
-    	out.writeInt(prefixes == null ? 0 : prefixes.size());
-        out.writePrefixList(prefixes);
+    	int numberOfPrefixes = prefixes == null ? 0 : prefixes.size();
+    	out.writeInt(numberOfPrefixes);
+    	if (numberOfPrefixes > 0) {
+    		out.writePrefixList(prefixes);
+    	}
         out.writeBoolean(neighborsIdentifier != null);
         if (neighborsIdentifier != null) {
             neighborsIdentifier.writeExternal(out);
