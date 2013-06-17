@@ -43,7 +43,7 @@ public class InvalidateCommand extends MasterCommand {
         BGPProcess process = jvm.getProcesses().get(asIdentifier);
         InvalidateUpdate update = getUpdate();
         if (process == null) {
-        	log.info("process is null");
+        	log.info("process is null at"+asIdentifier);
         }
         if (process != null && process.getQueue() == null) {
         	log.info("queue is null");
