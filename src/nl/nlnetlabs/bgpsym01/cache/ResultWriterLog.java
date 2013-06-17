@@ -82,7 +82,7 @@ public class ResultWriterLog {
 			}
 
 			state += "\t</neighbors>\n";
-			state += "\n\t<responses>\n";
+			/*state += "\n\t<responses>\n";
 
 			Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
 			Iterator<RouteViewDataResponse> iterator = prefixDataList.iterator();
@@ -95,7 +95,7 @@ public class ResultWriterLog {
 				state += xStream.toXML(currentResponse);
 			}
 
-			state += "\n\t</responses>\n</log>\n";
+			state += "\n\t</responses>\n</log>\n";*/
 			logs.add(state);
 			
 			log.info("ResultWriterLog: written to list");
