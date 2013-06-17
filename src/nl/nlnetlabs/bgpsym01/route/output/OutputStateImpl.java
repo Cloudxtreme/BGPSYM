@@ -53,6 +53,7 @@ public class OutputStateImpl implements OutputState {
 
     public void registerPrefixes(Neighbor neighbor, List<Prefix> prefixes) {
         List<Prefix> list = filteredPrefixes.get(neighbor);
+        
         if (list == null) {
             list = new ArrayList<Prefix>();
             filteredPrefixes.put(neighbor, list);
@@ -100,7 +101,7 @@ public class OutputStateImpl implements OutputState {
     OutputState.UpdateToSendType getUpdateTypeInternal(Neighbor neighbor, Prefix prefix, Route route, Route lastSentRoute) {
 
         // if the guy is not valid and this is one of the prefixes: always NONE
-        if (!neighbor.isValid() && isFiltered(neighbor, prefix)) {
+        if (!neighbor.isValid() || isFiltered(neighbor, prefix)) {
             return UpdateToSendType.NONE;
         }
 
