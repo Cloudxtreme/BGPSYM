@@ -34,7 +34,6 @@ public class PrefixListConverter implements Converter {
 
     }
 
-    @SuppressWarnings("unchecked")
     public boolean canConvert(Class clazz) {
         return List.class.isAssignableFrom(clazz);
     }

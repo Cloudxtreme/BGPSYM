@@ -14,7 +14,7 @@ public class ASIdentifierConverter implements Converter {
     /* if the ASIdentifier starts with this letter than it is name (e.g. AS213), otherwise
      * we treat it as a number (and look for an AS with this internal ID).
      */
-    private static final char LETTER_INDICATOR = 'A';
+    public static final char LETTER_INDICATOR = 'A';
 
     public void marshal(Object asObject, HierarchicalStreamWriter writer, MarshallingContext arg2) {
         ASIdentifier asId = (ASIdentifier) asObject;

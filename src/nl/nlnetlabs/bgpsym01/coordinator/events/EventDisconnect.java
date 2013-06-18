@@ -6,10 +6,10 @@ import nl.nlnetlabs.bgpsym01.coordinator.helpers.DisconnectHelper;
 import nl.nlnetlabs.bgpsym01.coordinator.events.framework.EventSchedule;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.converters.ASIdentifierConverter;
+import nl.nlnetlabs.bgpsym01.primitives.converters.ASIdentifierListConverter;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 import org.apache.log4j.Logger;
 
@@ -19,6 +19,7 @@ public class EventDisconnect extends Event {
 	@XStreamConverter(ASIdentifierConverter.class)
 	private ASIdentifier as;
 
+	@XStreamConverter(ASIdentifierListConverter.class)
 	private ArrayList<ASIdentifier> neighbors;
 
 	private static Logger log = Logger.getLogger(EventDisconnect.class);
