@@ -69,12 +69,12 @@ public class DisconnectCommand extends MasterCommand {
     @Override
     protected void readInternalData(EDataInputStream in) throws IOException {
         asIdentifier = ASIdentifier.staticReadExternal(in);
-        int size = in.readInt();
+        /*int size = in.readInt();
         prefixes = new Prefix[size];
         for (int i = 0; i < size; i++) {
             prefixes[i] = Prefix.getInstance(in.readBits(SystemConstants.PREFIX_SIZE_BITS));
-        }
-        size = in.readInt();
+        }*/
+        int size = in.readInt();
         asIds = new ArrayList<ASIdentifier>(size);
         for (int i = 0; i < size; i++) {
             asIds.add(ASIdentifier.staticReadExternal(in));
@@ -84,14 +84,13 @@ public class DisconnectCommand extends MasterCommand {
     @Override
     protected void writeInternalData(EDataOutputStream out) throws IOException {
         asIdentifier.writeExternal(out);
-        int size = prefixes == null ? 0 : prefixes.length;
+        /*int size = prefixes == null ? 0 : prefixes.length;
         out.writeInt(size);
         if (size > 0) {
             for (Prefix prefix : prefixes) {
                 out.writeBits(prefix.getNum(), SystemConstants.PREFIX_SIZE_BITS);
             }
-        }
-        out.writeInt(asIds.size());
+        }*/
         out.writeList(asIds);
     }
 
