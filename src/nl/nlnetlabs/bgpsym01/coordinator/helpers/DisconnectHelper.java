@@ -92,6 +92,8 @@ public class DisconnectHelper {
         dc.setAsIds(neighbors);
         dc.setProcessId(user.getProcessId());
         communicator.sendCommand(dc);
+        
+        log.info("sending disconnect cmd with user: "+user+" and neighbors: "+neighbors);
 
         List<ASIdentifier> tmpList = new LinkedList<ASIdentifier>();
         tmpList.add(user);
