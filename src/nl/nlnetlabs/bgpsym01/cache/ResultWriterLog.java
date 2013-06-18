@@ -68,15 +68,12 @@ public class ResultWriterLog {
 				stream = getStream();
 			}
 			
-			log.info("ResultWriterLog: retrieving info");
 			String state = "<log time=\""+currentTime+"\">\n";
 			state += "\t<neighbors>\n";
 
 			PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
 			//PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
 			Iterator<Neighbor> neighbors = process.getNeighbors().iterator();
-			
-			log.info(neighbors);
 
 			while (neighbors.hasNext()) {
 				Neighbor neighbor = neighbors.next();
@@ -89,8 +86,6 @@ public class ResultWriterLog {
 			Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
 			responseList.add(prefixDataList);
 			//Iterator<RouteViewDataResponse> iterator = prefixDataList.iterator();
-			
-			log.info("responses: "+prefixDataList.size()+"");
 
 			/*
 			RouteViewDataResponse currentResponse;
@@ -101,8 +96,6 @@ public class ResultWriterLog {
 
 			state += "\n\t</responses>\n</log>\n";*/
 			logs.add(state);
-			
-			log.info("ResultWriterLog: written to list");
 	}
 
 	public void close () {
