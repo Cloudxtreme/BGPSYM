@@ -67,7 +67,7 @@ public class DisconnectHelper {
          * 2. send info to his neighbors
          */
     	
-    	for (ASIdentifier asId : neighbors) {
+    	/*for (ASIdentifier asId : neighbors) {
     		log.info("sending invalidate from: "+user+" to: "+asId+" and vice versa");
     		
     		InvalidateCommand icUser = new InvalidateCommand();
@@ -84,9 +84,9 @@ public class DisconnectHelper {
 	    	
 	    	communicator.sendCommand(icUser);
 	    	communicator.sendCommand(icNeighbor);
-    	}
+    	}*/
 
-        /*DisconnectCommand dc = new DisconnectCommand();
+        DisconnectCommand dc = new DisconnectCommand();
         // send to the user
         dc.setAsIdentifier(user);
         dc.setAsIds(neighbors);
@@ -100,7 +100,7 @@ public class DisconnectHelper {
             dc.setProcessId(asId.getProcessId());
             dc.setAsIds(tmpList);
             communicator.sendCommand(dc);
-        }*/
+        }
 
         // delete from nodes
         /*nodes.get(user.getInternalId()).getNeighbors().removeAll(neighbors);

@@ -101,7 +101,7 @@ public class OutputStateImpl implements OutputState {
     OutputState.UpdateToSendType getUpdateTypeInternal(Neighbor neighbor, Prefix prefix, Route route, Route lastSentRoute) {
 
         // if the guy is not valid and this is one of the prefixes: always NONE
-        if (!neighbor.isValid() || isFiltered(neighbor, prefix)) {
+        if (!neighbor.isValid() && isFiltered(neighbor, prefix)) {
             return UpdateToSendType.NONE;
         }
 
@@ -188,6 +188,7 @@ public class OutputStateImpl implements OutputState {
         if (list == null) {
             return;
         }
+        
         if (prefixes == null) {
         	list.clear();
         }
