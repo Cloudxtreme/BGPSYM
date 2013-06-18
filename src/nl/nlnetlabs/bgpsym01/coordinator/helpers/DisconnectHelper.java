@@ -30,7 +30,7 @@ public class DisconnectHelper {
     private Communicator communicator;
 
     /**
-     * Performs user disconnection from his neighbor(s)
+     * Performs user disconnection from ALL his neighbor(s)
      * 
      * @param user
      * 
@@ -48,7 +48,7 @@ public class DisconnectHelper {
     }
 
     /**
-     * Performs user disconnection from his neighbor(s). Disconnection works in
+     * Performs user disconnection from the specified neighbor(s). Disconnection works in
      * both directions, so what is in fact performed are link failures.
      * 
      * package access for testing purposes
@@ -66,21 +66,23 @@ public class DisconnectHelper {
          * 1. send disconnect to this user with neighbors queue
          * 2. send info to his neighbors
          */
-    	 
-    	InvalidateCommand ic = new InvalidateCommand();
-    	ic.setAsIdentifier(user);
-    	ic.setValidate(false);
-    	ic.setProcessId(user.getProcessId());
-    	communicator.sendCommand(ic);
     	
     	for (ASIdentifier asId : neighbors) {
-    		log.info("sending invalidate from: "+user+" to: "+asId);
+    		log.info("sending invalidate from: "+user+" to: "+asId+" and vice versa");
+    		
+    		InvalidateCommand icUser = new InvalidateCommand();
+    		icUser.setAsIdentifier(user);
+    		icUser.setValidate(false);
+    		icUser.setNeighborsIdentifier(asId);
+    		icUser.setProcessId(user.getProcessId());
     		
 	    	InvalidateCommand icNeighbor = new InvalidateCommand();
 	    	icNeighbor.setAsIdentifier(asId);
 	    	icNeighbor.setValidate(false);
 	    	icNeighbor.setNeighborsIdentifier(user);
 	    	icNeighbor.setProcessId(asId.getProcessId());
+	    	
+	    	communicator.sendCommand(icUser);
 	    	communicator.sendCommand(icNeighbor);
     	}
 
