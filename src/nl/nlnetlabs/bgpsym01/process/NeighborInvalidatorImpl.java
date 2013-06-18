@@ -89,10 +89,10 @@ public class NeighborInvalidatorImpl implements NeighborInvalidator {
     }
 
     private void invalidateNeighbor(Neighbor neighbor, List<Prefix> prefixes) {
+    	storeImpl.removePrefixesFromSender(neighbor.getASIdentifier());
         registerPrefixes(neighbor, prefixes);
         neighbor.setValid(false); // !outputState.hasRegisteredPrefixes(neighbor)
         outputBuffer.invalidate(neighbor, prefixes);
-        storeImpl.removePrefixesFromSender(neighbor.getASIdentifier());
     }
 
     /* (non-Javadoc)
