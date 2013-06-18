@@ -91,6 +91,7 @@ public class DisconnectCommand extends MasterCommand {
                 out.writeBits(prefix.getNum(), SystemConstants.PREFIX_SIZE_BITS);
             }
         }
+        out.writeInt(asIds.size());
         out.writeList(asIds);
     }
 
