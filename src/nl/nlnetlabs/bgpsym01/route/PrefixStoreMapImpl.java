@@ -96,9 +96,16 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			while(iterator.hasNext()) {
 				Entry<Prefix, PrefixInfo> current = iterator.next();
 				PrefixInfo info = current.getValue();
+				Prefix currentPrefix = current.getKey();
 				
-				if (info.getCurrentEntry().getRoute().isFrom(origin)) {
-					Prefix currentPrefix = current.getKey();
+				Route route = info.getCurrentEntry().getRoute();
+				if (route != null && route.isFrom(origin)) {
+					synchronized(map) {
+						map.remove(getPair(origin,currentPrefix));
+					}
+					prefixesToDelete.add(currentPrefix);
+				}
+				else if (route == null) {
 					synchronized(map) {
 						map.remove(getPair(origin,currentPrefix));
 					}
