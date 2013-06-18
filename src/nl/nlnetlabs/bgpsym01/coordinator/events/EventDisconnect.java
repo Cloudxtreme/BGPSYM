@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 @XStreamAlias("disconnect")
 public class EventDisconnect extends Event {
 
-	//@XStreamConverter(ASIdentifierConverter.class)
+	@XStreamConverter(ASIdentifierConverter.class)
 	private ASIdentifier as;
 
 	private ArrayList<ASIdentifier> neighbors;
