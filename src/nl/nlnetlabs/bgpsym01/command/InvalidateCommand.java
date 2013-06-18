@@ -41,47 +41,42 @@ public class InvalidateCommand extends MasterCommand {
     @Override
     public void process() {
         BGPProcess process = jvm.getProcesses().get(asIdentifier);
-        InvalidateUpdate update = getUpdate();
-        if (process == null) {
-        	log.info("process is null at"+asIdentifier);
-        }
-        if (process != null && process.getQueue() == null) {
-        	log.info("queue is null");
-        }
-        
-        if (update == null) {
-        	log.info("update is null");
-        }
-        
+        log.info("Received Invalidation of "+neighborsIdentifier+" with "+validate);
+        InvalidateUpdate update = getUpdate();        
         process.getQueue().addMessage(update);
     }
 
     @Override
     protected void readInternalData(EDataInputStream in) throws IOException { 
+    	asIdentifier = ASIdentifier.staticReadExternal(in);
+        validate = in.readBoolean();
+        
     	int totalPrefixes = in.readInt();
     	if (totalPrefixes > 0) {
     		prefixes = in.readPrefixList();
     	}
+    	
         if (in.readBoolean()) {
             neighborsIdentifier = ASIdentifier.staticReadExternal(in);
         }
-        asIdentifier = ASIdentifier.staticReadExternal(in);
-        validate = in.readBoolean();
+        
     }
 
     @Override
     protected void writeInternalData(EDataOutputStream out) throws IOException {
-    	int numberOfPrefixes = prefixes == null ? 0 : prefixes.size();
-    	out.writeInt(numberOfPrefixes);
-    	if (numberOfPrefixes > 0) {
+    	asIdentifier.writeExternal(out);
+    	out.writeBoolean(validate);
+    	
+    	int totalPrefixes = prefixes == null ? 0 : prefixes.size();
+    	out.writeInt(totalPrefixes);
+    	if (totalPrefixes > 0) {
     		out.writePrefixList(prefixes);
     	}
+    	
         out.writeBoolean(neighborsIdentifier != null);
         if (neighborsIdentifier != null) {
             neighborsIdentifier.writeExternal(out);
         }
-        asIdentifier.writeExternal(out);
-        out.writeBoolean(validate);
     }
 
     @Override
