@@ -101,10 +101,27 @@ public class ResultWriterLog {
 	public void close () {
 		try {
 			if (stream != null) {
+				int i = 0;
+				
 				stream.write("<logs>\n".getBytes());
+				
 				for (String log : logs) {
 					stream.write(log.getBytes());
+					Iterator<RouteViewDataResponse> iterator = responseList.get(i).iterator();
+
+					
+					RouteViewDataResponse currentResponse;
+					while (iterator.hasNext()) {
+						currentResponse = iterator.next();
+						String response = xStream.toXML(currentResponse);
+						stream.write(response.getBytes());
+					}
+
+					stream.write("\n\t</responses>\n</log>\n".getBytes());
+					
+					i++;
 				}
+				
 				stream.write("</logs>".getBytes());
 				stream.close();
 			}
