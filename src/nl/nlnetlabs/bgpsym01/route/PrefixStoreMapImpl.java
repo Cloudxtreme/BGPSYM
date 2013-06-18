@@ -116,7 +116,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				}
 			}
 			
-			if (prefixesToDelete.size() > 0) {			
+			if (prefixesToDelete.size() > 0) {
+				log.info("prefixes to delete: "+prefixesToDelete);
 				prefixRemove(origin, prefixesToDelete);
 			}
 		}		
