@@ -90,8 +90,11 @@ public class BGPProcess extends ShutdownadbleThread {
         if (sender == null) {
             sender = asIdentifier;
         }
-
+        
         List<Prefix> prefixes = update.getPrefixes();
+        
+        log.info("received update from "+sender+" with prefixes: "+prefixes+" and route: "+update.getRoute());
+
         if (prefixes != null) {
             Route route = update.getRoute();
             store.prefixReceived(sender, prefixes, route);
