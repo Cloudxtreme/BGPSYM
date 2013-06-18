@@ -98,18 +98,24 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				PrefixInfo info = current.getValue();
 				Prefix currentPrefix = current.getKey();
 				
-				Route route = info.getCurrentEntry().getRoute();
-				if (route != null && route.isFrom(origin)) {
-					synchronized(map) {
-						map.remove(getPair(origin,currentPrefix));
+				PrefixTableEntry entry = info.getCurrentEntry();
+				if (entry != null) {
+					Route route = entry.getRoute();
+					if (route != null && route.isFrom(origin)) {
+						synchronized(map) {
+							map.remove(getPair(origin,currentPrefix));
+						}
+						prefixesToDelete.add(currentPrefix);
 					}
-					prefixesToDelete.add(currentPrefix);
+					else if (route == null) {
+						synchronized(map) {
+							map.remove(getPair(origin,currentPrefix));
+						}
+						prefixesToDelete.add(currentPrefix);
+					}
 				}
-				else if (route == null) {
-					synchronized(map) {
-						map.remove(getPair(origin,currentPrefix));
-					}
-					prefixesToDelete.add(currentPrefix);
+				else {
+					log.info("entry is null");
 				}
 			}
 			
