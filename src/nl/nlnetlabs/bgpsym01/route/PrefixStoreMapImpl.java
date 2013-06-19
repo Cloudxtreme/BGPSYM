@@ -110,7 +110,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			}
 			
 			if (prefixesToDelete.size() > 0) {
-				log.info("prefixes to delete: "+prefixesToDelete);			
+				//log.info("prefixes to delete: "+prefixesToDelete);			
 				prefixRemove(origin, prefixesToDelete);
 			}
 		}		
@@ -432,7 +432,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		PrefixCacheImplBlock cacheRef = (PrefixCacheImplBlock) cache;
 		
 		if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
-			log.info("PrefixStoreMapImpl: Too many prefixes, going down");
+			log.info("PrefixStoreMapImpl: Too many prefixes, going down. Size: "+cacheRef.size() + prefixes.size());
 			for (Neighbor n : neighbors) {			
 				
 				//removePrefixesFromSender(n.getASIdentifier());
