@@ -103,22 +103,13 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				if (entry != null) {
 					Route route = entry.getRoute();
 					if (route != null && route.isFrom(origin)) {
-						synchronized(map) {
-							map.remove(getPair(origin,currentPrefix));
-						}
-						prefixesToDelete.add(currentPrefix);
-					}
-					else if (route == null) {
-						synchronized(map) {
-							map.remove(getPair(origin,currentPrefix));
-						}
 						prefixesToDelete.add(currentPrefix);
 					}
 				}
 			}
 			
 			if (prefixesToDelete.size() > 0) {
-				log.info("prefixes to delete: "+prefixesToDelete);				
+				log.info("prefixes to delete: "+prefixesToDelete);			
 				prefixRemove(origin, prefixesToDelete);
 			}
 		}		
