@@ -432,20 +432,19 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		PrefixCacheImplBlock cacheRef = (PrefixCacheImplBlock) cache;
 		
 		if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
-			//log.info("PrefixStoreMapImpl: Too many prefixes, going down. Size of cache: "+cacheRef.size() +" to be added "+ prefixes.size());
-			for (Neighbor n : neighbors) {
-				// TODO send invalidation/disconnection of some sort
-				removePrefixesFromSender(n.getASIdentifier());
-				
-				BGPUpdate disconnect = new BGPUpdate(this.asIdentifier);
-				disconnect.isDisconnect();
-				n.send(disconnect);
-				
-				synchronized(neighbors) {
+			log.info("PrefixStoreMapImpl: Too many prefixes, going down. Size of cache: "+cacheRef.size() +" to be added "+ prefixes.size());
+			synchronized(neighbors) {
+				for (Neighbor n : neighbors) {
+					removePrefixesFromSender(n.getASIdentifier());
+					
+					BGPUpdate disconnect = new BGPUpdate(this.asIdentifier);
+					disconnect.isDisconnect();
+					n.send(disconnect);
+
 					neighbors.remove(n.getASIdentifier());
 				}
 			}
-			//return;
+			return;
 		}
 
         long start = System.currentTimeMillis();
