@@ -434,14 +434,16 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
 			log.info("PrefixStoreMapImpl: Too many prefixes, going down. Size of cache: "+cacheRef.size() +" to be added "+ prefixes.size());
 			synchronized(neighbors) {
-				for (Neighbor n : neighbors) {
+				Iterator<Neighbor> iterator = neighbors.iterator();
+				while(iterator.hasNext()) {
+					Neighbor n = iterator.next();
 					removePrefixesFromSender(n.getASIdentifier());
 					
 					BGPUpdate disconnect = new BGPUpdate(this.asIdentifier);
 					disconnect.isDisconnect();
 					n.send(disconnect);
 
-					neighbors.remove(n.getASIdentifier());
+					iterator.remove();
 				}
 			}
 			return;

@@ -81,7 +81,7 @@ public class Neighbors implements Iterable<Neighbor> {
             }
 
             public void remove() {
-                throw new NotImplementedException();
+                iterator.remove();
             }
 
         };
