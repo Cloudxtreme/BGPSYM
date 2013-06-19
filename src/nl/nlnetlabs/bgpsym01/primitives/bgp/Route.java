@@ -38,9 +38,20 @@ public class Route implements EExternalizable {
 
     public Route() {
     }
+    
+    public Route (ASIdentifier[] hops) {
+    	this.hops = hops;
+    }
 
     public ASIdentifier[] getHops() {
         return hops;
+    }
+    
+    public Route clone () {
+    	Route clone = new Route();
+    	clone.hops = new ASIdentifier[hops.length];
+    	System.arraycopy(hops, 0, clone.hops, 0, hops.length);
+    	return clone;
     }
 
     public Route copyWithMeOnPath(ASIdentifier asIdentifier) {

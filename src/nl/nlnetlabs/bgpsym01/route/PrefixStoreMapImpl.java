@@ -78,7 +78,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		synchronized(map) {
 			Iterator<RouteViewDataResponse> iterator = map.values().iterator();
 			while (iterator.hasNext()) {
-				mapCopy.add((RouteViewDataResponse) iterator.next());
+				RouteViewDataResponse entry = iterator.next();
+				mapCopy.add(entry.clone());
 			}
 		}
 		
