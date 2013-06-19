@@ -58,7 +58,8 @@ public class RouteViewDataResponse implements EExternalizable {
     }
     
     public RouteViewDataResponse clone() {
-    	return new RouteViewDataResponse(asId, prefix, firstSeen, lastSeen, route.clone());
+    	Route route = (this.route != null) ? this.route.clone() : null;
+    	return new RouteViewDataResponse(asId, prefix, firstSeen, lastSeen, route);
     }
 
     public void readExternal(EDataInputStream in) throws IOException {
