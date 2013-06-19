@@ -94,7 +94,10 @@ public class BGPProcess extends ShutdownadbleThread {
         
         if (update.isDisconnect()) {
         	((PrefixStoreMapImpl) store).removePrefixesFromSender(sender);
-        	neighbors.remove(sender);
+        	
+        	synchronized(neighbors) {
+        		neighbors.remove(sender);
+        	}
         	// TODO reconnect?
         	return;
         }

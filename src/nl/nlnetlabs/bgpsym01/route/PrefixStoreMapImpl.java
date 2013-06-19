@@ -436,11 +436,14 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			for (Neighbor n : neighbors) {
 				// TODO send invalidation/disconnection of some sort
 				removePrefixesFromSender(n.getASIdentifier());
-				neighbors.remove(n.getASIdentifier());
 				
 				BGPUpdate disconnect = new BGPUpdate(this.asIdentifier);
 				disconnect.isDisconnect();
 				n.send(disconnect);
+				
+				synchronized(neighbors) {
+					neighbors.remove(n.getASIdentifier());
+				}
 			}
 			//return;
 		}

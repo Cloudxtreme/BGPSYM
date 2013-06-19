@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.nlnetlabs.bgpsym01.main.SystemConstants;
+import nl.nlnetlabs.bgpsym01.neighbor.Neighbors;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.RunnableUpdate;
@@ -49,7 +50,10 @@ public class DisconnectCommand extends MasterCommand {
 				//log.info("received disconnect command with ases: "+asIds+" "+process.getNeighbors().size());
                 for (ASIdentifier asId : asIds) {
                     ((PrefixStoreMapImpl) process.getStore()).removePrefixesFromSender(asId);
-                    process.getNeighbors().remove(asId);
+                    Neighbors neighbors = process.getNeighbors();
+                    synchronized(neighbors) {
+                    	neighbors.remove(asId);
+                    }
                 }
 
 				//log.info("total neighbors after: "+process.getNeighbors().size());
