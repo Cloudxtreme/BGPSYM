@@ -194,8 +194,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
         entry.invalidate(false);
 
         if (wasCurrent) {
-            if (log.isInfoEnabled()) {
-                log.info("removing prefix " + prefix + " from " + originator + ", is current, size=" + neighborsForPrefix.size());
+            if (log.isDebugEnabled()) {
+                log.debug("removing prefix " + prefix + " from " + originator + ", is current, size=" + neighborsForPrefix.size());
             }
 
             runDecision(originator, prefixInfo, oldRoute);
@@ -431,16 +431,15 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		
 		PrefixCacheImplBlock cacheRef = (PrefixCacheImplBlock) cache;
 		
-		/*if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
-			for (Neighbor n : neighbors) {
-				log.info("PrefixStoreMapImpl: Too many prefixes, going down");
-				// TODO send InvalidateUpdate
+		if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
+			log.info("PrefixStoreMapImpl: Too many prefixes, going down");
+			for (Neighbor n : neighbors) {			
 				
 				//removePrefixesFromSender(n.getASIdentifier());
 				//neighbors.remove(n.getASIdentifier());
 			}
 			return;
-		}*/
+		}
 
         long start = System.currentTimeMillis();
         long longest = 0;
