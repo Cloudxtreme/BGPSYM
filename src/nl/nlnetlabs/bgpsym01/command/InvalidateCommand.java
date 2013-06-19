@@ -25,7 +25,7 @@ public class InvalidateCommand extends MasterCommand {
         return neighborsIdentifier;
     }
 
-    InvalidateUpdate getUpdate() {
+    public InvalidateUpdate getUpdate() {
         InvalidateUpdate update = new InvalidateUpdate();
         update.setNeighborId(neighborsIdentifier);
         update.setPrefixes(prefixes);

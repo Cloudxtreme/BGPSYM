@@ -14,6 +14,7 @@ import nl.nlnetlabs.bgpsym01.cache.PrefixCache;
 import nl.nlnetlabs.bgpsym01.cache.PrefixInfo;
 import nl.nlnetlabs.bgpsym01.cache.PrefixCacheImplBlock;
 import nl.nlnetlabs.bgpsym01.callback.Callback;
+import nl.nlnetlabs.bgpsym01.command.InvalidateCommand;
 import nl.nlnetlabs.bgpsym01.command.RouteViewDataResponse;
 import nl.nlnetlabs.bgpsym01.main.EL;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
@@ -117,7 +118,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			}
 			
 			if (prefixesToDelete.size() > 0) {
-				log.info("prefixes to delete: "+prefixesToDelete);
+				log.info("prefixes to delete: "+prefixesToDelete);				
 				prefixRemove(origin, prefixesToDelete);
 			}
 		}		
@@ -156,7 +157,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		refreshMap(asIdentifier, prefixes, null);
 
         for (Prefix prefix : prefixes) {
-            prefixRemove(asIdentifier, prefix);
+            prefixRemove(asIdentifier, prefix);	
         }
         outputBuffer.flush();
     }
@@ -201,8 +202,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
         entry.invalidate(false);
 
         if (wasCurrent) {
-            if (log.isDebugEnabled()) {
-                log.debug("removing prefix " + prefix + " from " + originator + ", is current, size=" + neighborsForPrefix.size());
+            if (log.isInfoEnabled()) {
+                log.info("removing prefix " + prefix + " from " + originator + ", is current, size=" + neighborsForPrefix.size());
             }
 
             runDecision(originator, prefixInfo, oldRoute);
