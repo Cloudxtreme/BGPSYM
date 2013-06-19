@@ -10,7 +10,8 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 
 public interface Update extends EExternalizable {
     public enum UpdateType {
-        BGPUPDATE(BGPUpdate.class, 0), RUNNABLE_UPDATE(RunnableUpdate.class, 1);
+        BGPUPDATE(BGPUpdate.class, 0),
+        RUNNABLE_UPDATE(RunnableUpdate.class, 1);
 
         private Class<? extends Update> clazz;
 

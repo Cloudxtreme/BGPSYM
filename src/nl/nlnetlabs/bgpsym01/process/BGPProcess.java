@@ -20,6 +20,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.MessageInputGenerator;
 import nl.nlnetlabs.bgpsym01.primitives.types.MessageQueue;
 import nl.nlnetlabs.bgpsym01.primitives.types.ShutdownadbleThread;
 import nl.nlnetlabs.bgpsym01.route.PrefixStore;
+import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 import nl.nlnetlabs.bgpsym01.xstream.XRegistry;
 
 import org.apache.log4j.Logger;
@@ -89,6 +90,13 @@ public class BGPProcess extends ShutdownadbleThread {
         ASIdentifier sender = update.getSender();
         if (sender == null) {
             sender = asIdentifier;
+        }
+        
+        if (update.isDisconnect()) {
+        	((PrefixStoreMapImpl) store).removePrefixesFromSender(sender);
+        	neighbors.remove(sender);
+        	// TODO reconnect?
+        	return;
         }
         
         List<Prefix> prefixes = update.getPrefixes();

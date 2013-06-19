@@ -31,14 +31,17 @@ public class BGPUpdate implements Cloneable, Update {
     private Route route;
 
     private long readyTime;
+    
+    private boolean isDisconnect;
 
     public BGPUpdate() {
-
+    	isDisconnect = false;
     }
 
     public BGPUpdate(ASIdentifier sender) {
         super();
         this.sender = sender;
+        isDisconnect = false;
     }
 
     public BGPUpdate(ASIdentifier sender, Route route) {
@@ -110,6 +113,8 @@ public class BGPUpdate implements Cloneable, Update {
             route = new Route();
             route.readExternal(in);
         }
+        
+        isDisconnect = in.readBoolean();
     }
 
     public void writeExternal(EDataOutputStream out) throws IOException {
@@ -141,6 +146,8 @@ public class BGPUpdate implements Cloneable, Update {
         if (route != null) {
             route.writeExternal(out);
         }
+        
+        out.writeBoolean(isDisconnect);
     }
 
     @Override
@@ -181,6 +188,14 @@ public class BGPUpdate implements Cloneable, Update {
 
     public void setReadyTime(long readyTime) {
         this.readyTime = readyTime;
+    }
+    
+    public void setDisconnect () {
+    	this.isDisconnect = true;
+    }
+    
+    public boolean isDisconnect () {
+    	return this.isDisconnect;
     }
 
 }

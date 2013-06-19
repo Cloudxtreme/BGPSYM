@@ -51,7 +51,7 @@ public class NeighborImplTCP implements Neighbor {
     public void send(BGPUpdate update) {
         connection.send(asIdentifier, update);
     }
-
+    
     public Object getAttachment() {
         return attachment;
     }

@@ -23,6 +23,7 @@ import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
 import nl.nlnetlabs.bgpsym01.primitives.OutputAddEntity;
 import nl.nlnetlabs.bgpsym01.primitives.OutputRemoveEntity;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
+import nl.nlnetlabs.bgpsym01.primitives.bgp.BGPUpdate;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.PrefixTableEntry;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
@@ -72,7 +73,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	}
 
 	public Collection<RouteViewDataResponse> getPrefixDataList() {
-		
 		List<RouteViewDataResponse> mapCopy = new ArrayList<RouteViewDataResponse>();
 		
 		synchronized(map) {
@@ -110,10 +110,10 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			}
 			
 			if (prefixesToDelete.size() > 0) {
-				//log.info("prefixes to delete: "+prefixesToDelete);			
+				//log.info("prefixes to delete: "+prefixesToDelete);		
 				prefixRemove(origin, prefixesToDelete);
 			}
-		}		
+		}
 	}
 
 	private Pair<ASIdentifier, Prefix> getPair(ASIdentifier origin, Prefix prefix) {
@@ -432,13 +432,17 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		PrefixCacheImplBlock cacheRef = (PrefixCacheImplBlock) cache;
 		
 		if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
-			log.info("PrefixStoreMapImpl: Too many prefixes, going down. Size of cache: "+cacheRef.size() +" to be added"+ prefixes.size());
-			for (Neighbor n : neighbors) {			
+			//log.info("PrefixStoreMapImpl: Too many prefixes, going down. Size of cache: "+cacheRef.size() +" to be added "+ prefixes.size());
+			for (Neighbor n : neighbors) {
+				// TODO send invalidation/disconnection of some sort
+				removePrefixesFromSender(n.getASIdentifier());
+				neighbors.remove(n.getASIdentifier());
 				
-				//removePrefixesFromSender(n.getASIdentifier());
-				//neighbors.remove(n.getASIdentifier());
+				BGPUpdate disconnect = new BGPUpdate(this.asIdentifier);
+				disconnect.isDisconnect();
+				n.send(disconnect);
 			}
-			return;
+			//return;
 		}
 
         long start = System.currentTimeMillis();
