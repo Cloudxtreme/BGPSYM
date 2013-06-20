@@ -94,6 +94,8 @@ public class XProperties {
     public long noiseSleepTime;
     
     public int maxPrefixes;
+    
+    public boolean useMaxPrefixes;
 
     public static XProperties getInstance() {
         return instance;
@@ -258,6 +260,10 @@ public class XProperties {
     
     public int getMaxPrefixes() {
     	return this.maxPrefixes;
+    }
+    
+    public boolean useMaxPrefixes () {
+    	return this.useMaxPrefixes;
     }
 
 }

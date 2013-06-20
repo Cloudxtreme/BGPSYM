@@ -431,7 +431,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		
 		PrefixCacheImplBlock cacheRef = (PrefixCacheImplBlock) cache;
 		
-		if (cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
+		if (properties.useMaxPrefixes() && cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
 			log.info("PrefixStoreMapImpl: Too many prefixes, going down. Size of cache: "+cacheRef.size() +" to be added "+ prefixes.size());
 			synchronized(neighbors) {
 				Iterator<Neighbor> iterator = neighbors.iterator();
