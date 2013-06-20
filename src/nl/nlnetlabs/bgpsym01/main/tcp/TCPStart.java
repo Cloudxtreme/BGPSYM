@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import nl.nlnetlabs.bgpsym01.cache.PrefixCacheImplBlock;
 import nl.nlnetlabs.bgpsym01.cache.ResultWriterLog;
 import nl.nlnetlabs.bgpsym01.callback.Callback;
 import nl.nlnetlabs.bgpsym01.command.AckCommand;
@@ -49,6 +50,7 @@ import nl.nlnetlabs.bgpsym01.route.MRAIStoreImpl;
 import nl.nlnetlabs.bgpsym01.route.MRAITimer;
 import nl.nlnetlabs.bgpsym01.route.MRAITimerImpl;
 import nl.nlnetlabs.bgpsym01.route.Policy;
+import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 import nl.nlnetlabs.bgpsym01.xstream.XComputeNodes;
 import nl.nlnetlabs.bgpsym01.xstream.XNeighbor;
 import nl.nlnetlabs.bgpsym01.xstream.XNode;
@@ -160,6 +162,9 @@ public class TCPStart {
         for (BGPProcess process : processes.values()) {
             try {
                 process.join();
+                PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
+                PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
+                log.info("Total prefixes at end: "+ cache.size());
             } catch (InterruptedException e) {
                 // nothing to do here
                 log.error(e);
