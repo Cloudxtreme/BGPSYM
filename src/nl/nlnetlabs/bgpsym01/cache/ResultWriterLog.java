@@ -51,7 +51,8 @@ public class ResultWriterLog {
 
     OutputStream getStream() {
         try {
-            return new TFileOutputStream(new TFile(getFilename(this.asId)), true);
+        	TFile logFile = new TFile(getFilename(this.asId));
+            return new TFileOutputStream(logFile, true);
         } catch (FileNotFoundException e) {
             log.error(e);
             throw new BGPSymException(e);
@@ -60,7 +61,7 @@ public class ResultWriterLog {
 
 	String getFilename(ASIdentifier asId) {
 		//return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + "logs.tar.gz/"+ asId.toString();
-		return XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString() + ".tar.gz/"+ asId.toString();
+		return XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString() + File.separator + asId.toString() + ".tar.gz";
 	}
 
 	public void writeLog (BGPProcess process, long currentTime) {			
