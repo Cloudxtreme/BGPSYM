@@ -68,10 +68,10 @@ public class ResultWriterLog {
 				stream = getStream();
 			}
 			
-			String state = "<log time=\""+currentTime+"\">\n";
-			state += "\t<receivedPrefixes>"+process.getReceivedPrefixes()+"</receivedPrefixes>";
-			state += "\t<receivedWithdrawals>"+process.getReceivedWithdrawals()+"</receivedWithdrawals>";
-			state += "\t<neighbors>\n";
+			String state = "<l t=\""+currentTime+"\">";
+			state += "<p>"+process.getReceivedPrefixes()+"</p>";
+			state += "<w>"+process.getReceivedWithdrawals()+"</w>";
+			state += "<ns>\n";
 
 			PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
 			//PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
@@ -79,11 +79,11 @@ public class ResultWriterLog {
 
 			while (neighbors.hasNext()) {
 				Neighbor neighbor = neighbors.next();
-				state += "\t\t<neighbor rel=\""+(PeerRelation)neighbor.getAttachment()+"\" valid=\""+neighbor.isValid()+"\">"+neighbor.getASIdentifier().getId()+"</neighbor>\n";
+				state += "<n r=\""+(PeerRelation)neighbor.getAttachment()+"\">"+neighbor.getASIdentifier().getId()+"</n>";
 			}
 
-			state += "\t</neighbors>\n";
-			state += "\n\t<responses>\n";
+			state += "</ns>";
+			state += "<rs>";
 
 			Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
 			responseList.add(prefixDataList);
@@ -105,7 +105,7 @@ public class ResultWriterLog {
 			if (stream != null) {
 				int i = 0;
 				
-				stream.write("<logs>\n".getBytes());
+				stream.write("<ls>".getBytes());
 				
 				for (String log : logs) {
 					stream.write(log.getBytes());
@@ -119,12 +119,12 @@ public class ResultWriterLog {
 						stream.write(response.getBytes());
 					}
 
-					stream.write("\n\t</responses>\n</log>\n".getBytes());
+					stream.write("</rs></l>".getBytes());
 					
 					i++;
 				}
 				
-				stream.write("</logs>".getBytes());
+				stream.write("</ls>".getBytes());
 				stream.close();
 			}
 		} catch(IOException e) {
