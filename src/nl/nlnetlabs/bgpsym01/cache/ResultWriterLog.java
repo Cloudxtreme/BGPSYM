@@ -115,7 +115,9 @@ public class ResultWriterLog {
 					RouteViewDataResponse currentResponse;
 					while (iterator.hasNext()) {
 						currentResponse = iterator.next();
-						String response = xStream.toXML(currentResponse);
+						String response = xStream.toXML(currentResponse)
+							.replaceAll("\t", "")
+							.replaceAll("\n", "");
 						stream.write(response.getBytes());
 					}
 
