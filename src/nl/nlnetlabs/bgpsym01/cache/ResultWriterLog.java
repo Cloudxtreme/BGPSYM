@@ -58,12 +58,9 @@ public class ResultWriterLog {
         }
     }
 
-	File getDirectory () {
-		return new File(XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString());
-	}
-
 	String getFilename(ASIdentifier asId) {
-		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString()+".tar.gz";
+		//return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + "logs.tar.gz/"+ asId.toString();
+		return XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString() + ".tar.gz/"+ asId.toString();
 	}
 
 	public void writeLog (BGPProcess process, long currentTime) {			
