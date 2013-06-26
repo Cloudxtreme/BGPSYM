@@ -48,6 +48,10 @@ public class BGPProcess extends ShutdownadbleThread {
 	private ResultWriterLog resultWriterLog;
 
 	private ArrayList<XRegistry> registries;
+	
+	private int receivedPrefixes = 0;
+	
+	private int receivedWithdrawals = 0;
 
     public BGPProcess(Callback callback) {
         this.callback = callback;
@@ -103,17 +107,19 @@ public class BGPProcess extends ShutdownadbleThread {
         }
         
         List<Prefix> prefixes = update.getPrefixes();
-        
+
         //log.info("received update from "+sender+" with prefixes: "+prefixes+" and route: "+update.getRoute());
         //log.info("with withdrawals: "+update.getWithdrawals());
         
         if (prefixes != null) {
+        	this.receivedPrefixes += prefixes.size();
             Route route = update.getRoute();
             store.prefixReceived(sender, prefixes, route);
         }
 
         Collection<Prefix> withdrawals = update.getWithdrawals();
         if (withdrawals != null) {
+        	this.receivedWithdrawals += withdrawals.size();
             store.prefixRemove(sender, withdrawals);
         }
         if (EL.queueDebug && log.isInfoEnabled()) {

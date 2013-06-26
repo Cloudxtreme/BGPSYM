@@ -162,9 +162,9 @@ public class TCPStart {
         for (BGPProcess process : processes.values()) {
             try {
                 process.join();
-                PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
+                /*PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
                 PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
-                log.info("Total prefixes at end: "+ cache.size());
+                log.info("Total prefixes at end: "+ cache.size());*/
             } catch (InterruptedException e) {
                 // nothing to do here
                 log.error(e);
