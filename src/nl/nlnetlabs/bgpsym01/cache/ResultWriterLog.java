@@ -1,17 +1,15 @@
 package nl.nlnetlabs.bgpsym01.cache;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Collection;
-import java.util.zip.GZIPOutputStream;
 
 import nl.nlnetlabs.bgpsym01.main.Tools;
 import nl.nlnetlabs.bgpsym01.command.RouteViewDataResponse;
@@ -24,6 +22,8 @@ import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
 import nl.nlnetlabs.bgpsym01.route.PeerRelation;
 import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.log4j.Logger;
 import com.thoughtworks.xstream.XStream;
 
@@ -47,9 +47,21 @@ public class ResultWriterLog {
 		responseList = new ArrayList<Collection<RouteViewDataResponse>>();
 	}
 
+    /*OutputStream getStream() {
+        try {
+            return new TFileOutputStream(new TFile(getFilename(this.asId)), true);
+        } catch (FileNotFoundException e) {
+            log.error(e);
+            throw new BGPSymException(e);
+        }
+    }*/
+
+	File getDirectory () {
+		return new File(XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString());
+	}
+
 	String getFilename(ASIdentifier asId) {
-		//return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + "logs.tar.gz/"+ asId.toString();
-		return XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString() + File.separator + asId.toString() + ".tar.gz/logs";
+		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString()+".tar.gz";
 	}
 
 	public void writeLog (BGPProcess process, long currentTime) {			
@@ -86,19 +98,19 @@ public class ResultWriterLog {
 	}
 
 	public void close () {
-		FileOutputStream output = null;
 		try {
-			output = new FileOutputStream(getFilename(this.asId));
+			FileOutputStream fileOut = new FileOutputStream (new File (getFilename(asId)));
+			BufferedOutputStream bufferOut = new BufferedOutputStream (fileOut);
+			GzipCompressorOutputStream gzipOut = new GzipCompressorOutputStream (bufferOut);
+			TarArchiveOutputStream tarOut = new TarArchiveOutputStream (gzipOut);
 			
-			Writer writer = new OutputStreamWriter(new GZIPOutputStream(output), "UTF-8");
-				
 			try {
 				int i = 0;
 				
-				writer.write("<ls>");
+				tarOut.write("<ls>".getBytes());
 				
 				for (String log : logs) {
-					writer.write(log);
+					tarOut.write(log.getBytes());
 					Iterator<RouteViewDataResponse> iterator = responseList.get(i).iterator();
 
 					
@@ -108,36 +120,24 @@ public class ResultWriterLog {
 						String response = xStream.toXML(currentResponse)
 							.replaceAll("\t", "")
 							.replaceAll("\n", "");
-						writer.write(response);
+						tarOut.write(response.getBytes());
 					}
 
-					writer.write("</rs></l>");
+					tarOut.write("</rs></l>".getBytes());
 					
 					i++;
 				}
 				
-				writer.write("</ls>");
+				tarOut.write("</ls>".getBytes());
 			}
 			finally {
-				writer.close();
+				tarOut.close();
+				gzipOut.close();
+				bufferOut.close();
+				fileOut.close();
 			 }
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch(IOException e) {
 			throw new BGPSymException(e);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				output.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	}
 }
