@@ -1,6 +1,5 @@
 package nl.nlnetlabs.bgpsym01.cache;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -22,8 +21,6 @@ import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
 import nl.nlnetlabs.bgpsym01.route.PeerRelation;
 import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
 import org.apache.log4j.Logger;
 import com.thoughtworks.xstream.XStream;
 
@@ -33,6 +30,8 @@ public class ResultWriterLog {
 	private static Logger log = Logger.getLogger(ResultWriterLog.class);
 
 	private ASIdentifier asId;
+
+	private OutputStream stream;
 	
 	private List<String> logs;
 
@@ -47,21 +46,21 @@ public class ResultWriterLog {
 		responseList = new ArrayList<Collection<RouteViewDataResponse>>();
 	}
 
-    /*OutputStream getStream() {
+    OutputStream getStream() {
         try {
-            return new TFileOutputStream(new TFile(getFilename(this.asId)), true);
+            return new FileOutputStream(new File(getFilename(this.asId)), true);
         } catch (FileNotFoundException e) {
             log.error(e);
             throw new BGPSymException(e);
         }
-    }*/
+    }
 
 	File getDirectory () {
 		return new File(XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString());
 	}
 
 	String getFilename(ASIdentifier asId) {
-		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString()+".tar.gz/logs";
+		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString()+"tar.gz";
 	}
 
 	public void writeLog (BGPProcess process, long currentTime) {			
@@ -99,18 +98,15 @@ public class ResultWriterLog {
 
 	public void close () {
 		try {
-			FileOutputStream fileOut = new FileOutputStream (new File (getFilename(asId)));
-			BufferedOutputStream bufferOut = new BufferedOutputStream (fileOut);
-			GzipCompressorOutputStream gzipOut = new GzipCompressorOutputStream (bufferOut);
-			TarArchiveOutputStream tarOut = new TarArchiveOutputStream (gzipOut);
+			stream = getStream();
 			
 			try {
 				int i = 0;
 				
-				tarOut.write("<ls>".getBytes());
+				stream.write("<ls>".getBytes());
 				
 				for (String log : logs) {
-					tarOut.write(log.getBytes());
+					stream.write(log.getBytes());
 					Iterator<RouteViewDataResponse> iterator = responseList.get(i).iterator();
 
 					
@@ -120,21 +116,18 @@ public class ResultWriterLog {
 						String response = xStream.toXML(currentResponse)
 							.replaceAll("\t", "")
 							.replaceAll("\n", "");
-						tarOut.write(response.getBytes());
+						stream.write(response.getBytes());
 					}
 
-					tarOut.write("</rs></l>".getBytes());
+					stream.write("</rs></l>".getBytes());
 					
 					i++;
 				}
 				
-				tarOut.write("</ls>".getBytes());
+				stream.write("</ls>".getBytes());
 			}
 			finally {
-				tarOut.close();
-				gzipOut.close();
-				bufferOut.close();
-				fileOut.close();
+				stream.close();
 			 }
 		} catch(IOException e) {
 			throw new BGPSymException(e);
