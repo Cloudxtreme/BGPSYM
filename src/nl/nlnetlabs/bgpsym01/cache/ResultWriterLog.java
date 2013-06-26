@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.thoughtworks.xstream.XStream;
 
 import de.schlichtherle.truezip.file.TFile;
 import de.schlichtherle.truezip.file.TFileOutputStream;
+import de.schlichtherle.truezip.file.TFileWriter;
 
 public class ResultWriterLog {
 	private static final String OUTPUT_FILENAME_PREFIX = "log_";
@@ -34,7 +36,7 @@ public class ResultWriterLog {
 
 	private ASIdentifier asId;
 
-	private OutputStream stream;
+	private Writer writer;
 	
 	private List<String> logs;
 
@@ -49,10 +51,11 @@ public class ResultWriterLog {
 		responseList = new ArrayList<Collection<RouteViewDataResponse>>();
 	}
 
-    OutputStream getStream() {
+    Writer getWriter() {
         try {
         	TFile logFile = new TFile(getFilename(this.asId));
-            return new TFileOutputStream(logFile, true);
+            // TFileOutputStream(logFile, true);
+        	return new TFileWriter(logFile);
         } catch (FileNotFoundException e) {
             log.error(e);
             throw new BGPSymException(e);
@@ -61,7 +64,7 @@ public class ResultWriterLog {
 
 	String getFilename(ASIdentifier asId) {
 		//return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + "logs.tar.gz/"+ asId.toString();
-		return XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString() + File.separator + asId.toString() + ".tar.gz";
+		return XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString() + File.separator + asId.toString() + ".tar/logs";
 	}
 
 	public void writeLog (BGPProcess process, long currentTime) {			
@@ -99,15 +102,15 @@ public class ResultWriterLog {
 
 	public void close () {
 		try {
-			stream = getStream();
+			writer = getWriter();
 			
 			try {
 				int i = 0;
 				
-				stream.write("<ls>".getBytes());
+				writer.write("<ls>");
 				
 				for (String log : logs) {
-					stream.write(log.getBytes());
+					writer.write(log);
 					Iterator<RouteViewDataResponse> iterator = responseList.get(i).iterator();
 
 					
@@ -117,18 +120,18 @@ public class ResultWriterLog {
 						String response = xStream.toXML(currentResponse)
 							.replaceAll("\t", "")
 							.replaceAll("\n", "");
-						stream.write(response.getBytes());
+						writer.write(response);
 					}
 
-					stream.write("</rs></l>".getBytes());
+					writer.write("</rs></l>");
 					
 					i++;
 				}
 				
-				stream.write("</ls>".getBytes());
+				writer.write("</ls>");
 			}
 			finally {
-				stream.close();
+				writer.close();
 			 }
 		} catch(IOException e) {
 			throw new BGPSymException(e);
