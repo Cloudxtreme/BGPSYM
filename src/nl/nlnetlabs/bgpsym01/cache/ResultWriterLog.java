@@ -24,6 +24,9 @@ import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 import org.apache.log4j.Logger;
 import com.thoughtworks.xstream.XStream;
 
+import de.schlichtherle.truezip.file.TFile;
+import de.schlichtherle.truezip.file.TFileOutputStream;
+
 public class ResultWriterLog {
 	private static final String OUTPUT_FILENAME_PREFIX = "log_";
 
@@ -48,7 +51,7 @@ public class ResultWriterLog {
 
     OutputStream getStream() {
         try {
-            return new FileOutputStream(new File(getFilename(this.asId)), true);
+            return new TFileOutputStream(new TFile(getFilename(this.asId)), true);
         } catch (FileNotFoundException e) {
             log.error(e);
             throw new BGPSymException(e);
@@ -60,14 +63,10 @@ public class ResultWriterLog {
 	}
 
 	String getFilename(ASIdentifier asId) {
-		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString();
+		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString()+"tar.gz";
 	}
 
-	public void writeLog (BGPProcess process, long currentTime) {
-			if (stream == null) {
-				stream = getStream();
-			}
-			
+	public void writeLog (BGPProcess process, long currentTime) {			
 			String state = "<l t=\""+currentTime+"\">";
 			state += "<p>"+process.getReceivedPrefixes()+"</p>";
 			state += "<w>"+process.getReceivedWithdrawals()+"</w>";
@@ -102,7 +101,9 @@ public class ResultWriterLog {
 
 	public void close () {
 		try {
-			if (stream != null) {
+			stream = getStream();
+			
+			try {
 				int i = 0;
 				
 				stream.write("<ls>".getBytes());
@@ -127,8 +128,10 @@ public class ResultWriterLog {
 				}
 				
 				stream.write("</ls>".getBytes());
-				stream.close();
 			}
+			finally {
+				stream.close();
+			 }
 		} catch(IOException e) {
 			throw new BGPSymException(e);
 		}
