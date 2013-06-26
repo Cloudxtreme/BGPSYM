@@ -239,4 +239,12 @@ public class BGPProcess extends ShutdownadbleThread {
 	public ArrayList<XRegistry> getRegistries () {
 		return registries;
 	}
+	
+	public int getReceivedPrefixes () {
+		return this.receivedPrefixes;
+	}
+	
+	public int getReceivedWithdrawals () {
+		return this.receivedWithdrawals;
+	}
 }

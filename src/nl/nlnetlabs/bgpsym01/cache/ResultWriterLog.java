@@ -69,6 +69,8 @@ public class ResultWriterLog {
 			}
 			
 			String state = "<log time=\""+currentTime+"\">\n";
+			state += "\t<receivedPrefixes>"+process.getReceivedPrefixes()+"</receivedPrefixes>";
+			state += "\t<receivedWithdrawals>"+process.getReceivedWithdrawals()+"</receivedWithdrawals>";
 			state += "\t<neighbors>\n";
 
 			PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
