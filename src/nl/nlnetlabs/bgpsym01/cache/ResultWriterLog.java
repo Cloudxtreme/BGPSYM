@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Collection;
+import java.util.zip.GZIPOutputStream;
 
 import nl.nlnetlabs.bgpsym01.main.Tools;
 import nl.nlnetlabs.bgpsym01.command.RouteViewDataResponse;
@@ -25,18 +27,12 @@ import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 import org.apache.log4j.Logger;
 import com.thoughtworks.xstream.XStream;
 
-import de.schlichtherle.truezip.file.TFile;
-import de.schlichtherle.truezip.file.TFileOutputStream;
-import de.schlichtherle.truezip.file.TFileWriter;
-
 public class ResultWriterLog {
 	private static final String OUTPUT_FILENAME_PREFIX = "log_";
 
 	private static Logger log = Logger.getLogger(ResultWriterLog.class);
 
 	private ASIdentifier asId;
-
-	private Writer writer;
 	
 	private List<String> logs;
 
@@ -51,20 +47,9 @@ public class ResultWriterLog {
 		responseList = new ArrayList<Collection<RouteViewDataResponse>>();
 	}
 
-    Writer getWriter() {
-        try {
-        	TFile logFile = new TFile(getFilename(this.asId));
-            // TFileOutputStream(logFile, true);
-        	return new TFileWriter(logFile);
-        } catch (FileNotFoundException e) {
-            log.error(e);
-            throw new BGPSymException(e);
-        }
-    }
-
 	String getFilename(ASIdentifier asId) {
 		//return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + "logs.tar.gz/"+ asId.toString();
-		return XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString() + File.separator + asId.toString() + ".tar/logs";
+		return XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString() + File.separator + asId.toString() + ".tar.gz/logs";
 	}
 
 	public void writeLog (BGPProcess process, long currentTime) {			
@@ -101,9 +86,12 @@ public class ResultWriterLog {
 	}
 
 	public void close () {
+		FileOutputStream output = null;
 		try {
-			writer = getWriter();
+			output = new FileOutputStream(getFilename(this.asId));
 			
+			Writer writer = new OutputStreamWriter(new GZIPOutputStream(output), "UTF-8");
+				
 			try {
 				int i = 0;
 				
@@ -133,8 +121,23 @@ public class ResultWriterLog {
 			finally {
 				writer.close();
 			 }
-		} catch(IOException e) {
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
 			throw new BGPSymException(e);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				output.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }
