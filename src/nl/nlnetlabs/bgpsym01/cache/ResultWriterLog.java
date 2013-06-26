@@ -60,7 +60,7 @@ public class ResultWriterLog {
 	}
 
 	String getFilename(ASIdentifier asId) {
-		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString()+"tar.gz";
+		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString();
 	}
 
 	public void writeLog (BGPProcess process, long currentTime) {			
