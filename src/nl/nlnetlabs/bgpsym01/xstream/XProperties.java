@@ -219,7 +219,7 @@ public class XProperties {
     }
 
     public String getEventsFileName() {
-        return eventsFileName;
+        return workingDir + File.separator + eventsFileName;
     }
 
     public void setEventsFileName(String eventsFileName) {

@@ -48,7 +48,6 @@ public class ASFactory {
         }
 
         asArray[internalNumber] = asIdentifier;
-
     }
 
     public static ASIdentifier getInstance(String fromName) {
