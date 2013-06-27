@@ -130,7 +130,8 @@ public class XProperties {
     }
 
     public String getDiagFile() {
-        return workingDir + File.separator + LOG_DIR + File.separator + DIAG_LOG_FILE;
+        //return workingDir + File.separator + LOG_DIR + File.separator + DIAG_LOG_FILE;
+    	return storageDir + File.separator + DIAG_LOG_FILE;
     }
 
     public void setPrefixArraySize(int prefixArraySize) {
