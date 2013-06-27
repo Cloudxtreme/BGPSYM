@@ -89,7 +89,8 @@ public class MRAIStoreImpl implements MRAIStore {
     }
 
     public Update getUpdate() {
-        if (EL.queueDebug && log.isInfoEnabled()) {
+    	// EL.queueDebug &&
+        if ( log.isInfoEnabled()) {
             log.info("X7, mrai flushing...,id=" + System.identityHashCode(this));
         }
         ASIdentifier identifier = next();
