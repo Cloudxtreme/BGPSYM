@@ -38,7 +38,7 @@ public class MRAITimerImpl implements MRAITimer {
      * @see nl.nlnetlabs.bgpsym01.route.MRAITimer#canSendNow()
      */
     public boolean canSendNow() {
-    	log.info("currentTime="+timeController.getCurrentTime()+" startTime="+getStartTime()+" lastSent="+lastSent);
+    	//log.info("currentTime="+timeController.getCurrentTime()+" startTime="+getStartTime()+" lastSent="+lastSent);
         return lastSent == -1 || timeController.getCurrentTime() >= getStartTime() - timeScaler;
     }
 
