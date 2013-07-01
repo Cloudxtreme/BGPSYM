@@ -64,13 +64,6 @@ public class Coordinator {
         // wait till guys set up their server connections
         commandSenderHelper.waitForAllHosts();
 
-        if (log.isInfoEnabled()) {
-            log.info("sending master ACK");
-        }
-
-        commandSenderHelper.sendToAllHosts(new MasterAckCommand());
-        commandSenderHelper.waitForAllHosts();
-
         // sync the time
         if (!syncTheTime()) {
             shutdown();
@@ -85,7 +78,7 @@ public class Coordinator {
 		}
 		
 		if (log.isInfoEnabled()) {
-            log.info("sending second master ACK");
+            log.info("sending master ACK");
         }
 		
 		commandSenderHelper.sendToAllHosts(new MasterAckCommand());

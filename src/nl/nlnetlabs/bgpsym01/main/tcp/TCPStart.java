@@ -155,10 +155,6 @@ public class TCPStart {
         	registerPrefixes();
         }
         
-        // send ack to coordinator
-        ack = new AckCommand();
-        cst.sendCommand(ack);
-        
         for (BGPProcess process : processes.values()) {
             try {
                 process.join();
