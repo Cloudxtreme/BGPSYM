@@ -76,6 +76,13 @@ public class Coordinator {
             shutdown();
             return;
         }
+        
+        if (log.isInfoEnabled()) {
+            log.info("sending second master ACK");
+        }
+        
+        commandSenderHelper.sendToAllHosts(new MasterAckCommand());
+        commandSenderHelper.waitForAllHosts();
 
 		// create results directory
 		String dirName = XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString();
@@ -85,7 +92,7 @@ public class Coordinator {
 		}
 		
 		if (log.isInfoEnabled()) {
-            log.info("sending second master ACK");
+            log.info("sending third master ACK");
         }
 		
 		commandSenderHelper.sendToAllHosts(new MasterAckCommand());

@@ -143,8 +143,12 @@ public class TCPStart {
         nodes = null;
         xStream = null;
         
-     // send ack to coordinator
+        // send ack to coordinator
         AckCommand ack = new AckCommand();
+        cst.sendCommand(ack);
+        
+        // send ack to coordinator
+        ack = new AckCommand();
         cst.sendCommand(ack);
        
         if (properties.hasPrefixFile()) {
