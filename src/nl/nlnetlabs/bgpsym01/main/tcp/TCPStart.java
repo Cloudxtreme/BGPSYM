@@ -143,25 +143,22 @@ public class TCPStart {
         nodes = null;
         xStream = null;
         
-        // send ack to coordinator
+     // send ack to coordinator
         AckCommand ack = new AckCommand();
         cst.sendCommand(ack);
+        
+     // Now I can already start diagnostic thread
+        DiagnosticThread.init(processes.values(), cst);
        
         if (properties.hasPrefixFile()) {
         	loadOurPrefixes();
+        	registerPrefixes();
         }
         
         // send ack to coordinator
         ack = new AckCommand();
         cst.sendCommand(ack);
         
-        if (properties.hasPrefixFile()) {
-        	registerPrefixes();
-        }
-
-        // Now I can already start diagnostic thread
-        DiagnosticThread.init(processes.values(), cst);
-
         for (BGPProcess process : processes.values()) {
             try {
                 process.join();
@@ -544,9 +541,9 @@ public class TCPStart {
             	if (prefixList.size() == prefixAggregationSize || !iterator.hasNext()) {
             		asId.getProcess().getQueue().addMessage(getUpdate(prefixList, asId));
             		
-            		//long sleepTime = (long) (sleepingTime * getSleepingTimeMultiplier(prefixList));
+            		long sleepTime = (long) (sleepingTime * getSleepingTimeMultiplier(prefixList));
             		prefixList.clear();
-            		//StaticThread.sleep(sleepTime);        		
+            		StaticThread.sleep(sleepTime);        		
             	}
             }    		
     	}
