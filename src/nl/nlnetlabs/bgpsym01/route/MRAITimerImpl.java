@@ -2,6 +2,8 @@ package nl.nlnetlabs.bgpsym01.route;
 
 import java.util.Random;
 
+import org.apache.log4j.Logger;
+
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.timers.TimeController;
 import nl.nlnetlabs.bgpsym01.primitives.timers.TimeControllerFactory;
@@ -9,6 +11,8 @@ import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 
 public class MRAITimerImpl implements MRAITimer {
 
+	Logger log = Logger.getLogger(MRAITimerImpl.class);
+	
     @Override
     public String toString() {
         return "lastSent=" + lastSent + ", startTime=" + getStartTime() + ", current=" + timeController.getCurrentTime() + ", canSend=" + canSendNow();
@@ -34,6 +38,7 @@ public class MRAITimerImpl implements MRAITimer {
      * @see nl.nlnetlabs.bgpsym01.route.MRAITimer#canSendNow()
      */
     public boolean canSendNow() {
+    	log.info("currentTime="+timeController.getCurrentTime()+" startTime="+getStartTime()+" lastSent="+lastSent);
         return lastSent == -1 || timeController.getCurrentTime() >= getStartTime() - timeScaler;
     }
 
