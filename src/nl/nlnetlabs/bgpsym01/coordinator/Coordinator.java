@@ -76,13 +76,6 @@ public class Coordinator {
             shutdown();
             return;
         }
-        
-        if (log.isInfoEnabled()) {
-            log.info("sending second master ACK");
-        }
-        
-        commandSenderHelper.sendToAllHosts(new MasterAckCommand());
-        commandSenderHelper.waitForAllHosts();
 
 		// create results directory
 		String dirName = XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString();
@@ -92,7 +85,7 @@ public class Coordinator {
 		}
 		
 		if (log.isInfoEnabled()) {
-            log.info("sending third master ACK");
+            log.info("sending second master ACK");
         }
 		
 		commandSenderHelper.sendToAllHosts(new MasterAckCommand());
@@ -120,6 +113,8 @@ public class Coordinator {
         TimeControllerFactory.getTimeController();
         TimeControllerImpl.setStartTime(startTime);
         SyncTimeCommand stc = new SyncTimeCommand(startTime);
+        log.info("Start time = "+startTime);
+        
         for (int i = 0; i < SystemConstants.TIME_SYNC_TIMES; i++) {
             commandSenderHelper.sendToAllHosts(stc);
             commandSenderHelper.waitForAllHosts();

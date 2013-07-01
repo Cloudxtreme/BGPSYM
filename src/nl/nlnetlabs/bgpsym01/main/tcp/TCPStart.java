@@ -146,19 +146,18 @@ public class TCPStart {
         // send ack to coordinator
         AckCommand ack = new AckCommand();
         cst.sendCommand(ack);
-        
-        // send ack to coordinator
-        ack = new AckCommand();
-        cst.sendCommand(ack);
        
         if (properties.hasPrefixFile()) {
         	loadOurPrefixes();
-        	registerPrefixes();
         }
         
         // send ack to coordinator
         ack = new AckCommand();
         cst.sendCommand(ack);
+        
+        if (properties.hasPrefixFile()) {
+        	registerPrefixes();
+        }
 
         // Now I can already start diagnostic thread
         DiagnosticThread.init(processes.values(), cst);
@@ -545,9 +544,9 @@ public class TCPStart {
             	if (prefixList.size() == prefixAggregationSize || !iterator.hasNext()) {
             		asId.getProcess().getQueue().addMessage(getUpdate(prefixList, asId));
             		
-            		long sleepTime = (long) (sleepingTime * getSleepingTimeMultiplier(prefixList));
+            		//long sleepTime = (long) (sleepingTime * getSleepingTimeMultiplier(prefixList));
             		prefixList.clear();
-            		StaticThread.sleep(sleepTime);        		
+            		//StaticThread.sleep(sleepTime);        		
             	}
             }    		
     	}
