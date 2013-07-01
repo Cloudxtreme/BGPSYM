@@ -11,8 +11,8 @@ rm *
 echo -e "Removing results"
 cd /var/scratch/$USER/results/
 rm -rf 2013*
-echo -e "Remove gc files"
-cd ~/env/log
+echo -e "Removing gc files"
+cd /var/scratch/$USER/gc/
 rm gc_*
 echo -e "Remove java log files"
 cd ~/BGPSYM/logs/
