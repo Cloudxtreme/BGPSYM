@@ -3,6 +3,7 @@ package nl.nlnetlabs.bgpsym01.command;
 import java.io.IOException;
 
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
+import nl.nlnetlabs.bgpsym01.primitives.converters.ASIdentifierResultConverter;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
 import nl.nlnetlabs.bgpsym01.primitives.factories.ASFactory;
@@ -11,6 +12,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 @XStreamAlias("r")
 public class RouteViewDataResponse implements EExternalizable {
@@ -21,7 +23,8 @@ public class RouteViewDataResponse implements EExternalizable {
         return "num="+prefix.getNum() + ";diff=" + diff + ";first=" + firstSeen + ";last=" + lastSeen + ";len=" + length + ";asId="+asId+";route="+route;
     }
 
-	@XStreamAlias("org")
+	@XStreamAlias("o")
+	@XStreamConverter(ASIdentifierResultConverter.class)
     public ASIdentifier asId;
 
 	@XStreamAlias("pr")
@@ -34,7 +37,7 @@ public class RouteViewDataResponse implements EExternalizable {
     public long lastSeen;
 
     // not tested
-	@XStreamAlias("len")
+	@XStreamAlias("ln")
     public int length;
 
 	@XStreamAlias("rt")

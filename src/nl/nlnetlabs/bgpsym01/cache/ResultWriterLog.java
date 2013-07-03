@@ -79,8 +79,7 @@ public class ResultWriterLog {
 			}
 
 			state += "</ns>";
-			state += "<rs>";
-
+			
 			Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
 			responseList.add(prefixDataList);
 			//Iterator<RouteViewDataResponse> iterator = prefixDataList.iterator();
@@ -109,9 +108,11 @@ public class ResultWriterLog {
 					stream.write(log.getBytes());
 					Iterator<RouteViewDataResponse> iterator = responseList.get(i).iterator();
 
+					stream.write("<rs>".getBytes());
 					
 					RouteViewDataResponse currentResponse;
 					while (iterator.hasNext()) {
+							
 						currentResponse = iterator.next();
 						String response = xStream.toXML(currentResponse)
 							.replaceAll("\t", "")
