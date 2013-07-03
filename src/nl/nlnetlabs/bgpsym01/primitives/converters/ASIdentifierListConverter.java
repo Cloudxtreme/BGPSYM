@@ -23,7 +23,6 @@ public class ASIdentifierListConverter implements Converter {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void marshal(Object list, HierarchicalStreamWriter writer, MarshallingContext arg2) {
-		
 		List<ASIdentifier> asIdentifiers = (List<ASIdentifier>) list;
         for (ASIdentifier asId : asIdentifiers) {
         	writer.startNode("as");
