@@ -20,8 +20,7 @@ public class RouteConverter implements Converter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void marshal(Object route, HierarchicalStreamWriter writer,
-			MarshallingContext arg2) {
+	public void marshal(Object route, HierarchicalStreamWriter writer, MarshallingContext arg2) {
 		Route r = (Route) route;
 		writer.startNode("rt");
         for (ASIdentifier asId : r.getHops()) {

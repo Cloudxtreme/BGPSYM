@@ -41,7 +41,6 @@ public class RouteViewDataResponse implements EExternalizable {
 	@XStreamAlias("ln")
     public int length;
 
-	@XStreamAlias("rt")
 	@XStreamConverter(RouteConverter.class)
 	public Route route;
 
