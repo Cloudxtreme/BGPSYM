@@ -13,6 +13,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 @XStreamAlias("r")
@@ -24,6 +25,7 @@ public class RouteViewDataResponse implements EExternalizable {
         return "num="+prefix.getNum() + ";diff=" + diff + ";first=" + firstSeen + ";last=" + lastSeen + ";len=" + length + ";asId="+asId+";route="+route;
     }
 
+    @XStreamAsAttribute
 	@XStreamAlias("o")
 	@XStreamConverter(ASIdentifierResultConverter.class)
     public ASIdentifier asId;
@@ -31,13 +33,16 @@ public class RouteViewDataResponse implements EExternalizable {
 	@XStreamAlias("p")
     public Prefix prefix;
 
+    @XStreamAsAttribute
 	@XStreamAlias("f")
     public long firstSeen;
 
+    @XStreamAsAttribute
 	@XStreamAlias("l")
     public long lastSeen;
 
     // not tested
+    @XStreamAsAttribute
 	@XStreamAlias("ln")
     public int length;
 
