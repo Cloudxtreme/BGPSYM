@@ -21,6 +21,7 @@ public class Route implements EExternalizable {
 
     private static Logger log = Logger.getLogger(Route.class);
 
+    @XStreamAlias("h")
     private ASIdentifier[] hops;
 
     @Override

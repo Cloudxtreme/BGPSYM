@@ -27,7 +27,7 @@ public class RouteViewDataResponse implements EExternalizable {
 	@XStreamConverter(ASIdentifierResultConverter.class)
     public ASIdentifier asId;
 
-	@XStreamAlias("pr")
+	@XStreamAlias("p")
     public Prefix prefix;
 
 	@XStreamAlias("f")
