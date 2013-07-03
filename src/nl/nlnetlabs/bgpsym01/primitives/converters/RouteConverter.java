@@ -20,15 +20,13 @@ public class RouteConverter implements Converter {
 	@Override
 	public void marshal(Object route, HierarchicalStreamWriter writer, MarshallingContext arg2) {
 		Route r = (Route) route;
-		writer.startNode("rt");
 		if (r != null && r.getHops() != null) {
 	        for (ASIdentifier asId : r.getHops()) {
 	        	writer.startNode("as");
 	            writer.setValue(asId.getId());
 	            writer.endNode();
 	        }
-		}
-        writer.endNode();		
+		}	
 	}
 
 	@Override
