@@ -64,13 +64,12 @@ public class ResultWriterLog {
 	}
 
 	public void writeLog (BGPProcess process, long currentTime) {
-			String state = "<l t=\""+currentTime+"\">";
-			state += "<p>"+process.getReceivedPrefixes()+"</p>";
-			state += "<w>"+process.getReceivedWithdrawals()+"</w>";
+			String state = "<l t=\""+currentTime+"\"" +
+					" p=\""+process.getReceivedPrefixes()+"\"" +
+					" w=\""+process.getReceivedWithdrawals()+"\">";
 			state += "<ns>\n";
 
 			PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
-			//PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
 			Iterator<Neighbor> neighbors = process.getNeighbors().iterator();
 
 			while (neighbors.hasNext()) {
@@ -82,16 +81,7 @@ public class ResultWriterLog {
 			
 			Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
 			responseList.add(prefixDataList);
-			//Iterator<RouteViewDataResponse> iterator = prefixDataList.iterator();
 
-			/*
-			RouteViewDataResponse currentResponse;
-			while (iterator.hasNext()) {
-				currentResponse = iterator.next();
-				state += xStream.toXML(currentResponse);
-			}
-
-			state += "\n\t</responses>\n</log>\n";*/
 			logs.add(state);
 	}
 
