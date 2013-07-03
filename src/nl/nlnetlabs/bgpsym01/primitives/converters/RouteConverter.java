@@ -1,7 +1,5 @@
 package nl.nlnetlabs.bgpsym01.primitives.converters;
 
-import java.util.List;
-
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
 
@@ -15,7 +13,7 @@ public class RouteConverter implements Converter {
 
 	@Override
 	public boolean canConvert(Class clazz) {
-		return List.class.isAssignableFrom(clazz);
+		return clazz.equals(Route.class);
 	}
 
 	@SuppressWarnings("unchecked")
