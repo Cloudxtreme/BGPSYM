@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import nl.nlnetlabs.bgpsym01.main.SystemConstants;
-import nl.nlnetlabs.bgpsym01.primitives.converters.ASIdentifierListResultConverter;
 import nl.nlnetlabs.bgpsym01.primitives.factories.ASFactory;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataInputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
@@ -13,7 +12,6 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
 
 //@XStreamConverter(SerializableConverter.class)
 @XStreamAlias("r")
@@ -24,8 +22,7 @@ public class Route implements EExternalizable {
     private static Logger log = Logger.getLogger(Route.class);
 
     @XStreamAlias("h")
-    @XStreamConverter(ASIdentifierListResultConverter.class)
-    private ASIdentifier[] hops;
+    public ASIdentifier[] hops;
 
     @Override
     public boolean equals(Object obj) {

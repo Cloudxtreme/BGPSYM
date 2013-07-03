@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.converters.ASIdentifierResultConverter;
+import nl.nlnetlabs.bgpsym01.primitives.converters.RouteConverter;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
 import nl.nlnetlabs.bgpsym01.primitives.factories.ASFactory;
@@ -41,6 +42,7 @@ public class RouteViewDataResponse implements EExternalizable {
     public int length;
 
 	@XStreamAlias("rt")
+	@XStreamConverter(RouteConverter.class)
 	public Route route;
 
     public RouteViewDataResponse(ASIdentifier asId, Prefix prefix, long firstSeen, long lastSeen) {

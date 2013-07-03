@@ -3,6 +3,7 @@ package nl.nlnetlabs.bgpsym01.primitives.converters;
 import java.util.List;
 
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
+import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
 
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -10,7 +11,7 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
-public class ASIdentifierListResultConverter implements Converter {
+public class RouteConverter implements Converter {
 
 	@Override
 	public boolean canConvert(Class clazz) {
@@ -19,15 +20,16 @@ public class ASIdentifierListResultConverter implements Converter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void marshal(Object list, HierarchicalStreamWriter writer,
+	public void marshal(Object route, HierarchicalStreamWriter writer,
 			MarshallingContext arg2) {
-		List<ASIdentifier> asIdentifiers = (List<ASIdentifier>) list;
-        for (ASIdentifier asId : asIdentifiers) {
+		Route r = (Route) route;
+		writer.startNode("rt");
+        for (ASIdentifier asId : r.getHops()) {
         	writer.startNode("as");
-            writer.setValue(asId.getId() + "");
+            writer.setValue(asId.getId());
             writer.endNode();
         }
-		
+        writer.endNode();		
 	}
 
 	@Override
