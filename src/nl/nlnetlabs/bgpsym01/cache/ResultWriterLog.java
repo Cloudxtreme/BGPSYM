@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +24,7 @@ import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 
 import org.apache.log4j.Logger;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.CompactWriter;
 
 public class ResultWriterLog {
 	private static final String OUTPUT_FILENAME_PREFIX = "log_";
@@ -67,7 +69,7 @@ public class ResultWriterLog {
 			String state = "<l t=\""+currentTime+"\"" +
 					" p=\""+process.getReceivedPrefixes()+"\"" +
 					" w=\""+process.getReceivedWithdrawals()+"\">";
-			state += "<ns>\n";
+			state += "<ns>";
 
 			PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
 			Iterator<Neighbor> neighbors = process.getNeighbors().iterator();
@@ -104,10 +106,8 @@ public class ResultWriterLog {
 					while (iterator.hasNext()) {
 							
 						currentResponse = iterator.next();
-						String response = xStream.toXML(currentResponse)
-							.replaceAll("\t", "")
-							.replaceAll("\n", "");
-						stream.write(response.getBytes());
+						CompactWriter writer = new CompactWriter(new OutputStreamWriter(stream));
+						xStream.marshal(currentResponse, writer);
 					}
 
 					stream.write("</rs></l>".getBytes());
