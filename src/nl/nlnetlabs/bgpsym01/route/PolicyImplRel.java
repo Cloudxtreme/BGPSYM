@@ -29,7 +29,22 @@ public class PolicyImplRel implements Policy {
             // the lower preference the better
             outcome = pr2.getPreference() < pr1.getPreference();
         } else {
-
+        	if (n1 == null) {
+        		log.info("neighbor1 empty");
+        	}
+        	
+        	if (n2 == null) {
+        		log.info("neighbor2 empty");
+        	}
+        	
+        	if (pr1 == null) {
+        		log.info("n1: "+n1+" pr1 empty");
+        	}
+        	
+        	if (pr2 == null) {
+        		log.info("n2: "+n2+" pr2 empty");
+        	}
+        	
             int l1 = getRelativeLenght(myAsId, n1.getASIdentifier(), route1, pr1);
             int l2 = getRelativeLenght(myAsId, n2.getASIdentifier(), route2, pr2);
             outcome = l2 < l1;

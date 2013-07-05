@@ -194,8 +194,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
         entry.invalidate(false);
 
         if (wasCurrent) {
-            if (log.isDebugEnabled()) {
-                log.debug("removing prefix " + prefix + " from " + originator + ", is current, size=" + neighborsForPrefix.size());
+            if (log.isInfoEnabled()) {
+                log.info("removing prefix " + prefix + " from " + originator + ", is current, size=" + neighborsForPrefix.size());
             }
 
             runDecision(originator, prefixInfo, oldRoute);
