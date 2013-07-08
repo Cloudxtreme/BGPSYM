@@ -143,15 +143,13 @@ public class ResultWriterLog {
 						Entry<Neighbor, List<Prefix>> entry = iteratorPrefixes.next();
 						Neighbor neighbor = entry.getKey();
 						
-						String n = "<n as=\""+neighbor.getASIdentifier()+"\">";
-						stream.write(n.getBytes());
-						
+						String prefixString = "";
 						for (Prefix prefix : entry.getValue()) {
-							String pr = "<p>"+prefix+"</p>";
-							stream.write(pr.getBytes());
+							prefixString += prefix+"|";
 						}
 						
-						stream.write("</n>".getBytes());
+						String n = "<n as=\""+neighbor.getASIdentifier()+"\" p=\""+prefixString+"\" />";
+						stream.write(n.getBytes());
 					}
 					
 						
