@@ -147,7 +147,7 @@ public class ResultWriterLog {
 						stream.write(n.getBytes());
 						
 						for (Prefix prefix : entry.getValue()) {
-							String pr = "<p>\""+prefix+"\"</p>";
+							String pr = "<p>"+prefix+"</p>";
 							stream.write(pr.getBytes());
 						}
 						
