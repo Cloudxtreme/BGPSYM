@@ -52,6 +52,15 @@ public class BGPProcess extends ShutdownadbleThread {
 	private int receivedPrefixes = 0;
 	
 	private int receivedWithdrawals = 0;
+	
+	private int updates = 0;
+	
+	private int updateWithPrefixes = 0;
+	
+	private int updateWithWithdrawals = 0;
+	
+	private int updateWithBoth = 0;
+	
 
     public BGPProcess(Callback callback) {
         this.callback = callback;
@@ -88,6 +97,8 @@ public class BGPProcess extends ShutdownadbleThread {
 
     @SuppressWarnings("unused")
 	public void uponReceive(BGPUpdate update) {
+    	
+    	this.updates++;
 
         callback.updateReceived(update.getSender(), update);
         // add to prefix store
@@ -113,6 +124,7 @@ public class BGPProcess extends ShutdownadbleThread {
         
         if (prefixes != null) {
         	this.receivedPrefixes += prefixes.size();
+        	this.updateWithPrefixes++;
             Route route = update.getRoute();
             store.prefixReceived(sender, prefixes, route);
         }
@@ -120,8 +132,14 @@ public class BGPProcess extends ShutdownadbleThread {
         Collection<Prefix> withdrawals = update.getWithdrawals();
         if (withdrawals != null) {
         	this.receivedWithdrawals += withdrawals.size();
+        	this.updateWithWithdrawals++;
             store.prefixRemove(sender, withdrawals);
         }
+        
+        if (prefixes != null && withdrawals != null) {
+        	this.updateWithBoth++;
+        }
+        
         if (EL.queueDebug && log.isInfoEnabled()) {
             log.info("X7, processed...");
         }
@@ -246,5 +264,21 @@ public class BGPProcess extends ShutdownadbleThread {
 	
 	public int getReceivedWithdrawals () {
 		return this.receivedWithdrawals;
+	}
+	
+	public int getUpdates () {
+		return this.updates;
+	}
+	
+	public int getUpdatesWithPrefixes () {
+		return this.updateWithPrefixes;
+	}
+	
+	public int getUpdatesWithWithdrawals () {
+		return this.updateWithWithdrawals;
+	}
+	
+	public int getUpdatesWithBoth () {
+		return this.updateWithBoth;
 	}
 }

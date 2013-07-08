@@ -100,7 +100,11 @@ public class ResultWriterLog {
 	public void writeLog (BGPProcess process, long currentTime) {
 			String state = "<l t=\""+currentTime+"\"" +
 					" p=\""+process.getReceivedPrefixes()+"\"" +
-					" w=\""+process.getReceivedWithdrawals()+"\">";
+					" w=\""+process.getReceivedWithdrawals()+"\"" +
+					" u=\""+process.getUpdates()+"\"" +
+					" up=\""+process.getUpdatesWithPrefixes()+"\"" +
+					" uw=\""+process.getUpdatesWithWithdrawals()+"\"" +
+					" ub=\""+process.getUpdatesWithBoth()+"\">";
 			state += "<ns>";
 
 			PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
@@ -150,8 +154,7 @@ public class ResultWriterLog {
 						
 						String n = "<n as=\""+neighbor.getASIdentifier()+"\" p=\""+prefixString+"\" />";
 						stream.write(n.getBytes());
-					}
-					
+					}					
 						
 					stream.write("</f>".getBytes());
 					stream.write("<rs>".getBytes());
