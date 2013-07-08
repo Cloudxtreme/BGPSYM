@@ -29,7 +29,9 @@ public class PolicyImplRel implements Policy {
             // the lower preference the better
             outcome = pr2.getPreference() < pr1.getPreference();
         } else {
-        	log.info("prefix: "+prefix+" r1: "+route1+" n1: "+n1+" r2: "+route2+" n2:"+n2);
+        	if (route1 == null || route2 == null || n1 == null || n2 == null) {
+        		log.info("prefix: "+prefix+" r1: "+route1+" n1: "+n1+" r2: "+route2+" n2:"+n2);
+        	}
         	
             int l1 = getRelativeLenght(myAsId, n1.getASIdentifier(), route1, pr1);
             int l2 = getRelativeLenght(myAsId, n2.getASIdentifier(), route2, pr2);
