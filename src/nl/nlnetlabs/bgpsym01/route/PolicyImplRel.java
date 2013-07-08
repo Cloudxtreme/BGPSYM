@@ -31,10 +31,6 @@ public class PolicyImplRel implements Policy {
         } else {
         	log.info("prefix: "+prefix+" r1: "+route1+" n1: "+n1+" r2: "+route2+" n2:"+n2);
         	
-        	if (pr2 == null) {
-        		log.info("n2: "+n2+" pr2 empty");
-        	}
-        	
             int l1 = getRelativeLenght(myAsId, n1.getASIdentifier(), route1, pr1);
             int l2 = getRelativeLenght(myAsId, n2.getASIdentifier(), route2, pr2);
             outcome = l2 < l1;

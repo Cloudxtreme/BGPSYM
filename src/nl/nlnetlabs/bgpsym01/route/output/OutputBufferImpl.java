@@ -91,8 +91,10 @@ public class OutputBufferImpl implements OutputBuffer {
     public void flush(ASIdentifier asIdentifier) {
         Neighbor neighbor = neighbors.getNeighbor(asIdentifier);
         try {
-            processForANeighbor(neighbor, bufferStore.announcementsIterator(neighbor), true);
-            bufferStore.clearAnnouncements(neighbor);
+        	if (neighbor.isValid()) {
+        		processForANeighbor(neighbor, bufferStore.announcementsIterator(neighbor), true);
+            	bufferStore.clearAnnouncements(neighbor);
+        	}
         } catch (Exception e) {
             // it's ok - there was nothing to send, happens during tests
         }
@@ -105,7 +107,9 @@ public class OutputBufferImpl implements OutputBuffer {
 
     private void processAnnouncements() {
         for (Neighbor neighbor : neighbors) {
-            processForANeighbor(neighbor, bufferStore.announcementsIterator(), false);
+        	if (neighbor.isValid()) {
+        		processForANeighbor(neighbor, bufferStore.announcementsIterator(), false);
+        	}
         }
         // clear the list...
         bufferStore.clearAnnouncements();
@@ -249,6 +253,10 @@ public class OutputBufferImpl implements OutputBuffer {
 
         // timers don't matter for withdrawals...
         for (Neighbor neighbor : neighbors) {
+        	if (!neighbor.isValid()) {
+        		continue;
+        	}
+        	
             Iterator<OutputRemoveEntity> iterator = bufferStore.withdrawalsIterator();
             ArrayList<Prefix> withdrawals = new ArrayList<Prefix>();
             while (iterator.hasNext()) {

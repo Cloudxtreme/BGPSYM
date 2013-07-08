@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import nl.nlnetlabs.bgpsym01.main.SystemConstants;
+import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbors;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
@@ -15,6 +16,8 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EDataInputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 import nl.nlnetlabs.bgpsym01.process.BGPProcess;
 import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
+import nl.nlnetlabs.bgpsym01.route.output.OutputBufferImpl;
+import nl.nlnetlabs.bgpsym01.route.output.OutputStateImpl;
 
 import org.apache.log4j.Logger;
 
@@ -47,13 +50,24 @@ public class DisconnectCommand extends MasterCommand {
 
             @Override
             public void run(BGPProcess process) {
+            	Neighbors neighbors = process.getNeighbors();
+            	PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
+            	
 				//log.info("received disconnect command with ases: "+asIds+" "+process.getNeighbors().size());
                 for (ASIdentifier asId : asIds) {
-                    ((PrefixStoreMapImpl) process.getStore()).removePrefixesFromSender(asId);
-                    Neighbors neighbors = process.getNeighbors();
-                    synchronized(neighbors) {
-                    	neighbors.remove(asId);
-                    }
+                	Neighbor neighbor = neighbors.getNeighbor(asId);
+
+                	OutputBufferImpl outputBuffer = (OutputBufferImpl) store.getOutputBuffer();
+                	outputBuffer.getBufferStore().removeAllAnnouncements(neighbor);
+                	
+                	ArrayList<Prefix> prefixes = store.removePrefixesFromSender(asId);
+                	
+                	OutputStateImpl outputState = (OutputStateImpl) outputBuffer.getOutputState();
+                	outputState.registerPrefixes(neighbor, prefixes);
+                	
+                	neighbor.setValid(false);
+                	
+                    //neighbors.remove(asId);
                 }
 
 				//log.info("total neighbors after: "+process.getNeighbors().size());
