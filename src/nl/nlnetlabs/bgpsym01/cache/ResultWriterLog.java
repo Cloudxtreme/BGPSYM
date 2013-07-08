@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Collection;
@@ -49,12 +50,23 @@ public class ResultWriterLog {
 	
 	private List<Map<Neighbor, List<Prefix>>> filtered;
 	
+	private Map<String, Integer> values;
+	
 	public ResultWriterLog(ASIdentifier asId) {
 		this.asId = asId;
 		this.logs = new ArrayList<String>();
 		xStream = XStreamFactory.getXStream();
 		responseList = new ArrayList<Collection<RouteViewDataResponse>>();
 		filtered = new ArrayList<Map<Neighbor, List<Prefix>>>();
+		values = new HashMap<String, Integer>();
+		
+		// p w u up uw ub
+		values.put("p", 0);
+		values.put("w", 0);
+		values.put("u", 0);
+		values.put("up", 0);
+		values.put("uw", 0);
+		values.put("ub", 0);
 	}
 
     OutputStream getStream() {
@@ -98,13 +110,20 @@ public class ResultWriterLog {
 	}
 
 	public void writeLog (BGPProcess process, long currentTime) {
+			values.put("p", process.getReceivedPrefixes()-values.get("p"));
+			values.put("w", process.getReceivedWithdrawals()-values.get("w"));
+			values.put("u", process.getUpdates()-values.get("u"));
+			values.put("up", process.getUpdatesWithPrefixes()-values.get("up"));
+			values.put("uw", process.getUpdatesWithWithdrawals()-values.get("uw"));
+			values.put("ub", process.getUpdatesWithBoth()-values.get("ub"));
+		
 			String state = "<l t=\""+currentTime+"\"" +
-					" p=\""+process.getReceivedPrefixes()+"\"" +
-					" w=\""+process.getReceivedWithdrawals()+"\"" +
-					" u=\""+process.getUpdates()+"\"" +
-					" up=\""+process.getUpdatesWithPrefixes()+"\"" +
-					" uw=\""+process.getUpdatesWithWithdrawals()+"\"" +
-					" ub=\""+process.getUpdatesWithBoth()+"\">";
+					" p=\""+values.get("p")+"\"" +
+					" w=\""+values.get("w")+"\"" +
+					" u=\""+values.get("u")+"\"" +
+					" up=\""+values.get("up")+"\"" +
+					" uw=\""+values.get("uw")+"\"" +
+					" ub=\""+values.get("ub")+"\">";
 			state += "<ns>";
 
 			PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
