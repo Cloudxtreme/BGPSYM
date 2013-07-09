@@ -24,7 +24,7 @@ parser.add_argument('-t', '--time', type=str, default=DEFAULT_RUNTIME, help="Run
 parser.add_argument('-np', '--properties', type=int, default=DEFAULT_NUMBER_OF_PROPERTIES, help="Total number of property files")
 args=parser.parse_args()
 
-graphName = args.name
+graphName = args.graph
 eventName = args.event
 slaves = args.slaves
 timeDuration = args.time
@@ -59,8 +59,8 @@ for i in range(0,props):
   os.mkdir('tars')
   os.system("find . -type f | while read filename; do tar -czvf \"tars/$filename\".tar.gz \"$filename\" && rm \"$filename\"; done > %s/logs/gzip_%d 2>&1" % (BGPSYM_PATH, i))
 
-  #os.system("ssh area51 'mkdir -p %s'" % remoteDir)
-  #os.system(cmd)
-  #os.system("rm -rf %s" % (localDir))
+  os.system("ssh area51 'mkdir -p %s'" % remoteDir)
+  os.system(cmd)
+  os.system("rm -rf %s" % (localDir))
   os.chdir(BGPSYM_PATH)
   sleep(60)
