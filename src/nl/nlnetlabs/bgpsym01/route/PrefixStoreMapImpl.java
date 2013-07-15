@@ -124,7 +124,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		return new Pair<ASIdentifier, Prefix>(origin, prefix);
 	}
 
-	private void refreshMap (ASIdentifier origin, Collection<Prefix> prefixList, Route route) {
+	/*private void refreshMap (ASIdentifier origin, Collection<Prefix> prefixList, Route route) {
 		long now = timeController.getCurrentTime();
 		for (Prefix prefix : prefixList) {
 			Pair<ASIdentifier, Prefix> pair = getPair(origin, prefix);
@@ -146,14 +146,39 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				}
 			}
 		}
+	}*/
+	
+	private void refreshMap (ASIdentifier origin, Prefix prefix, Route route) {
+		long now = timeController.getCurrentTime();
+		
+		Pair<ASIdentifier, Prefix> pair = getPair(origin, prefix);
+		synchronized(map) {
+			RouteViewDataResponse response = map.get(pair);
+			if (response == null) {
+				response = new RouteViewDataResponse(origin, prefix, now, now, route);
+				response.length++;
+				map.put(pair, response);
+			}
+			else {
+				if (response.firstSeen == -1) {
+					response.firstSeen = now;
+				}
+
+				response.lastSeen = now;
+				response.route = route;
+				response.length++;
+			}
+		}
 	}
 
     public void prefixRemove(ASIdentifier asIdentifier, Collection<Prefix> prefixes) {
         assert prefixes != null && prefixes.size() > 0;
-		refreshMap(asIdentifier, prefixes, null);
+		//refreshMap(asIdentifier, prefixes, null);
 
         for (Prefix prefix : prefixes) {
-            prefixRemove(asIdentifier, prefix);	
+            if (prefixRemove(asIdentifier, prefix)) {
+            	refreshMap(asIdentifier, prefix, null);
+            }
         }
         outputBuffer.flush();
     }
@@ -303,6 +328,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
             outputBuffer.add(new OutputRemoveEntity(prefixInfo, currentRoute));
             output = true;
         }
+        
         return output;
     }
 
@@ -356,7 +382,9 @@ public class PrefixStoreMapImpl implements PrefixStore {
                 neighborEntry.setRoute(route);
             }
 
-            runDecision(originator, prefixInfo, currentRoute);
+            if (runDecision(originator, prefixInfo, currentRoute)) {
+            	refreshMap(asIdentifier, prefix, route);
+            }
 
         } else {
             PrefixTableEntry currentEntry = prefixInfo.getCurrentEntry();
@@ -367,6 +395,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
                 neighborEntry.invalidate(true);
             } else {
                 neighborEntry.setRoute(route);
+                
+                refreshMap(asIdentifier, prefix, route);
             }
 
             // don't use newEntry if it is flapped
@@ -431,7 +461,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	public void prefixReceived(ASIdentifier asIdentifier, Collection<Prefix> prefixes, Route route) {
 
         assert prefixes != null && prefixes.size() > 0;
-		refreshMap(asIdentifier, prefixes, route);
 		
 		PrefixCacheImplBlock cacheRef = (PrefixCacheImplBlock) cache;
 		
