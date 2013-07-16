@@ -1,5 +1,6 @@
 package nl.nlnetlabs.bgpsym01.cache;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -30,6 +31,8 @@ import nl.nlnetlabs.bgpsym01.route.output.OutputBufferImpl;
 import nl.nlnetlabs.bgpsym01.route.output.OutputStateImpl;
 
 import org.apache.log4j.Logger;
+import org.json.XML;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.CompactWriter;
 
@@ -151,16 +154,22 @@ public class ResultWriterLog {
 		try {
 			stream = getStream();
 			
+			StringBuffer result = new StringBuffer();
+			
 			try {
 				int i = 0;
 				
-				stream.write("<ls>".getBytes());
+				result.append("<ls>");
+				
+				//stream.write("<ls>".getBytes());
 				
 				for (String log : logs) {
-					stream.write(log.getBytes());
+					result.append(log);
+					//stream.write(log.getBytes());
 					
 					
-					stream.write("<f>".getBytes());
+					//stream.write("<f>".getBytes());
+					result.append("<f>");
 					Iterator<Entry<Neighbor, List<Prefix>>> iteratorPrefixes = this.filtered.get(i).entrySet().iterator();
 					while (iteratorPrefixes.hasNext()) {
 						Entry<Neighbor, List<Prefix>> entry = iteratorPrefixes.next();
@@ -172,27 +181,36 @@ public class ResultWriterLog {
 						}
 						
 						String n = "<n as=\""+neighbor.getASIdentifier()+"\" p=\""+prefixString+"\" />";
-						stream.write(n.getBytes());
+						//stream.write(n.getBytes());
+						result.append(n);
 					}					
-						
-					stream.write("</f>".getBytes());
-					stream.write("<rs>".getBytes());
+					
+					result.append("</f>");
+					result.append("<rs>");
+					
+					//stream.write("</f>".getBytes());
+					//stream.write("<rs>".getBytes());
 					
 					Iterator<RouteViewDataResponse> iteratorResponses = responseList.get(i).iterator();
 					RouteViewDataResponse currentResponse;
 					while (iteratorResponses.hasNext()) {
+						OutputStream response = new ByteArrayOutputStream();
 							
 						currentResponse = iteratorResponses.next();
-						CompactWriter writer = new CompactWriter(new OutputStreamWriter(stream));
+						CompactWriter writer = new CompactWriter(new OutputStreamWriter(response));
 						xStream.marshal(currentResponse, writer);
+						result.append(response.toString());
 					}
 
-					stream.write("</rs></l>".getBytes());
+					//stream.write("</rs></l>".getBytes());
+					result.append("</rs></l>");
 					
 					i++;
 				}
 				
-				stream.write("</ls>".getBytes());
+				result.append("</ls>");
+				//stream.write("</ls>".getBytes());
+				stream.write(XML.toJSONObject(result.toString()).toString().getBytes());
 			}
 			finally {
 				stream.close();
