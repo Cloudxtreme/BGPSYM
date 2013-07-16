@@ -35,6 +35,7 @@ import java.util.Iterator;
  * @author JSON.org
  * @version 2012-03-28
  */
+@SuppressWarnings(value = {"rawtypes", "unchecked"})
 public class JSONML {
 
     /**

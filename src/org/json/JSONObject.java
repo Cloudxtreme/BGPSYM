@@ -92,6 +92,7 @@ import java.util.Set;
  * @author JSON.org
  * @version 2013-06-17
  */
+@SuppressWarnings(value = {"rawtypes", "unchecked"})
 public class JSONObject {
     /**
      * JSONObject.NULL is equivalent to the value that JavaScript calls null,
