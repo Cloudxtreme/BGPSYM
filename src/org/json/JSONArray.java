@@ -77,6 +77,7 @@ import java.util.Map;
  * @author JSON.org
  * @version 2013-04-18
  */
+@SuppressWarnings(value = {"rawtypes", "unchecked"})
 public class JSONArray {
 
     /**
@@ -99,7 +100,7 @@ public class JSONArray {
      * @throws JSONException
      *             If there is a syntax error.
      */
-    public JSONArray(JSONTokener x) throws JSONException {
+	public JSONArray(JSONTokener x) throws JSONException {
         this();
         if (x.nextClean() != '[') {
             throw x.syntaxError("A JSONArray text must start with '['");
