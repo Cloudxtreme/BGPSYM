@@ -2,10 +2,8 @@ package nl.nlnetlabs.bgpsym01.command;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import nl.nlnetlabs.bgpsym01.main.SystemConstants;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbors;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
@@ -17,7 +15,6 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 import nl.nlnetlabs.bgpsym01.process.BGPProcess;
 import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 import nl.nlnetlabs.bgpsym01.route.output.OutputBufferImpl;
-import nl.nlnetlabs.bgpsym01.route.output.OutputStateImpl;
 
 import org.apache.log4j.Logger;
 
@@ -60,10 +57,10 @@ public class DisconnectCommand extends MasterCommand {
                 	OutputBufferImpl outputBuffer = (OutputBufferImpl) store.getOutputBuffer();
                 	outputBuffer.getBufferStore().removeAllAnnouncements(neighbor);
                 	
-                	ArrayList<Prefix> prefixes = store.removePrefixesFromSender(asId);
+                	//ArrayList<Prefix> prefixes = store.removePrefixesFromSender(asId);
                 	
-                	OutputStateImpl outputState = (OutputStateImpl) outputBuffer.getOutputState();
-                	outputState.registerPrefixes(neighbor, prefixes);
+                	//OutputStateImpl outputState = (OutputStateImpl) outputBuffer.getOutputState();
+                	//outputState.registerPrefixes(neighbor, prefixes);
                 	
                 	neighbor.setValid(false);
                 	

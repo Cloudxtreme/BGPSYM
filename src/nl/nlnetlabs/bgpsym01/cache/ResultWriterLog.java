@@ -142,10 +142,10 @@ public class ResultWriterLog {
 			Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
 			responseList.add(prefixDataList);
 			
-			OutputBufferImpl outputBuffer = (OutputBufferImpl) store.getOutputBuffer();
+			/*OutputBufferImpl outputBuffer = (OutputBufferImpl) store.getOutputBuffer();
 			OutputStateImpl outputState = (OutputStateImpl) outputBuffer.getOutputState();
 			
-			filtered.add(clone(outputState.getPrefixes()));
+			filtered.add(clone(outputState.getPrefixes()));*/
 
 			logs.add(state);
 	}
@@ -169,7 +169,7 @@ public class ResultWriterLog {
 					
 					
 					//stream.write("<f>".getBytes());
-					result.append("<f>");
+					/*result.append("<f>");
 					Iterator<Entry<Neighbor, List<Prefix>>> iteratorPrefixes = this.filtered.get(i).entrySet().iterator();
 					while (iteratorPrefixes.hasNext()) {
 						Entry<Neighbor, List<Prefix>> entry = iteratorPrefixes.next();
@@ -185,7 +185,7 @@ public class ResultWriterLog {
 						result.append(n);
 					}					
 					
-					result.append("</f>");
+					result.append("</f>");*/
 					result.append("<rs>");
 					
 					//stream.write("</f>".getBytes());
