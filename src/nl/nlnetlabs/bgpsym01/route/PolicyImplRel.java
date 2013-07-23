@@ -33,8 +33,8 @@ public class PolicyImplRel implements Policy {
         		log.info("prefix: "+prefix+" r1: "+route1+" n1: "+n1+" r2: "+route2+" n2:"+n2);
         	}
         	
-            int l1 = getRelativeLenght(myAsId, n1.getASIdentifier(), route1, pr1);
-            int l2 = getRelativeLenght(myAsId, n2.getASIdentifier(), route2, pr2);
+            int l1 = getRelativeLength(myAsId, n1.getASIdentifier(), route1, pr1);
+            int l2 = getRelativeLength(myAsId, n2.getASIdentifier(), route2, pr2);
             outcome = l2 < l1;
         }
 
@@ -45,7 +45,7 @@ public class PolicyImplRel implements Policy {
         return outcome;
     }
 
-    private int getRelativeLenght(ASIdentifier asIdentifier, ASIdentifier neighborAsId, Route route, PeerRelation peerRelation) {
+    private int getRelativeLength(ASIdentifier asIdentifier, ASIdentifier neighborAsId, Route route, PeerRelation peerRelation) {
         // for 50% of neighbors add 1 to the path length...
         int v = (neighborAsId.getInternalId() * 17 + asIdentifier.getInternalId() * 19) % 20;
         // int hops = route.getHops().length + peerRelation.getPreference();
