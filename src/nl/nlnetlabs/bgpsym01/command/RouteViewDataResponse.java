@@ -41,9 +41,6 @@ public class RouteViewDataResponse implements EExternalizable {
 	@XStreamAlias("l")
     public long lastSeen;
 
-    // not tested
-    @XStreamAsAttribute
-	@XStreamAlias("ln")
     public int length;
 
 	@XStreamAlias("rt")
