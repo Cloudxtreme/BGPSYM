@@ -11,6 +11,7 @@ __author__ = 'Jeffrey'
 DEFAULT_TOTAL_SLAVES = 48
 DEFAULT_RUNTIME = "00:15:00"
 DEFAULT_NUMBER_OF_PROPERTIES = 100
+DEFAULT_START = 0
 SCR_RESULTS_DIR = "/var/scratch/jlf200/results/"
 BGPSYM_PATH = "/home/jlf200/BGPSYM/"
 REMOTE_RESULTS_DIR = "/home/jeffrey/data"
@@ -22,6 +23,7 @@ parser.add_argument('-e', '--event', type=str, required=True, help="Name of even
 parser.add_argument('-s', '--slaves', type=int, default=DEFAULT_TOTAL_SLAVES, help="Number of compute nodes")
 parser.add_argument('-t', '--time', type=str, default=DEFAULT_RUNTIME, help="Runtime of simulation")
 parser.add_argument('-np', '--properties', type=int, default=DEFAULT_NUMBER_OF_PROPERTIES, help="Total number of property files")
+parser.add_argument('-st','--start', type=int, default=DEFAULT_START, help="Start properties")
 args=parser.parse_args()
 
 graphName = args.graph
@@ -29,6 +31,14 @@ eventName = args.event
 slaves = args.slaves
 timeDuration = args.time
 props = args.properties
+start = args.start
+
+print("Graph name: %s" % graphName)
+print("Event name: %s" % eventName)
+print("Slaves: %d" % slaves)
+print("Duration: %s" % timeDuration)
+print("Total properties: %s" % props)
+print("Start: %d" % start)
 
 directory = "~/experiments/%s/properties/%s/properties_" % (graphName, eventName)
 
@@ -38,7 +48,7 @@ def getLatestDir (path):
   return max(all_subdirs, key=os.path.getmtime)
 
 #./magic_run.sh 48 ~/experiments/1k/properties/disconnect_link/properties_0.xml 00:15:00
-for i in range(0,props):
+for i in range(start,props):
   cmd = "%smagic_run.sh %d %s%d.xml %s" % (BGPSYM_PATH, slaves, directory, i, timeDuration)
   print(cmd)
   os.system(cmd)
@@ -63,4 +73,4 @@ for i in range(0,props):
   os.system(cmd)
   os.system("rm -rf %s" % (localDir))
   os.chdir(BGPSYM_PATH)
-  sleep(60)
+  sleep(5)
