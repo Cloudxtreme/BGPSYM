@@ -15,6 +15,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 @XStreamAlias("r")
 public class RouteViewDataResponse implements EExternalizable {
@@ -41,6 +42,7 @@ public class RouteViewDataResponse implements EExternalizable {
 	@XStreamAlias("l")
     public long lastSeen;
 
+    @XStreamOmitField
     public int length;
 
 	@XStreamAlias("rt")
