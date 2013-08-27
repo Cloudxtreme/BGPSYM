@@ -87,12 +87,12 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
 	public 	ArrayList<Prefix> removePrefixesFromSender(ASIdentifier sender) {
 
+		ArrayList<Prefix> prefixesToDelete = new ArrayList<Prefix>();
+		
 		if (cache instanceof PrefixCacheImplBlock) {
 			LinkedHashMap<Prefix, PrefixInfo> prefixes = ((PrefixCacheImplBlock) cache).getTable();
 
 			Iterator<Entry<Prefix, PrefixInfo>> iterator = prefixes.entrySet().iterator();
-
-			ArrayList<Prefix> prefixesToDelete = new ArrayList<Prefix>();
 
 			while(iterator.hasNext()) {
 				Entry<Prefix, PrefixInfo> current = iterator.next();
@@ -112,11 +112,9 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				//log.info("prefixes to delete: "+prefixesToDelete);
 				prefixRemove(sender, prefixesToDelete);
 			}
-
-			return prefixesToDelete;
 		}
 
-		return null;
+		return prefixesToDelete;
 	}
 
 	private Pair<ASIdentifier, Prefix> getPair(ASIdentifier origin, Prefix prefix) {
