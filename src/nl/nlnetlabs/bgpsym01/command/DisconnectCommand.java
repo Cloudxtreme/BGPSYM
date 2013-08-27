@@ -58,12 +58,12 @@ public class DisconnectCommand extends MasterCommand {
                 	OutputBufferImpl outputBuffer = (OutputBufferImpl) store.getOutputBuffer();
                 	outputBuffer.getBufferStore().removeAllAnnouncements(neighbor);
                 	
+                	neighbor.setValid(false);
+                	
                 	ArrayList<Prefix> prefixes = store.removePrefixesFromSender(asId);
                 	
                 	/*OutputStateImpl outputState = (OutputStateImpl) outputBuffer.getOutputState();
                 	outputState.registerPrefixes(neighbor, prefixes);*/
-                	
-                	neighbor.setValid(false);
                 	
                     //neighbors.remove(asId);
                 }
