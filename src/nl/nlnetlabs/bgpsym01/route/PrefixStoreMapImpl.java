@@ -319,13 +319,13 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			outputBuffer.add(new OutputAddEntity(prefixInfo, best.getRoute(), currentRoute));
 			output = true;
 			
-			refreshMap(originator, prefix, best.getRoute());
+			refreshMap(best.getOriginator(), prefix, best.getRoute());
 		} else if (currentRoute != null) {
 			callback.prefixUnregistered(originator, prefix, currentRoute, null);
 			prefixInfo.setCurrentEntry(null);
 			outputBuffer.add(new OutputRemoveEntity(prefixInfo, currentRoute));
 			output = true;
-			refreshMap(originator, prefix, null);
+			refreshMap(currentRoute.getSender(), prefix, null);
 		}
 
 		return output;
@@ -404,7 +404,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				
 				replaceRoute(prefixInfo, neighborEntry, true);
 				
-				refreshMap(originator, prefix, route);
+				refreshMap(route.getSender(), prefix, route);
 
 				callback.prefixRegistered(originator, prefix, currentEntry == null ? null : currentEntry.getRoute(), route);
 			} else {
