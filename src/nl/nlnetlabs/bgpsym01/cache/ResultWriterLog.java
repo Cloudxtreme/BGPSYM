@@ -27,8 +27,6 @@ import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
 import nl.nlnetlabs.bgpsym01.route.PeerRelation;
 import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
-import nl.nlnetlabs.bgpsym01.route.output.OutputBufferImpl;
-import nl.nlnetlabs.bgpsym01.route.output.OutputStateImpl;
 
 import org.apache.log4j.Logger;
 import org.json.XML;

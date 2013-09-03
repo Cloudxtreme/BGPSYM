@@ -26,7 +26,7 @@ After changing directory you can start an experiment by making use of the shell 
 
 The parameters for the simulator are specified in an XML formatted file, as mentioned above.
 The properties file describes various parameter values that can be set for the simulation.
-Each parameter has its own name and value and their meaning are quite straightforward. For example, number of slave nodes, working directory, scratch directory etc.
+Each parameter has its own name and value and their meaning are quite straightforward. For example: number of slave nodes; working directory; scratch directory; etc.
 
 Some specific simulator parameters (which defines the behaviour of the simulator) are described below:
 
@@ -73,4 +73,4 @@ Simulation experiments are described by so-called scenarios, or commands. Scenar
 
 ### Logging
 
-Simulator outsput are done through apache's [log4j](http://logging.apache.org/log4j/).
+Simulator outputs are done through apache's [log4j](http://logging.apache.org/log4j/).

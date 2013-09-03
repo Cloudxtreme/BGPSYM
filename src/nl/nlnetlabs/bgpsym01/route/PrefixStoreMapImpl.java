@@ -223,7 +223,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			}
 
 			if (runDecision(originator, prefixInfo, oldRoute)) {
-				// TODO call refreshMap
 			}
 
 			return true;
