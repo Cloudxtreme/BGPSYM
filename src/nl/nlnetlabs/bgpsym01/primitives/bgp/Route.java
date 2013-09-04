@@ -125,6 +125,14 @@ public class Route implements EExternalizable {
             }
         }
     }
+    
+    public ASIdentifier getOrigin () {
+    	if (hops == null) {
+    		return null;
+    	}
+    	
+    	return hops[0];
+    }
 
     public ASIdentifier getSender() {
         if (hops == null) {
