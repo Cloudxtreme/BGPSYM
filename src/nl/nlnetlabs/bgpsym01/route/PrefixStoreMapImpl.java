@@ -67,14 +67,14 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		properties = XProperties.getInstance();
 	}
 
-	public Map<Pair<ASIdentifier, Prefix>, RouteViewDataResponse> getMap () {
+	public Map<Pair<ASIdentifier, Prefix>, RouteViewDataResponse> getMap() {
 		return this.map;
 	}
 
 	public Collection<RouteViewDataResponse> getPrefixDataList() {
 		List<RouteViewDataResponse> mapCopy = new ArrayList<RouteViewDataResponse>();
 
-		synchronized(map) {
+		synchronized (map) {
 			Iterator<RouteViewDataResponse> iterator = map.values().iterator();
 			while (iterator.hasNext()) {
 				RouteViewDataResponse entry = iterator.next();
@@ -85,16 +85,16 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		return mapCopy;
 	}
 
-	public 	ArrayList<Prefix> removePrefixesFromSender(ASIdentifier sender) {
+	public ArrayList<Prefix> removePrefixesFromSender(ASIdentifier sender) {
 
-		ArrayList<Prefix> prefixesToDelete = new ArrayList<Prefix>();
-		
+		ArrayList<Prefix> prefixesToRemove = new ArrayList<Prefix>();
+
 		if (cache instanceof PrefixCacheImplBlock) {
 			LinkedHashMap<Prefix, PrefixInfo> prefixes = ((PrefixCacheImplBlock) cache).getTable();
 
 			Iterator<Entry<Prefix, PrefixInfo>> iterator = prefixes.entrySet().iterator();
 
-			while(iterator.hasNext()) {
+			while (iterator.hasNext()) {
 				Entry<Prefix, PrefixInfo> current = iterator.next();
 				PrefixInfo info = current.getValue();
 				Prefix currentPrefix = current.getKey();
@@ -103,60 +103,51 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				if (entry != null) {
 					Route route = entry.getRoute();
 					if (route != null && route.isFrom(sender)) {
-						prefixesToDelete.add(currentPrefix);
+						prefixesToRemove.add(currentPrefix);
 					}
 				}
 			}
 
-			if (prefixesToDelete.size() > 0) {
-				//log.info("prefixes to delete: "+prefixesToDelete);
-				prefixRemove(sender, prefixesToDelete);
+			if (prefixesToRemove.size() > 0) {
+				// log.info("prefixes to delete: "+prefixesToDelete);
+				prefixRemove(sender, prefixesToRemove);
 			}
 		}
 
-		return prefixesToDelete;
+		return prefixesToRemove;
 	}
 
-	private Pair<ASIdentifier, Prefix> getPair(ASIdentifier origin, Prefix prefix) {
+	private Pair<ASIdentifier, Prefix> getPair(ASIdentifier origin,
+			Prefix prefix) {
 		return new Pair<ASIdentifier, Prefix>(origin, prefix);
 	}
 
-	/*private void refreshMap (ASIdentifier origin, Collection<Prefix> prefixList, Route route) {
-		long now = timeController.getCurrentTime();
-		for (Prefix prefix : prefixList) {
-			Pair<ASIdentifier, Prefix> pair = getPair(origin, prefix);
-			synchronized(map) {
-				RouteViewDataResponse response = map.get(pair);
-				if (response == null) {
-					response = new RouteViewDataResponse(origin, prefix, now, now, route);
-					response.length++;
-					map.put(pair, response);
-				}
-				else {
-					if (response.firstSeen == -1) {
-						response.firstSeen = now;
-					}
+	/*
+	 * private void refreshMap (ASIdentifier origin, Collection<Prefix>
+	 * prefixList, Route route) { long now = timeController.getCurrentTime();
+	 * for (Prefix prefix : prefixList) { Pair<ASIdentifier, Prefix> pair =
+	 * getPair(origin, prefix); synchronized(map) { RouteViewDataResponse
+	 * response = map.get(pair); if (response == null) { response = new
+	 * RouteViewDataResponse(origin, prefix, now, now, route);
+	 * response.length++; map.put(pair, response); } else { if
+	 * (response.firstSeen == -1) { response.firstSeen = now; }
+	 * 
+	 * response.lastSeen = now; response.route = route; response.length++; } } }
+	 * }
+	 */
 
-					response.lastSeen = now;
-					response.route = route;
-					response.length++;
-				}
-			}
-		}
-	}*/
-
-	private void refreshMap (ASIdentifier origin, Prefix prefix, Route route) {
+	private void refreshMap(ASIdentifier origin, Prefix prefix, Route route) {
 		long now = timeController.getCurrentTime();
 
 		Pair<ASIdentifier, Prefix> pair = getPair(origin, prefix);
-		synchronized(map) {
+		synchronized (map) {
 			RouteViewDataResponse response = map.get(pair);
 			if (response == null) {
-				response = new RouteViewDataResponse(origin, prefix, now, now, route);
+				response = new RouteViewDataResponse(origin, prefix, now, now,
+						route);
 				response.length++;
 				map.put(pair, response);
-			}
-			else {
+			} else {
 				if (response.firstSeen == -1) {
 					response.firstSeen = now;
 				}
@@ -168,9 +159,10 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		}
 	}
 
-	public void prefixRemove(ASIdentifier asIdentifier, Collection<Prefix> prefixes) {
+	public void prefixRemove(ASIdentifier asIdentifier,
+			Collection<Prefix> prefixes) {
 		assert prefixes != null && prefixes.size() > 0;
-		//refreshMap(asIdentifier, prefixes, null);
+		// refreshMap(asIdentifier, prefixes, null);
 
 		for (Prefix prefix : prefixes) {
 			prefixRemove(asIdentifier, prefix);
@@ -183,10 +175,13 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
 		PrefixInfo prefixInfo = cache.getPrefixInfo(prefix);
 
-		Map<ASIdentifier, PrefixTableEntry> neighborsForPrefix = prefixInfo.getNeighborsMap();
+		Map<ASIdentifier, PrefixTableEntry> neighborsForPrefix = prefixInfo
+				.getNeighborsMap();
 
-		/* we don't know anything about this particular prefix therefore we cannot withdraw this data
-		 * still it's weird that we have received info about it
+		/*
+		 * we don't know anything about this particular prefix therefore we
+		 * cannot withdraw this data still it's weird that we have received info
+		 * about it
 		 */
 		if (neighborsForPrefix == null) {
 			log.warn("neighborsForPrefix==null, prefix=" + prefix);
@@ -194,15 +189,19 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		}
 
 		/*
-		 * if we don't have info about this prefix from specified AS we cannot withdraw it
+		 * if we don't have info about this prefix from specified AS we cannot
+		 * withdraw it
 		 * 
-		 * This is a legitimate if the entry is not valid because we were on the AS path.
-		 * We check if this the case. If it is not, we output a warning.
+		 * This is a legitimate if the entry is not valid because we were on the
+		 * AS path. We check if this the case. If it is not, we output a
+		 * warning.
 		 */
 		PrefixTableEntry entry = neighborsForPrefix.get(originator);
 		if (entry == null || !entry.isValid()) {
 			if (entry == null || !entry.isContainsMe()) {
-				//log.warn("don't have entry for " + prefix + ", entry=" + entry + ", me=" + (entry == null ? "ERROR" : entry.isContainsMe()));
+				// log.warn("don't have entry for " + prefix + ", entry=" +
+				// entry + ", me=" + (entry == null ? "ERROR" :
+				// entry.isContainsMe()));
 			}
 			return false;
 		}
@@ -214,12 +213,14 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		boolean wasCurrent = prefixInfo.getCurrentEntry() == entry;
 
 		// TODO write test for it!!!
-		Route oldRoute = prefixInfo.getCurrentEntry() == null ? null : prefixInfo.getCurrentEntry().getRoute();
+		Route oldRoute = prefixInfo.getCurrentEntry() == null ? null
+				: prefixInfo.getCurrentEntry().getRoute();
 		entry.invalidate(false);
 
 		if (wasCurrent) {
 			if (log.isDebugEnabled()) {
-				log.debug("removing prefix " + prefix + " from " + originator + ", is current, size=" + neighborsForPrefix.size());
+				log.debug("removing prefix " + prefix + " from " + originator
+						+ ", is current, size=" + neighborsForPrefix.size());
 			}
 
 			if (runDecision(originator, prefixInfo, oldRoute)) {
@@ -240,7 +241,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	 * @param newEntry
 	 * @param addToBuffer
 	 */
-	void replaceRoute(PrefixInfo prefixInfo, PrefixTableEntry newEntry, boolean addToBuffer) {
+	void replaceRoute(PrefixInfo prefixInfo, PrefixTableEntry newEntry,
+			boolean addToBuffer) {
 
 		Route oldRoute = null;
 		if (prefixInfo.getCurrentEntry() != null) {
@@ -250,7 +252,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		prefixInfo.setCurrentEntry(newEntry);
 
 		if (addToBuffer) {
-			outputBuffer.add(new OutputAddEntity(prefixInfo, newEntry.getRoute(), oldRoute));
+			outputBuffer.add(new OutputAddEntity(prefixInfo, newEntry
+					.getRoute(), oldRoute));
 		}
 	}
 
@@ -267,10 +270,11 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	 * @param currentRoute
 	 * @return
 	 */
-	boolean runDecision(ASIdentifier originator, PrefixInfo prefixInfo, Route currentRoute) {
+	boolean runDecision(ASIdentifier originator, PrefixInfo prefixInfo,
+			Route currentRoute) {
 		/*
-		 * 1. remove entry from current prefix store
-		 * 2. find new entry for the prefix store and put it in place
+		 * 1. remove entry from current prefix store 2. find new entry for the
+		 * prefix store and put it in place
 		 */
 
 		// this where we will store the new best route - if it stays null there
@@ -298,7 +302,9 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			 * check whether the new one is better
 			 */
 
-			if (policy.isBetter(asIdentifier, prefix, best == null ? null : best.getRoute(), getNeighbor(best), pte.getRoute(), getNeighbor(pte))) {
+			if (policy.isBetter(asIdentifier, prefix, best == null ? null
+					: best.getRoute(), getNeighbor(best), pte.getRoute(),
+					getNeighbor(pte))) {
 				best = pte;
 			}
 		}
@@ -307,18 +313,24 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		if (best != null) {
 			// debugging purposes - this "if" is slowing us down, but it is
 			// useful to have it
-			if (EL.checkWarnings && best == prefixInfo.getCurrentEntry() && best.getRoute().equals(currentRoute)) {
+			if (EL.checkWarnings && best == prefixInfo.getCurrentEntry()
+					&& best.getRoute().equals(currentRoute)) {
 
 				/*
-				 * we treat situation when we start the decision process and end up with exactly the same stuff as erroneous!
+				 * we treat situation when we start the decision process and end
+				 * up with exactly the same stuff as erroneous!
 				 */
-				log.warn("best==currentEntry, prefix=" + prefix + ", s=" + prefixInfo.getNeighborsMap().size() + ", r=" + currentRoute);
+				log.warn("best==currentEntry, prefix=" + prefix + ", s="
+						+ prefixInfo.getNeighborsMap().size() + ", r="
+						+ currentRoute);
 			}
-			callback.prefixUnregistered(originator, prefix, currentRoute, best.getRoute());
+			callback.prefixUnregistered(originator, prefix, currentRoute,
+					best.getRoute());
 			replaceRoute(prefixInfo, best, false);
-			outputBuffer.add(new OutputAddEntity(prefixInfo, best.getRoute(), currentRoute));
+			outputBuffer.add(new OutputAddEntity(prefixInfo, best.getRoute(),
+					currentRoute));
 			output = true;
-			
+
 			refreshMap(best.getRoute().getOrigin(), prefix, best.getRoute());
 		} else if (currentRoute != null) {
 			callback.prefixUnregistered(originator, prefix, currentRoute, null);
@@ -332,7 +344,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	}
 
 	private Neighbor getNeighbor(PrefixTableEntry entry) {
-		return entry == null ? null : neighbors.getNeighbor(entry.getOriginator());
+		return entry == null ? null : neighbors.getNeighbor(entry
+				.getOriginator());
 	}
 
 	void prefixReceived(ASIdentifier originator, Prefix prefix, Route route) {
@@ -340,7 +353,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
 		PrefixInfo prefixInfo = cache.getPrefixInfo(prefix);
 
-		Map<ASIdentifier, PrefixTableEntry> neighborsForPrefix = prefixInfo.getNeighborsMap();
+		Map<ASIdentifier, PrefixTableEntry> neighborsForPrefix = prefixInfo
+				.getNeighborsMap();
 
 		PrefixTableEntry neighborEntry = neighborsForPrefix.get(originator);
 		boolean isValid = false;
@@ -370,7 +384,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			// this is our current route, it might not be the best one anymore
 			Route currentRoute = neighborEntry.getRoute();
 			if (EL.checkWarnings && currentRoute.equals(route)) {
-				log.warn("already seen this one!, p=" + prefix + ", r=" + route + ", sender=" + originator);
+				log.warn("already seen this one!, p=" + prefix + ", r=" + route
+						+ ", sender=" + originator);
 			}
 
 			if (containsMe) {
@@ -396,30 +411,36 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			if (neighborEntry.getOriginator() == asIdentifier
 					|| neighborEntry.isValid()
 					&& !flapTimer.isFlapped()
-					&& policy.isBetter(asIdentifier,
-							prefix, currentEntry == null ? null : currentEntry.getRoute(),
-							getNeighbor(currentEntry),
+					&& policy.isBetter(
+							asIdentifier,
+							prefix,
+							currentEntry == null ? null : currentEntry
+									.getRoute(), getNeighbor(currentEntry),
 							neighborEntry.getRoute(),
 							getNeighbor(neighborEntry))) {
-				
+
 				replaceRoute(prefixInfo, neighborEntry, true);
-				
+
 				refreshMap(route.getOrigin(), prefix, route);
 
-				callback.prefixRegistered(originator, prefix, currentEntry == null ? null : currentEntry.getRoute(), route);
+				callback.prefixRegistered(originator, prefix,
+						currentEntry == null ? null : currentEntry.getRoute(),
+						route);
 			} else {
 
 			}
 		}
 	}
 
-	private void registerFlapIfNeeded(ASIdentifier originator, Prefix prefix, FlapTimer flapTimer) {
+	private void registerFlapIfNeeded(ASIdentifier originator, Prefix prefix,
+			FlapTimer flapTimer) {
 		if (flapTimer.isFlapped()) {
 			flapStore.register(prefix, originator, flapTimer);
 		}
 	}
 
-	private PrefixTableEntry getNewNeighborEntry(ASIdentifier originator, Route route) {
+	private PrefixTableEntry getNewNeighborEntry(ASIdentifier originator,
+			Route route) {
 		PrefixTableEntry neighborEntry;
 		neighborEntry = new PrefixTableEntry();
 		neighborEntry.setOriginator(originator);
@@ -458,17 +479,22 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	}
 
 	@SuppressWarnings("unused")
-	public void prefixReceived(ASIdentifier asIdentifier, Collection<Prefix> prefixes, Route route) {
+	public void prefixReceived(ASIdentifier asIdentifier,
+			Collection<Prefix> prefixes, Route route) {
 
 		assert prefixes != null && prefixes.size() > 0;
 
 		PrefixCacheImplBlock cacheRef = (PrefixCacheImplBlock) cache;
 
-		if (properties.useMaxPrefixes() && cacheRef != null && cacheRef.size() + prefixes.size() > properties.getMaxPrefixes()) {
-			log.info("PrefixStoreMapImpl: Too many prefixes, going down. Size of cache: "+cacheRef.size() +" to be added "+ prefixes.size());
-			synchronized(neighbors) {
+		if (properties.useMaxPrefixes()
+				&& cacheRef != null
+				&& cacheRef.size() + prefixes.size() > properties
+						.getMaxPrefixes()) {
+			log.info("PrefixStoreMapImpl: Too many prefixes, going down. Size of cache: "
+					+ cacheRef.size() + " to be added " + prefixes.size());
+			synchronized (neighbors) {
 				Iterator<Neighbor> iterator = neighbors.iterator();
-				while(iterator.hasNext()) {
+				while (iterator.hasNext()) {
 					Neighbor n = iterator.next();
 					removePrefixesFromSender(n.getASIdentifier());
 
@@ -497,7 +523,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		long s3 = System.currentTimeMillis();
 		if (s3 - start > 300) {
 			if (log.isInfoEnabled()) {
-				//log.info(s2 - start + ", " + (s3 - s2) + ", count=" + prefixes.size() + ", longest=" + longest);
+				// log.info(s2 - start + ", " + (s3 - s2) + ", count=" +
+				// prefixes.size() + ", longest=" + longest);
 			}
 		}
 
@@ -514,20 +541,29 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			log.info("unflapping " + prefix + " for " + neighborsAsId);
 		}
 		PrefixInfo prefixInfo = cache.getPrefixInfo(prefix);
-		PrefixTableEntry entry = prefixInfo.getNeighborsMap().get(neighborsAsId);
+		PrefixTableEntry entry = prefixInfo.getNeighborsMap()
+				.get(neighborsAsId);
 		if (entry == null || !entry.getFlapTimer().isFlapped()) {
 			log.warn(prefix + " is not flapped=" + entry);
 			return;
 		}
 		entry.getFlapTimer().unflap(prefix);
 		PrefixTableEntry currentEntry = prefixInfo.getCurrentEntry();
-		Route currentRoute = currentEntry == null ? null : currentEntry.getRoute();
-		if (entry.isValid() && policy.isBetter(asIdentifier, prefix, currentRoute, getNeighbor(currentEntry), entry.getRoute(), getNeighbor(entry))) {
+		Route currentRoute = currentEntry == null ? null : currentEntry
+				.getRoute();
+		if (entry.isValid()
+				&& policy.isBetter(asIdentifier, prefix, currentRoute,
+						getNeighbor(currentEntry), entry.getRoute(),
+						getNeighbor(entry))) {
 			if (runDecision(neighborsAsId, prefixInfo, currentRoute)) {
 				outputBuffer.flush();
-				if (EL.flapINFO && prefix.getNum() < properties.bogusPrefixMin && log.isInfoEnabled()) {
-					String type = entry.getFlapTimer() instanceof FlapTimerImpl ? ((FlapTimerImpl) entry.getFlapTimer()).getTimerType().toString() : "unknown";
-					log.info("really unflapped " + prefix + " for " + neighborsAsId + ", type=" + type);
+				if (EL.flapINFO && prefix.getNum() < properties.bogusPrefixMin
+						&& log.isInfoEnabled()) {
+					String type = entry.getFlapTimer() instanceof FlapTimerImpl ? ((FlapTimerImpl) entry
+							.getFlapTimer()).getTimerType().toString()
+							: "unknown";
+					log.info("really unflapped " + prefix + " for "
+							+ neighborsAsId + ", type=" + type);
 				}
 			}
 		}
@@ -568,11 +604,11 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		return neighbors;
 	}
 
-	public void setTimeController (TimeController timeController) {
+	public void setTimeController(TimeController timeController) {
 		this.timeController = timeController;
 	}
 
-	public TimeController getTimeController () {
+	public TimeController getTimeController() {
 		return timeController;
 	}
 
