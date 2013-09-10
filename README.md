@@ -24,11 +24,11 @@ After changing directory you can start an experiment by making use of the shell 
 
 The python script `experiments.py`, located in the main directory, assists in running multiple experiments on the DAS4:
 
-`$ ./experiments.py -g <graph name> -e <event name> [-s <slaves used> -t <run time> -np <number of property files> -st <starting property>`
+`$ ./experiments.py -g <graph name> -e <event name> [-s <slaves used> -t <run time> -np <number of property files> -st <starting property>]`
 
 This script expects the following directory in your home folder:
 
-`/experiments/<graph name>/` containing a topology.xml, prefixes.xml, and two folders, events and properties. These are generated using the other tools from [BGPSYM-analysis](https://gitlab.nlnetlabs.nl/Rattleshirt/bgpsym-analysis/)
+`/experiments/<graph name>/` containing a `topology.xml`, `prefixes.xml`, and two folders, `events` and `properties`. These are generated using tools from [BGPSYM-analysis](https://gitlab.nlnetlabs.nl/Rattleshirt/bgpsym-analysis/)
 
 # Configuration
 
