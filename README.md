@@ -24,7 +24,7 @@ After changing directory you can start an experiment by making use of the shell 
 
 The python script `experiments.py`, located in the main directory, assists in running multiple experiments on the DAS4:
 
-`$ ./experiments.py -g <graph name> -e <event name> [-s <slaves used> -t <run time> -np <number of property files> -st <starting property>]`
+`$ ./experiments.py -g <graph name> -e <event name> [-s <slaves used> -t <hh:mm:ss> -np <number of property files> -st <starting property>]`
 
 This script expects the following directory in your home folder:
 
