@@ -50,7 +50,7 @@ Some specific simulator parameters (which defines the behaviour of the simulator
 * **noiseSleepTime:** how much time should elapse between sending two consecutive noise announcements (default: 61000 [ms])
 
 ### Hardcoded properties
-Since the simulator is an experimental and "one-developer" software not all properties were extracted. Some of these un-extracted properties are very important and can still be changed.
+Since the simulator is an experimental and "one-developer" software, not all properties were extracted. Some of these un-extracted properties are very important and can still be changed.
 
 ### Callback logging
 There is a callback mechanism implemented in the simulator.

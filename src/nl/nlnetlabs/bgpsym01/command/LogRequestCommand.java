@@ -1,28 +1,15 @@
 package nl.nlnetlabs.bgpsym01.command;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import nl.nlnetlabs.bgpsym01.cache.ResultWriterLog;
-import nl.nlnetlabs.bgpsym01.main.SystemConstants;
-import nl.nlnetlabs.bgpsym01.primitives.bgp.ASType;
-import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
+import nl.nlnetlabs.bgpsym01.coordinator.events.framework.EventSchedule;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.RunnableUpdate;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataInputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 import nl.nlnetlabs.bgpsym01.process.BGPProcess;
-import nl.nlnetlabs.bgpsym01.route.PrefixStoreRouteView;
-import nl.nlnetlabs.bgpsym01.route.PrefixStore.PrefixStoreType;
-import nl.nlnetlabs.bgpsym01.coordinator.events.framework.EventSchedule;
-
-import org.apache.log4j.Logger;
 
 public class LogRequestCommand extends MasterCommand {
-
-    private static Logger log = Logger.getLogger(LogRequestCommand.class);
-
     // not serialized
     int count;
 

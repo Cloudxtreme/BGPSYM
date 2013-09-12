@@ -102,6 +102,23 @@ public class Route implements EExternalizable {
     public String toString() {
         return hops == null ? null : Arrays.toString(hops);
     }
+    
+    public String toStringFormat () {
+    	StringBuffer result = new StringBuffer().append("[");
+    	
+    	if (hops == null) {
+    		return "";
+    	}
+    	
+    	for (int i = 0; i < hops.length; i++) {
+    		result.append(hops[i].getInternalId());
+    		if (i < hops.length-1) {
+    			result.append(",");
+    		}
+    	}
+    	
+    	return result.append("]").toString();
+    }
 
     public void readExternal(EDataInputStream in) throws IOException {
         // route length

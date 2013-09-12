@@ -143,8 +143,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		synchronized (map) {
 			RouteViewDataResponse response = map.get(pair);
 			if (response == null) {
-				response = new RouteViewDataResponse(origin, prefix, now, now,
-						route);
+				response = new RouteViewDataResponse(origin, prefix, now, now, route);
 				response.length++;
 				map.put(pair, response);
 			} else {
@@ -241,8 +240,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	 * @param newEntry
 	 * @param addToBuffer
 	 */
-	void replaceRoute(PrefixInfo prefixInfo, PrefixTableEntry newEntry,
-			boolean addToBuffer) {
+	void replaceRoute(PrefixInfo prefixInfo, PrefixTableEntry newEntry, boolean addToBuffer) {
 
 		Route oldRoute = null;
 		if (prefixInfo.getCurrentEntry() != null) {
