@@ -27,6 +27,8 @@ import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 
 public class RIBRequestCommand extends MasterCommand {
 	private static final String OUTPUT_FILENAME_PREFIX = "rib_";
+
+	private static final String FILE_EXT = ".json";
 	
     // not serialized
     int count;
@@ -76,7 +78,7 @@ public class RIBRequestCommand extends MasterCommand {
 	}
 
 	String getFilename(ASIdentifier asId) {
-		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString();
+		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString() + FILE_EXT;
 	}
 
 	private void addCommand(BGPProcess process) {
