@@ -1,6 +1,5 @@
 package nl.nlnetlabs.bgpsym01.coordinator.events;
 
-import nl.nlnetlabs.bgpsym01.command.LogRequestCommand;
 import nl.nlnetlabs.bgpsym01.command.RIBRequestCommand;
 import nl.nlnetlabs.bgpsym01.coordinator.events.framework.EventSchedule;
 import nl.nlnetlabs.bgpsym01.primitives.types.ShutdownadbleThread;
@@ -11,8 +10,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("rib")
 public class EventRIB extends Event {
-
-	private static Logger log = Logger.getLogger(EventLog.class);
 
     @XStreamAlias("schedule")
     private EventSchedule eventSchedule;

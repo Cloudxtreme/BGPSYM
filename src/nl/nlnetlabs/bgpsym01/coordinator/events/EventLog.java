@@ -1,23 +1,13 @@
 package nl.nlnetlabs.bgpsym01.coordinator.events;
 
-import java.util.List;
-
 import nl.nlnetlabs.bgpsym01.command.LogRequestCommand;
 import nl.nlnetlabs.bgpsym01.coordinator.events.framework.EventSchedule;
-import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
-import nl.nlnetlabs.bgpsym01.primitives.converters.PrefixListConverter;
 import nl.nlnetlabs.bgpsym01.primitives.types.ShutdownadbleThread;
-import nl.nlnetlabs.bgpsym01.primitives.types.StaticThread;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-
 import org.apache.log4j.Logger;
 
 @XStreamAlias("log")
 public class EventLog extends Event {
-
-	private static Logger log = Logger.getLogger(EventLog.class);
 
     @XStreamAlias("schedule")
     private EventSchedule eventSchedule;

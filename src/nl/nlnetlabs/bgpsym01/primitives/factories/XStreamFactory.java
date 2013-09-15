@@ -1,11 +1,13 @@
 package nl.nlnetlabs.bgpsym01.primitives.factories;
 
+import nl.nlnetlabs.bgpsym01.command.RIBRequestCommand;
 import nl.nlnetlabs.bgpsym01.command.RouteViewDataResponse;
 import nl.nlnetlabs.bgpsym01.coordinator.events.Event;
 import nl.nlnetlabs.bgpsym01.coordinator.events.EventAnnounce;
 import nl.nlnetlabs.bgpsym01.coordinator.events.EventInvalidate;
 import nl.nlnetlabs.bgpsym01.coordinator.events.EventLastSeen;
 import nl.nlnetlabs.bgpsym01.coordinator.events.EventNoise;
+import nl.nlnetlabs.bgpsym01.coordinator.events.EventRIB;
 import nl.nlnetlabs.bgpsym01.coordinator.events.EventRISCollect;
 import nl.nlnetlabs.bgpsym01.coordinator.events.EventResetData;
 import nl.nlnetlabs.bgpsym01.coordinator.events.EventSleep;
@@ -57,6 +59,8 @@ public class XStreamFactory {
 		xStream.processAnnotations(EventConnect.class);
 		xStream.processAnnotations(PrefixData.class);
 		xStream.processAnnotations(RouteViewDataResponse.class);
+		xStream.processAnnotations(EventRIB.class);
+		xStream.processAnnotations(RIBRequestCommand.class);
 
         return xStream;
     }

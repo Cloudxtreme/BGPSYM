@@ -10,6 +10,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -103,21 +104,18 @@ public class Route implements EExternalizable {
         return hops == null ? null : Arrays.toString(hops);
     }
     
-    public String toStringFormat () {
-    	StringBuffer result = new StringBuffer().append("[");
+    public JSONArray toJSONArray () {
+    	JSONArray result = new JSONArray();
     	
     	if (hops == null) {
-    		return "";
+    		return result;
     	}
     	
     	for (int i = 0; i < hops.length; i++) {
-    		result.append(hops[i].getInternalId());
-    		if (i < hops.length-1) {
-    			result.append(",");
-    		}
+    		result.put(hops[i].getInternalId());
     	}
     	
-    	return result.append("]").toString();
+    	return result;
     }
 
     public void readExternal(EDataInputStream in) throws IOException {

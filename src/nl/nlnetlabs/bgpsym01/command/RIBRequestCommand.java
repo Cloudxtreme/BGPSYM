@@ -10,6 +10,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import nl.nlnetlabs.bgpsym01.cache.PrefixCacheImplBlock;
 import nl.nlnetlabs.bgpsym01.cache.PrefixInfo;
 import nl.nlnetlabs.bgpsym01.coordinator.events.framework.EventSchedule;
@@ -96,26 +99,23 @@ public class RIBRequestCommand extends MasterCommand {
 	private void writeRIB (BGPProcess process) {
 		OutputStream stream = getStream(process.getAsIdentifier());
 		
-		StringBuffer result = new StringBuffer();
-		
 		PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
 		PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
 		LinkedHashMap<Prefix, PrefixInfo> table = cache.getTable();
 		
 		try {
 			try {
-				result.append("{'prefixes':[");
+				JSONArray prefixes = new JSONArray();
 				
 				Iterator<Entry<Prefix, PrefixInfo>> iterator = table.entrySet().iterator();
 				Entry<Prefix, PrefixInfo> current;
 				while (iterator.hasNext()) {
 					current = iterator.next();
 					PrefixInfo info = current.getValue();
-					appendInfo(result, info, iterator.hasNext());
+					prefixes.put(getPrefix(info, iterator.hasNext()));
 				}
 				
-				result.append("]}");
-				stream.write(result.toString().getBytes());
+				stream.write(prefixes.toString().getBytes());
 			}
 			finally {
 				stream.close();
@@ -125,47 +125,41 @@ public class RIBRequestCommand extends MasterCommand {
 		}
 	}
 	
-	private void appendNeighbors(StringBuffer result, Map<ASIdentifier, PrefixTableEntry> neighborsMap) {
-		result.append("'ns':[");
+	private JSONArray getNeighbors(Map<ASIdentifier, PrefixTableEntry> neighborsMap) {
+		JSONArray neighbors = new JSONArray();
+		
 		Iterator<Entry<ASIdentifier, PrefixTableEntry>> iterator = neighborsMap.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Entry<ASIdentifier, PrefixTableEntry> current = iterator.next();
 			ASIdentifier asId = current.getKey();
 			PrefixTableEntry value = current.getValue();
-			result.append("{").append("'as':").append(asId.getInternalId()).append(",");
-			result.append("'r':").append(value.getRoute().toStringFormat());
-			result.append("'o':").append(value.getOriginator().getInternalId());
-			if (iterator.hasNext()) {
-				result.append("},");
-			}
-			else {
-				result.append("}");
-			}
+			JSONObject neighbor = new JSONObject();
+			neighbor.put("as", asId.getInternalId());
+			neighbor.put("r", value.getRoute().toJSONArray());
+			neighbor.append("o", value.getOriginator().getInternalId());
 		}
 		
-		result.append("],");
+		return neighbors;
 	}
 	
-	private void appendCurrent(StringBuffer result, PrefixTableEntry current) {
-		result.append("'c': {");
+	private JSONObject getCurrent(PrefixTableEntry current) {
+		JSONObject result = new JSONObject();
+		
 		if (current.getRoute() != null) {
-			result.append("'r':").append(current.getRoute().toStringFormat()).append(",");
+			result.put("r", current.getRoute().toJSONArray());
 		}
-		result.append("'o':").append(current.getOriginator().getInternalId()).append("}");
+		result.put("o", current.getOriginator().getInternalId());
+		
+		return result;
 	}
 	
-	private void appendInfo (StringBuffer result, PrefixInfo info, boolean hasNext) {
-		result.append("{").append("'p':").append(info.getPrefix().getNum()).append(",");
+	private JSONObject getPrefix (PrefixInfo info, boolean hasNext) {
+		JSONObject result = new JSONObject();
+		result.put("p", info.getPrefix().getNum());
+		result.put("ns", getNeighbors(info.getNeighborsMap()));
+		result.put("c", getCurrent(info.getCurrentEntry()));
 		
-		appendNeighbors(result, info.getNeighborsMap());
-		appendCurrent(result, info.getCurrentEntry());
-		
-		if (hasNext) {
-			result.append("},");
-		}
-		else {
-			result.append("}");
-		}
+		return result;
 	}
 
     @Override
