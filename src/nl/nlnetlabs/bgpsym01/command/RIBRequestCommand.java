@@ -135,7 +135,9 @@ public class RIBRequestCommand extends MasterCommand {
 			PrefixTableEntry value = current.getValue();
 			JSONObject neighbor = new JSONObject();
 			neighbor.put("as", asId.getInternalId());
-			neighbor.put("r", value.getRoute().toJSONArray());
+			if (value.getRoute() != null) {
+				neighbor.put("r", value.getRoute().toJSONArray());
+			}
 			neighbor.append("o", value.getOriginator().getInternalId());
 		}
 		
