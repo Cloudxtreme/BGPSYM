@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -29,6 +30,8 @@ import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 
 public class RIBRequestCommand extends MasterCommand {
+	private static Logger log = Logger.getLogger(RIBRequestCommand.class);
+	
 	private static final String OUTPUT_FILENAME_PREFIX = "log_";
 
 	private static final String FILE_EXT = ".json";
@@ -127,6 +130,8 @@ public class RIBRequestCommand extends MasterCommand {
 	
 	private JSONArray getNeighbors(Map<ASIdentifier, PrefixTableEntry> neighborsMap) {
 		JSONArray neighbors = new JSONArray();
+		
+		log.info("neighbors map size: "+neighborsMap.size());
 		
 		Iterator<Entry<ASIdentifier, PrefixTableEntry>> iterator = neighborsMap.entrySet().iterator();
 		while (iterator.hasNext()) {
