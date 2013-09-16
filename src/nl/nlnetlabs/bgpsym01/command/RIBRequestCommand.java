@@ -29,7 +29,7 @@ import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 
 public class RIBRequestCommand extends MasterCommand {
-	private static final String OUTPUT_FILENAME_PREFIX = "rib_";
+	private static final String OUTPUT_FILENAME_PREFIX = "log_";
 
 	private static final String FILE_EXT = ".json";
 	
@@ -81,7 +81,7 @@ public class RIBRequestCommand extends MasterCommand {
 	}
 
 	String getFilename(ASIdentifier asId) {
-		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString() + FILE_EXT;
+		return getDirectory().getAbsolutePath() + File.separator + OUTPUT_FILENAME_PREFIX + asId.toString();
 	}
 
 	private void addCommand(BGPProcess process) {
