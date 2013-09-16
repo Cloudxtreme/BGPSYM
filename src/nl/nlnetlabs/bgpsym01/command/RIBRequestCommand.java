@@ -150,10 +150,12 @@ public class RIBRequestCommand extends MasterCommand {
 	private JSONObject getCurrent(PrefixTableEntry current) {
 		JSONObject result = new JSONObject();
 		
-		if (current.getRoute() != null) {
-			result.put("r", current.getRoute().toJSONArray());
+		if (current != null) {
+			if (current.getRoute() != null) {
+				result.put("r", current.getRoute().toJSONArray());
+			}
+			result.put("o", current.getOriginator().getInternalId());
 		}
-		result.put("o", current.getOriginator().getInternalId());
 		
 		return result;
 	}
