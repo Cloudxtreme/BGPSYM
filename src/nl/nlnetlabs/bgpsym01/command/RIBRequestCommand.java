@@ -166,7 +166,7 @@ public class RIBRequestCommand extends MasterCommand {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof LogRequestCommand)) {
+        if (!(obj instanceof RIBRequestCommand)) {
             return false;
         }
         return true;
