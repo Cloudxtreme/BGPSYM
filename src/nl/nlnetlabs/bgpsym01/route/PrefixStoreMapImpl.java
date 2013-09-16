@@ -353,6 +353,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
 		Map<ASIdentifier, PrefixTableEntry> neighborsForPrefix = prefixInfo
 				.getNeighborsMap();
+		
+		log.info("neighbors map size: "+neighborsForPrefix.size());
 
 		PrefixTableEntry neighborEntry = neighborsForPrefix.get(originator);
 		boolean isValid = false;
