@@ -54,7 +54,7 @@ public class RIBRequestCommand extends MasterCommand {
 
     @Override
     public CommandType getCommandType() {
-        return CommandType.LOG_REQUEST;
+        return CommandType.RIB_REQUEST;
     }
 
     @Override

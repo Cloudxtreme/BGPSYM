@@ -34,7 +34,7 @@ public class EventRIB extends Event {
 
     @Override
     public String toString() {
-        return "LOG;" + eventSchedule + ".";
+        return "RIB;" + eventSchedule + ".";
     }
 
 }
