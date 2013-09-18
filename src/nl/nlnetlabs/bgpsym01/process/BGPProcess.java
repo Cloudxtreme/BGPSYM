@@ -175,7 +175,7 @@ public class BGPProcess extends ShutdownadbleThread {
             // callback.flush();
         }
         callback.close();
-		//resultWriterLog.close();
+		resultWriterLog.close();
         
 		if (log.isDebugEnabled()) {
             log.debug("thread finished");
