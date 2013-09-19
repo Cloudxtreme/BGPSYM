@@ -62,6 +62,7 @@ public class Coordinator {
     public void controlTheGame() {
         setStarted();
         // wait till guys set up their server connections
+        log.info("wait for all hosts");
         commandSenderHelper.waitForAllHosts();
 
         // sync the time
@@ -102,6 +103,7 @@ public class Coordinator {
     }
 
     public boolean syncTheTime() {
+    	log.info("syncing the time");
         long startTime = System.currentTimeMillis() + SYNC_CONSTANT;
         TimeControllerFactory.getTimeController();
         TimeControllerImpl.setStartTime(startTime);

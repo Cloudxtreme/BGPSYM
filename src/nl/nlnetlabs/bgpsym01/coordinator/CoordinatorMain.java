@@ -94,7 +94,8 @@ public class CoordinatorMain {
             XSystem system = loadNodes();
             Prefix.init(XProperties.getInstance().getPrefixArraySize());
             // coordinator.setAses(system.getAses());
-
+            
+            log.info("setting up helpers");
             CommandSenderHelperImpl commandSenderHelper = new CommandSenderHelperImpl();
             commandSenderHelper.setAses(system.getAses());
             commandSenderHelper.setCommunicator(communicator);
@@ -114,6 +115,8 @@ public class CoordinatorMain {
             coordinator.setPropagationHelper(getPropagationHelper(commandSenderHelper, disconnectHelper, connectHelper));
 
             tools.createDiagFile();
+            
+            log.info("starting the game");
 
             coordinator.controlTheGame();
 
