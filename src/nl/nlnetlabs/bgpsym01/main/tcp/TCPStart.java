@@ -244,9 +244,7 @@ public class TCPStart {
         try {
             loadProperties();
             loadRegistries();
-            if (log.isDebugEnabled()) {
-                log.debug("myNum=" + myNum + ", regs[myNum]=" + registries.get(myNum).getHost());
-            }
+            log.info("myNum=" + myNum + ", regs[myNum]=" + registries.get(myNum).getHost());
             loadNodes();
             Prefix.init(properties.getPrefixArraySize());
             if (properties.hasPrefixFile()) {
