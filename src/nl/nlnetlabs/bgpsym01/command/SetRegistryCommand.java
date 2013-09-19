@@ -35,12 +35,7 @@ public class SetRegistryCommand extends SlaveCommand {
     @Override
     public void process() {
         count++;
-        try {
-        	String address = channel.getRemoteAddress().toString();
-			log.info("count=" + count + ", num=" + num+" "+address);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+			log.info("count=" + count + ", num=" + num);
         coordinator.getRegistries().get(num).setAttachment(channel);
         if (count == XProperties.getInstance().hostCount) {
             while (coordinator.getCommandSenderHelper() == null) {
