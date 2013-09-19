@@ -113,9 +113,11 @@ public class TCPStart {
 
     private void run(String[] args) {
 
+    	log.info("load files");
         setAndLoad(args);
 
         // First I have to open my own socket
+        log.info("register myself");
         registerMyself(myNum);
 
         initDiskCacheDir();
@@ -126,6 +128,7 @@ public class TCPStart {
         }
 
         // now connect to the coordinator
+        log.info("register to coordinator");
         registerCoordinator();
 
         synchronized (this) {
@@ -137,6 +140,7 @@ public class TCPStart {
             }
         }
 
+        log.info("register to others");
         registerToOthers();
 
         // help GC :)
@@ -150,11 +154,14 @@ public class TCPStart {
      // Now I can already start diagnostic thread
         DiagnosticThread.init(processes.values(), cst);
        
+        
         if (properties.hasPrefixFile()) {
+        	log.info("register prefixes");
         	loadOurPrefixes();
         	registerPrefixes();
         }
         
+        log.info("start BGP processes");
         for (BGPProcess process : processes.values()) {
             try {
                 process.join();
