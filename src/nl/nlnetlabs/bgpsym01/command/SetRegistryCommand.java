@@ -36,7 +36,8 @@ public class SetRegistryCommand extends SlaveCommand {
     public void process() {
         count++;
         try {
-			log.info("count=" + count + ", num=" + num+" "+channel.getRemoteAddress().toString());
+        	String address = channel.getRemoteAddress().toString();
+			log.info("count=" + count + ", num=" + num+" "+address);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
