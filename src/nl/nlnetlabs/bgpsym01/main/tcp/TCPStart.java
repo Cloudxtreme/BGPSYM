@@ -431,8 +431,6 @@ public class TCPStart {
             assert coordinator != null;
             channel.connect(new InetSocketAddress(coordinator.getHost(), coordinator.getPort()));
 
-            
-
             cst = new CommunicationSocketThread(channel, this);
             cst.start();
             cst.send(channel, new SetRegistryCommand(myNum));
