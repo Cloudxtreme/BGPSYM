@@ -23,6 +23,7 @@ public class AckCommand extends SlaveCommand {
 
     @Override
     public void process() {
+    	log.info("received ACK. Count: "+count+" hostCount:"+XProperties.getInstance().hostCount);
         count++;
         if (count == XProperties.getInstance().hostCount) {
             coordinator.getCommandSenderHelper().ackReceived();

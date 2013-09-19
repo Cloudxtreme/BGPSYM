@@ -427,9 +427,11 @@ public class TCPStart {
             SocketChannel channel = SocketChannel.open();
             channel.configureBlocking(false);
 
+            log.info("Connecting to "+coordinator.getHost()+":"+coordinator.getPort());
             assert coordinator != null;
             channel.connect(new InetSocketAddress(coordinator.getHost(), coordinator.getPort()));
 
+            
 
             cst = new CommunicationSocketThread(channel, this);
             cst.start();
