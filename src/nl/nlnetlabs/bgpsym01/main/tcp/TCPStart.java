@@ -113,11 +113,9 @@ public class TCPStart {
 
     private void run(String[] args) {
 
-    	log.info("load files");
         setAndLoad(args);
 
         // First I have to open my own socket
-        log.info("register myself");
         registerMyself(myNum);
 
         initDiskCacheDir();
@@ -128,7 +126,6 @@ public class TCPStart {
         }
 
         // now connect to the coordinator
-        log.info("register to coordinator");
         registerCoordinator();
 
         synchronized (this) {
@@ -140,7 +137,6 @@ public class TCPStart {
             }
         }
 
-        log.info("register to others");
         registerToOthers();
 
         // help GC :)
@@ -156,12 +152,10 @@ public class TCPStart {
        
         
         if (properties.hasPrefixFile()) {
-        	log.info("register prefixes");
         	loadOurPrefixes();
         	registerPrefixes();
         }
         
-        log.info("start BGP processes");
         for (BGPProcess process : processes.values()) {
             try {
                 process.join();
@@ -244,7 +238,7 @@ public class TCPStart {
         try {
             loadProperties();
             loadRegistries();
-            log.info("myNum=" + myNum + ", regs[myNum]=" + registries.get(myNum).getHost());
+            //log.info("myNum=" + myNum + ", regs[myNum]=" + registries.get(myNum).getHost());
             loadNodes();
             Prefix.init(properties.getPrefixArraySize());
             if (properties.hasPrefixFile()) {
@@ -425,7 +419,6 @@ public class TCPStart {
             SocketChannel channel = SocketChannel.open();
             channel.configureBlocking(false);
 
-            log.info("Connecting to "+coordinator.getHost()+":"+coordinator.getPort());
             assert coordinator != null;
             channel.connect(new InetSocketAddress(coordinator.getHost(), coordinator.getPort()));
 
