@@ -9,10 +9,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
@@ -21,6 +23,7 @@ import nl.nlnetlabs.bgpsym01.command.RouteViewDataResponse;
 import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
+import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
 import nl.nlnetlabs.bgpsym01.primitives.factories.XStreamFactory;
 import nl.nlnetlabs.bgpsym01.process.BGPProcess;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
@@ -184,24 +187,14 @@ public class ResultWriterLog {
 					}					
 					
 					result.append("</f>");*/
-					result.append("<rs>");
 					
 					//stream.write("</f>".getBytes());
 					//stream.write("<rs>".getBytes());
 					
-					Iterator<RouteViewDataResponse> iteratorResponses = responseList.get(i).iterator();
-					RouteViewDataResponse currentResponse;
-					while (iteratorResponses.hasNext()) {
-						OutputStream response = new ByteArrayOutputStream();
-							
-						currentResponse = iteratorResponses.next();
-						CompactWriter writer = new CompactWriter(new OutputStreamWriter(response));
-						xStream.marshal(currentResponse, writer);
-						result.append(response.toString());
-					}
+					result.append(getStats(responseList.get(i)));
 
 					//stream.write("</rs></l>".getBytes());
-					result.append("</rs></l>");
+					result.append("</l>");
 					
 					i++;
 				}
@@ -216,5 +209,42 @@ public class ResultWriterLog {
 		} catch(IOException e) {
 			throw new BGPSymException(e);
 		}
+	}
+	
+	public String getStats (Collection<RouteViewDataResponse> responses) {
+		StringBuffer result = new StringBuffer();
+		
+		float totalRouteLength = 0f;
+		int totalRoutes = 0;
+		int lostRoutes = 0;
+		Set<ASIdentifier> reachableASes = new HashSet<ASIdentifier>();
+		
+		Iterator<RouteViewDataResponse> iteratorResponses = responses.iterator();
+		RouteViewDataResponse currentResponse;
+		while (iteratorResponses.hasNext()) {
+			currentResponse = iteratorResponses.next();
+			
+			Route route = currentResponse.route;
+			
+			if (route == null || route.getOrigin() == null) {
+				lostRoutes++;
+				continue;
+			}
+			
+			totalRouteLength += route.getHops().length;
+			totalRoutes++;
+			
+			reachableASes.add(route.getOrigin());
+		}
+		 
+		float averageRouteLength = (totalRoutes> 0) ? totalRouteLength / totalRoutes : 0;
+		
+		result.append("<stats ").append("t='").append(totalRoutes).append("' ")
+			.append("ra='").append(reachableASes.size()).append("' ")
+			.append("ar='").append(averageRouteLength).append("' ")
+			.append("lr='").append(lostRoutes).append("'")
+			.append("/>");
+		
+		return result.toString();
 	}
 }
