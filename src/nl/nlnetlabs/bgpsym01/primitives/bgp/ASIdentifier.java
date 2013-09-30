@@ -49,7 +49,7 @@ public class ASIdentifier implements Comparable<ASIdentifier>, EExternalizable {
 
     @XStreamAlias("id")
     @XStreamAsAttribute
-    private short internalId;
+    private int internalId;
 
     @XStreamOmitField
     private BGPProcess process;
@@ -65,7 +65,7 @@ public class ASIdentifier implements Comparable<ASIdentifier>, EExternalizable {
             log.error(msg);
             throw new RuntimeException(msg);
         }
-        this.internalId = (short) internalId;
+        this.internalId = internalId;
     }
 
     public String getASNum() {

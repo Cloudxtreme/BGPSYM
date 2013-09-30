@@ -64,7 +64,7 @@ public class XProperties {
 
     private String diskCacheDir;
 
-    private String nodesFileName = "nodes.xml";
+    private String nodesFileName = "topology.xml";
 
     private String prefixesFile;
 
