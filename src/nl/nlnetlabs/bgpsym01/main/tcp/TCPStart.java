@@ -537,9 +537,9 @@ public class TCPStart {
             		
             		long sleepTime = (long) (sleepingTime * getSleepingTimeMultiplier(prefixList));
             		prefixList.clear();
-            		StaticThread.sleep(sleepTime);        		
+            		StaticThread.sleep(sleepTime);
             	}
-            }    		
+            }
     	}
     }
     
