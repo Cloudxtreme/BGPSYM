@@ -9,7 +9,7 @@ public class SystemConstants {
 
     // public static final int BLOCK_SIZE = 4096 << 4;
 
-    public static final int BYTE_ARRAY_SIZE = 2048 * 1024;
+    public static final int BYTE_ARRAY_SIZE = 5096 * 5096;
 
     public static final int DEFAULT_BYTE_FIFO_SIZE = BYTE_ARRAY_SIZE;
 
