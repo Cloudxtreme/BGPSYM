@@ -62,9 +62,12 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	private XProperties properties;
 
 	TimeController timeController;
+	
+	boolean isDisconnect;
 
 	public PrefixStoreMapImpl() {
 		properties = XProperties.getInstance();
+		isDisconnect = false;
 	}
 
 	public Map<Pair<ASIdentifier, Prefix>, RouteViewDataResponse> getMap() {
@@ -110,7 +113,9 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
 			if (prefixesToRemove.size() > 0) {
 				// log.info("prefixes to delete: "+prefixesToDelete);
+				isDisconnect = true;
 				prefixRemove(sender, prefixesToRemove);
+				isDisconnect = false;
 			}
 		}
 
@@ -216,6 +221,10 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				: prefixInfo.getCurrentEntry().getRoute();
 		entry.invalidate(false);
 
+		if (isDisconnect) {
+			log.info("DIS: removing prefix. was current: "+wasCurrent);
+		}
+		
 		if (wasCurrent) {
 			if (log.isDebugEnabled()) {
 				log.debug("removing prefix " + prefix + " from " + originator
@@ -329,6 +338,10 @@ public class PrefixStoreMapImpl implements PrefixStore {
 					currentRoute));
 			output = true;
 
+			if (isDisconnect) {
+				log.info("DIS: announcement");
+			}
+			
 			refreshMap(best.getRoute().getOrigin(), prefix, best.getRoute());
 		} else if (currentRoute != null) {
 			callback.prefixUnregistered(originator, prefix, currentRoute, null);
@@ -336,6 +349,10 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			outputBuffer.add(new OutputRemoveEntity(prefixInfo, currentRoute));
 			output = true;
 			refreshMap(currentRoute.getOrigin(), prefix, null);
+			
+			if (isDisconnect) {
+				log.info("DIS: withdrawal");
+			}
 		}
 
 		return output;
