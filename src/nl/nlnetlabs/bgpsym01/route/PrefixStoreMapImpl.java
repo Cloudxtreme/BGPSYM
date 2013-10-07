@@ -220,10 +220,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		Route oldRoute = prefixInfo.getCurrentEntry() == null ? null
 				: prefixInfo.getCurrentEntry().getRoute();
 		entry.invalidate(false);
-
-		if (isDisconnect) {
-			log.info("DIS: removing prefix. was current: "+wasCurrent);
-		}
 		
 		if (wasCurrent) {
 			if (log.isDebugEnabled()) {
