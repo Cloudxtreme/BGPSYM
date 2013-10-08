@@ -97,9 +97,6 @@ public class BGPProcess extends ShutdownadbleThread {
 
     @SuppressWarnings("unused")
 	public void uponReceive(BGPUpdate update) {
-    	
-    	this.updates++;
-
         callback.updateReceived(update.getSender(), update);
         // add to prefix store
         ASIdentifier sender = update.getSender();
@@ -116,6 +113,8 @@ public class BGPProcess extends ShutdownadbleThread {
         	// TODO reconnect?
         	return;
         }
+        
+        this.updates++;
         
         List<Prefix> prefixes = update.getPrefixes();
 
