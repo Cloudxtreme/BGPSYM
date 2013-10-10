@@ -17,4 +17,6 @@ rm gc_*
 echo -e "Remove java log files"
 cd ~/BGPSYM/logs/
 rm log_*
+rm gzip_*
+rm rsync_*
 echo -e "Done"

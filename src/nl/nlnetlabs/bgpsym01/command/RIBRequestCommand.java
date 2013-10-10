@@ -131,8 +131,6 @@ public class RIBRequestCommand extends MasterCommand {
 	private JSONArray getNeighbors(Map<ASIdentifier, PrefixTableEntry> neighborsMap) {
 		JSONArray neighbors = new JSONArray();
 		
-		log.info("neighbors map size: "+neighborsMap.size());
-		
 		Iterator<Entry<ASIdentifier, PrefixTableEntry>> iterator = neighborsMap.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Entry<ASIdentifier, PrefixTableEntry> current = iterator.next();
