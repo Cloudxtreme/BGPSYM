@@ -334,10 +334,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
 					currentRoute));
 			output = true;
 
-			if (isDisconnect) {
-				log.info("DIS: announcement");
-			}
-			
 			refreshMap(best.getRoute().getOrigin(), prefix, best.getRoute());
 		} else if (currentRoute != null) {
 			callback.prefixUnregistered(originator, prefix, currentRoute, null);
@@ -345,10 +341,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
 			outputBuffer.add(new OutputRemoveEntity(prefixInfo, currentRoute));
 			output = true;
 			refreshMap(currentRoute.getOrigin(), prefix, null);
-			
-			if (isDisconnect) {
-				log.info("DIS: withdrawal");
-			}
 		}
 
 		return output;
