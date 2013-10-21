@@ -521,11 +521,7 @@ public class TCPStart {
     		Iterator<XPrefix> iterator = entry.getValue().iterator();
             XPrefix last = null;
             
-            if (asId.getInternalId() > 8000) {
-            	continue;
-            }
-            
-            StaticThread.sleep(2000);
+            StaticThread.sleep(myNum*2000);
 
             while (iterator.hasNext()) {
             	last = iterator.next();
