@@ -515,13 +515,13 @@ public class TCPStart {
     	Map<ASIdentifier, ArrayList<XPrefix>> prefixesMap = generatePrefixMap();
     	
     	List<Prefix> prefixList = new ArrayList<Prefix>(prefixAggregationSize);
-    	
-    	StaticThread.sleep(myNum*2000);
-    	
+
     	for (Map.Entry<ASIdentifier, ArrayList<XPrefix>> entry : prefixesMap.entrySet()) {
     		ASIdentifier asId = entry.getKey();
     		Iterator<XPrefix> iterator = entry.getValue().iterator();
             XPrefix last = null;
+            
+            StaticThread.sleep(2000);
             
             while (iterator.hasNext()) {
             	last = iterator.next();
