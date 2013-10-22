@@ -121,7 +121,9 @@ public class BGPProcess extends ShutdownadbleThread {
         
         MessageQueueImpl msgQueue = (MessageQueueImpl)messageQueue;
 
-        log.info("received update from "+sender+" with prefixes: "+prefixes+" and route: "+update.getRoute()+" at "+msgQueue.getTimeController().getCurrentTime());
+        if (asIdentifier.getInternalId() == 9503) {
+        	log.info("received update from "+sender+" with prefixes: "+prefixes+" and route: "+update.getRoute()+" at "+msgQueue.getTimeController().getCurrentTime());
+        }
         //log.info("with withdrawals: "+update.getWithdrawals());
         
         if (prefixes != null) {
