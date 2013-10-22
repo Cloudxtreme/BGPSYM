@@ -543,6 +543,8 @@ public class TCPStart {
             	}
             }
     	}
+    	
+    	log.info("done registering prefixes at "+getTimeController().getCurrentTime());
     }
     
     /**

@@ -18,6 +18,7 @@ import nl.nlnetlabs.bgpsym01.primitives.bgp.RunnableUpdate;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Update;
 import nl.nlnetlabs.bgpsym01.primitives.types.MessageInputGenerator;
 import nl.nlnetlabs.bgpsym01.primitives.types.MessageQueue;
+import nl.nlnetlabs.bgpsym01.primitives.types.MessageQueueImpl;
 import nl.nlnetlabs.bgpsym01.primitives.types.ShutdownadbleThread;
 import nl.nlnetlabs.bgpsym01.route.PrefixStore;
 import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
@@ -117,8 +118,10 @@ public class BGPProcess extends ShutdownadbleThread {
         this.updates++;
         
         List<Prefix> prefixes = update.getPrefixes();
+        
+        MessageQueueImpl msgQueue = (MessageQueueImpl)messageQueue;
 
-        //log.info("received update from "+sender+" with prefixes: "+prefixes+" and route: "+update.getRoute());
+        log.info("received update from "+sender+" with prefixes: "+prefixes+" and route: "+update.getRoute()+" at "+msgQueue.getTimeController().getCurrentTime());
         //log.info("with withdrawals: "+update.getWithdrawals());
         
         if (prefixes != null) {
