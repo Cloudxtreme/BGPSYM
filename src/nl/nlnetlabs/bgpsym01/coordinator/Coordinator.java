@@ -49,7 +49,10 @@ public class Coordinator {
 	private ConnectHelper connectHelper;
 
     private PropagationHelper propagationHelper;
-
+    
+    private PropagationHelper prefixPropagationHelper;
+    private PropagationHelper eventsPropagationHelper; 
+    
     private CommandSenderHelper commandSenderHelper;
 
     private boolean started = false;
@@ -89,6 +92,12 @@ public class Coordinator {
 
         // now we start sending updates
 
+        propagationHelper.propagatePrefixes();
+        
+        log.info("start events stream");
+        
+        this.propagationHelper = getEventsPropagationHelper();
+        
         propagationHelper.propagatePrefixes();
 
         if (log.isInfoEnabled()) {
@@ -197,5 +206,20 @@ public class Coordinator {
     public void setRegistries(ArrayList<XRegistry> registries) {
         this.registries = registries;
     }
-
+    
+    public void setPrefixPropagationHelper (PropagationHelper helper) {
+    	this.prefixPropagationHelper = helper;
+    }
+    
+    public void setEventsPropagationHelper (PropagationHelper helper) {
+    	this.eventsPropagationHelper = helper;
+    }
+    
+    public PropagationHelper getPrefixPropagationHelper () {
+    	return prefixPropagationHelper;
+    }
+    
+    public PropagationHelper getEventsPropagationHelper () {
+    	return eventsPropagationHelper;
+    }
 }
