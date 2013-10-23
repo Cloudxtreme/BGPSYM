@@ -516,12 +516,14 @@ public class TCPStart {
     	
     	List<Prefix> prefixList = new ArrayList<Prefix>(prefixAggregationSize);
     	
+		StaticThread.sleep(10000*myNum);
+
     	for (Map.Entry<ASIdentifier, ArrayList<XPrefix>> entry : prefixesMap.entrySet()) {
     		ASIdentifier asId = entry.getKey();
     		Iterator<XPrefix> iterator = entry.getValue().iterator();
             XPrefix last = null;
             
-            StaticThread.sleep(myNum*2000);
+            StaticThread.sleep(1000);
 
             while (iterator.hasNext()) {
             	last = iterator.next();
