@@ -167,11 +167,11 @@ public class PropagationHelperImpl implements PropagationHelper {
             }
 
             // if (count % 500 == 0) {
-            if (count % properties.getIntroducedLoggingInterval() == 0) {
+            /*if (count % properties.getIntroducedLoggingInterval() == 0) {
                 if (log.isInfoEnabled()) {
                     log.info("I " + (count + 1) + ", (a=" + all + "), L: " + last);
                 }
-            }
+            }*/
             count++;
         }
     }
