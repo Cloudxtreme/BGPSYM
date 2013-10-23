@@ -151,10 +151,10 @@ public class TCPStart {
         DiagnosticThread.init(processes.values(), cst);
        
         
-        if (properties.hasPrefixFile()) {
+        /*if (properties.hasPrefixFile()) {
         	loadOurPrefixes();
         	registerPrefixes();
-        }
+        }*/
         
         for (BGPProcess process : processes.values()) {
             try {

@@ -112,9 +112,13 @@ public class CoordinatorMain {
 			connectHelper.setCommunicator(communicator);
 			coordinator.setConnectHelper(connectHelper);
 
-            coordinator.setPropagationHelper(getPropagationHelper(commandSenderHelper, disconnectHelper, connectHelper));
+            //coordinator.setPropagationHelper(getPropagationHelper(commandSenderHelper, disconnectHelper, connectHelper));
 
+			coordinator.setPrefixPropagationHelper(getPrefixPropagationHelper(commandSenderHelper));
+			coordinator.setEventsPropagationHelper(getEventsPropagationHelper(commandSenderHelper, disconnectHelper, connectHelper));
             tools.createDiagFile();
+            
+            coordinator.setPropagationHelper(coordinator.getPrefixPropagationHelper());
             
             log.info("starting the game");
 
@@ -125,6 +129,51 @@ public class CoordinatorMain {
             throw new BGPSymException(e);
         }
 
+    }
+    
+    public PropagationHelper getPrefixPropagationHelper (CommandSenderHelper commandSenderHelper) {
+    	XProperties properties = XProperties.getInstance();
+    	
+    	PropagationHelperImpl propagationHelper = new PropagationHelperImpl();
+        propagationHelper.setCommandSenderHelper(commandSenderHelper);
+        propagationHelper.setPrefixAggregationSize(properties.getPrefixAggregationSize());
+        if (XProperties.getInstance().hasPrefixFile()) {
+            List<XPrefix> prefixes = loadPrefixesFromFile();
+            propagationHelper.setPrefixes(prefixes);
+        }
+        
+        return propagationHelper;
+    }
+    
+    public PropagationHelper getEventsPropagationHelper (CommandSenderHelper commandSenderHelper, DisconnectHelper disconnectHelper, ConnectHelper connectHelper) {
+    	XProperties properties = XProperties.getInstance();
+    	
+    	EventsSenderHelper helper = new EventsSenderHelper();
+        EventProcessor processor = new EventProcessor();
+        processor.setDataMeasurement(new DataMeasurementImpl());
+        EventStreamImpl stream = new EventStreamImpl();
+        
+        EventBackendXStreamImpl backend = null;
+        try {
+            backend = new EventBackendXStreamImpl(new FileReader(properties.getEventsFileName()));
+        } catch (FileNotFoundException e) {
+            log.error(e);
+            throw new BGPSymException(e);
+        } catch (IOException e) {
+            log.error(e);
+            throw new BGPSymException(e);
+        }
+        
+        stream.setBackend(backend);
+        stream.setCommandSenderHelper(commandSenderHelper);
+		stream.setDisconnectHelper(disconnectHelper);
+		stream.setConnectHelper(connectHelper);
+		
+        processor.setEventStream(stream);
+        
+        helper.setProcessor(processor);
+		
+        return helper;
     }
 
     // its public only for tests...
