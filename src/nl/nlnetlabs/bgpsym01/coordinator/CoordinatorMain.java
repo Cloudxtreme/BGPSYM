@@ -114,11 +114,11 @@ public class CoordinatorMain {
 
             //coordinator.setPropagationHelper(getPropagationHelper(commandSenderHelper, disconnectHelper, connectHelper));
 
-			coordinator.setPrefixPropagationHelper(getPrefixPropagationHelper(commandSenderHelper));
+			//coordinator.setPrefixPropagationHelper(getPrefixPropagationHelper(commandSenderHelper));
 			coordinator.setEventsPropagationHelper(getEventsPropagationHelper(commandSenderHelper, disconnectHelper, connectHelper));
             tools.createDiagFile();
             
-            coordinator.setPropagationHelper(coordinator.getPrefixPropagationHelper());
+            coordinator.setPropagationHelper(coordinator.getEventsPropagationHelper());
             
             log.info("starting the game");
 

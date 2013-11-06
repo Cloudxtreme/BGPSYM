@@ -92,11 +92,11 @@ public class Coordinator {
 
         // now we start sending updates
 
-        propagationHelper.propagatePrefixes();
+        //propagationHelper.propagatePrefixes();
         
-        log.info("start events stream");
+        //log.info("start events stream");
         
-        this.propagationHelper = getEventsPropagationHelper();
+        //this.propagationHelper = getEventsPropagationHelper();
         
         propagationHelper.propagatePrefixes();
 

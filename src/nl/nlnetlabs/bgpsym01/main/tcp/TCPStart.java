@@ -151,10 +151,10 @@ public class TCPStart {
         DiagnosticThread.init(processes.values(), cst);
        
         
-        /*if (properties.hasPrefixFile()) {
+        if (properties.hasPrefixFile()) {
         	loadOurPrefixes();
         	registerPrefixes();
-        }*/
+        }
         
         for (BGPProcess process : processes.values()) {
             try {
@@ -523,7 +523,7 @@ public class TCPStart {
     		Iterator<XPrefix> iterator = entry.getValue().iterator();
             XPrefix last = null;
             
-            StaticThread.sleep(1000);
+            StaticThread.sleep(200);
 
             while (iterator.hasNext()) {
             	last = iterator.next();
