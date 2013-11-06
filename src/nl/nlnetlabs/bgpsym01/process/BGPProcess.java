@@ -131,6 +131,10 @@ public class BGPProcess extends ShutdownadbleThread {
         	this.updateWithPrefixes++;
             Route route = update.getRoute();
             store.prefixReceived(sender, prefixes, route);
+            
+            if (this.updateWithPrefixes % 500000 == 0) {
+            	log.info(update);
+            }
         }
 
         Collection<Prefix> withdrawals = update.getWithdrawals();

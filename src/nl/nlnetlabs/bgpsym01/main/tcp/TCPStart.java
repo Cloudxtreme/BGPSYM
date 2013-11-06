@@ -516,7 +516,7 @@ public class TCPStart {
     	
     	List<Prefix> prefixList = new ArrayList<Prefix>(prefixAggregationSize);
     	
-		StaticThread.sleep(10000*myNum);
+		StaticThread.sleep(20000*myNum);
 
     	for (Map.Entry<ASIdentifier, ArrayList<XPrefix>> entry : prefixesMap.entrySet()) {
     		ASIdentifier asId = entry.getKey();
