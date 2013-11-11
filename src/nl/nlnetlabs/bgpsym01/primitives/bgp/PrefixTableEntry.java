@@ -16,7 +16,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 
 import org.apache.log4j.Logger;
 
-public class PrefixTableEntry implements EExternalizable {
+public class PrefixTableEntry implements EExternalizable, Cloneable {
 
     private static Logger log = Logger.getLogger(PrefixTableEntry.class);
 
@@ -38,6 +38,14 @@ public class PrefixTableEntry implements EExternalizable {
     }
 
     public PrefixTableEntry() {
+    }
+    
+    public PrefixTableEntry clone () {
+    	PrefixTableEntry pte = new PrefixTableEntry();
+    	pte.route = route.clone();
+    	pte.orignator = orignator;
+    	pte.containsMe = containsMe;
+    	return pte;
     }
 
     public Route getRoute() {

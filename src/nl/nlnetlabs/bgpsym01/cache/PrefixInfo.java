@@ -13,7 +13,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 
 import org.apache.log4j.Logger;
 
-public class PrefixInfo implements EExternalizable {
+public class PrefixInfo implements EExternalizable, Cloneable {
 
     private static Logger log = Logger.getLogger(PrefixInfo.class);
 
@@ -30,7 +30,7 @@ public class PrefixInfo implements EExternalizable {
         this.currentEntry = currentEntry;
         this.neighborsMap = neighborsMap;
     }
-
+    
     public PrefixInfo() {
     }
 
@@ -132,10 +132,10 @@ public class PrefixInfo implements EExternalizable {
         }
     }
 
-    public PrefixInfo getSimpleCopy() {
+    public PrefixInfo clone() {
         PrefixInfo copy = new PrefixInfo();
         copy.prefix = prefix;
-        copy.currentEntry = currentEntry;
+        copy.currentEntry = currentEntry.clone();
         return copy;
     }
 
