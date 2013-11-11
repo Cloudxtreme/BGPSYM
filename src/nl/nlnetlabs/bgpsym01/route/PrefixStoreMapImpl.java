@@ -41,7 +41,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
 	private static Logger log = Logger.getLogger(PrefixStoreMapImpl.class);
 
-	private Map<Pair<ASIdentifier, Prefix>, RouteViewDataResponse> map = new HashMap<Pair<ASIdentifier, Prefix>, RouteViewDataResponse>();
+	//private Map<Pair<ASIdentifier, Prefix>, RouteViewDataResponse> map = new HashMap<Pair<ASIdentifier, Prefix>, RouteViewDataResponse>();
 
 	private OutputBuffer outputBuffer;
 
@@ -70,11 +70,11 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		isDisconnect = false;
 	}
 
-	public Map<Pair<ASIdentifier, Prefix>, RouteViewDataResponse> getMap() {
+	/*public Map<Pair<ASIdentifier, Prefix>, RouteViewDataResponse> getMap() {
 		return this.map;
-	}
-
-	public Collection<RouteViewDataResponse> getPrefixDataList() {
+	}*/
+	
+	/*public Collection<RouteViewDataResponse> getPrefixDataList() {
 		List<RouteViewDataResponse> mapCopy = new ArrayList<RouteViewDataResponse>();
 
 		synchronized (map) {
@@ -86,14 +86,14 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		}
 
 		return mapCopy;
-	}
+	}*/
 
 	public ArrayList<Prefix> removePrefixesFromSender(ASIdentifier sender) {
 
 		ArrayList<Prefix> prefixesToRemove = new ArrayList<Prefix>();
 
 		if (cache instanceof PrefixCacheImplBlock) {
-			LinkedHashMap<Prefix, PrefixInfo> prefixes = ((PrefixCacheImplBlock) cache).getTable();
+			LinkedHashMap<Prefix, PrefixInfo> prefixes = (LinkedHashMap<Prefix, PrefixInfo>) ((PrefixCacheImplBlock) cache).getTable();
 
 			Iterator<Entry<Prefix, PrefixInfo>> iterator = prefixes.entrySet().iterator();
 
@@ -141,7 +141,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 	 * }
 	 */
 
-	private void refreshMap(ASIdentifier origin, Prefix prefix, Route route) {
+	/*private void refreshMap(ASIdentifier origin, Prefix prefix, Route route) {
 		long now = timeController.getCurrentTime();
 
 		Pair<ASIdentifier, Prefix> pair = getPair(origin, prefix);
@@ -161,7 +161,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 				response.length++;
 			}
 		}
-	}
+	}*/
 
 	public void prefixRemove(ASIdentifier asIdentifier,
 			Collection<Prefix> prefixes) {
@@ -334,13 +334,13 @@ public class PrefixStoreMapImpl implements PrefixStore {
 					currentRoute));
 			output = true;
 
-			refreshMap(best.getRoute().getOrigin(), prefix, best.getRoute());
+			//refreshMap(best.getRoute().getOrigin(), prefix, best.getRoute());
 		} else if (currentRoute != null) {
 			callback.prefixUnregistered(originator, prefix, currentRoute, null);
 			prefixInfo.setCurrentEntry(null);
 			outputBuffer.add(new OutputRemoveEntity(prefixInfo, currentRoute));
 			output = true;
-			refreshMap(currentRoute.getOrigin(), prefix, null);
+			//refreshMap(currentRoute.getOrigin(), prefix, null);
 		}
 
 		return output;
@@ -424,7 +424,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
 				replaceRoute(prefixInfo, neighborEntry, true);
 
-				refreshMap(route.getOrigin(), prefix, route);
+				//refreshMap(route.getOrigin(), prefix, route);
 
 				callback.prefixRegistered(originator, prefix,
 						currentEntry == null ? null : currentEntry.getRoute(),
@@ -579,8 +579,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		this.flapStore = flapStore;
 	}
 
-	public PrefixCache getCache() {
-		return cache;
+	public PrefixCacheImplBlock getCache() {
+		return (PrefixCacheImplBlock) cache;
 	}
 
 	public void setNeighbors(Neighbors neighbors) {

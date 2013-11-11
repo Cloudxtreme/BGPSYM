@@ -104,7 +104,7 @@ public class RIBRequestCommand extends MasterCommand {
 		
 		PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
 		PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
-		LinkedHashMap<Prefix, PrefixInfo> table = cache.getTable();
+		LinkedHashMap<Prefix, PrefixInfo> table = (LinkedHashMap<Prefix, PrefixInfo>) cache.getTable();
 		
 		try {
 			try {
