@@ -238,7 +238,7 @@ public class ResultWriterLog {
 			if (pte != null) {
 				Route route = pte.getRoute();
 				
-				if (route == null) {
+				if (route == null || route.getHops() == null) {
 					lostRoutes++;
 					continue;
 				}
