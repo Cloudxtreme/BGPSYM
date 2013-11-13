@@ -153,7 +153,7 @@ public class TCPStart {
         
         if (properties.hasPrefixFile()) {
         	loadOurPrefixes();
-        	registerPrefixes();
+        	//registerPrefixes();
         }
         
         for (BGPProcess process : processes.values()) {
