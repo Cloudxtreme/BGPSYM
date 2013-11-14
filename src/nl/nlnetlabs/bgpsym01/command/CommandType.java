@@ -11,7 +11,7 @@ public enum CommandType {
                             DisconnectCommand.class, 13), SET_REGISTRY(SetRegistryCommand.class, 14), LAST_SEEN(LastSeenRequestCommand.class, 15), LAST_SEEN_RESP(
                                     LastSeenResponseCommand.class, 16), SYNC_TIME(SyncTimeCommand.class, 17), RTT(RTTCommand.class, 18), RTT_RESPONSE(RTTCommandResponse.class, 19), PREFIX_RESET(
                                             PrefixDataResetCommand.class, 20), RIS_REQUEST(RISGetDataRequestCommand.class, 21), RIS_RESPONSE(RISGetDataResponseCommand.class, 22), INVALIDATE_COMMAND(
-                                                    InvalidateCommand.class, 23), CONNECT_COMMAND(ConnectCommand.class, 24), LOG_REQUEST(DisconnectCommand.class, 25),
+                                                    InvalidateCommand.class, 23), CONNECT_COMMAND(ConnectCommand.class, 24), LOG_REQUEST(LogRequestCommand.class, 25),
                                                     RIB_REQUEST(RIBRequestCommand.class, 26);
 
     /**

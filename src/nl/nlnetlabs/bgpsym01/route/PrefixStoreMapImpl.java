@@ -259,7 +259,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
     }
 
     void prefixReceived(ASIdentifier originator, Prefix prefix, Route route) {
-        System.out.println(asIdentifier + " received prefix from " + originator + "; route = " + route);
         callback.prefixReceived(originator, prefix, route);
         prefixesReceived++;
                 
