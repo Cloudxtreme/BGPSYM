@@ -32,7 +32,7 @@ import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 public class RIBRequestCommand extends MasterCommand {
 	private static Logger log = Logger.getLogger(RIBRequestCommand.class);
 	
-	private static final String OUTPUT_FILENAME_PREFIX = "log_";
+	private static final String OUTPUT_FILENAME_PREFIX = "rib_";
 
 	private static final String FILE_EXT = ".json";
 	

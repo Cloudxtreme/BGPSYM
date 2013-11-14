@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
-import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.factories.ASFactory;
 
 import com.thoughtworks.xstream.converters.Converter;
