@@ -66,13 +66,6 @@ public class Coordinator {
         // wait till guys set up their server connections
         commandSenderHelper.waitForAllHosts();
         
-        // create results directory
- 		String dirName = XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString();
- 		File directory = new File(dirName);
- 		if (!directory.exists() && !directory.mkdirs()) {
- 			throw new BGPSymException("Unable to make directory: "+dirName);
- 		}
-
         if (log.isInfoEnabled()) {
             log.info("sending acks");
         }
@@ -86,6 +79,14 @@ public class Coordinator {
             shutdown();
             return;
         }
+        
+     // create results directory
+      		String dirName = XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString();
+      		File directory = new File(dirName);
+      		if (!directory.exists() && !directory.mkdirs()) {
+      			throw new BGPSymException("Unable to make directory: "+dirName);
+      		}
+
 
         log.info("all set");
 
