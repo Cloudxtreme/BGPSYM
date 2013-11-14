@@ -5,7 +5,7 @@ public class SystemConstants {
     // maximum 2^19 prefixes =~ 254k
     public static final int PREFIX_SIZE_BITS = 18;
 
-    public static final int AS_SIZE_BITS = 19;
+    public static final int AS_SIZE_BITS = 32;
 
     // public static final int BLOCK_SIZE = 4096 << 4;
 
