@@ -163,8 +163,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		}
 	}*/
 
-	public void prefixRemove(ASIdentifier asIdentifier,
-			Collection<Prefix> prefixes) {
+	public void prefixRemove(ASIdentifier asIdentifier, Collection<Prefix> prefixes) {
 		assert prefixes != null && prefixes.size() > 0;
 		// refreshMap(asIdentifier, prefixes, null);
 

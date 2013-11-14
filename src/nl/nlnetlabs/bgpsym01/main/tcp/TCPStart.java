@@ -152,7 +152,7 @@ public class TCPStart {
        
         
         if (properties.hasPrefixFile()) {
-        	loadOurPrefixes();
+        	//loadOurPrefixes();
         	//registerPrefixes();
         }
         
@@ -241,9 +241,9 @@ public class TCPStart {
             //log.info("myNum=" + myNum + ", regs[myNum]=" + registries.get(myNum).getHost());
             loadNodes();
             Prefix.init(properties.getPrefixArraySize());
-            if (properties.hasPrefixFile()) {
+            /*if (properties.hasPrefixFile()) {
             	loadPrefixesFromFile();
-            }
+            }*/
         } catch (FileNotFoundException e) {
             throw new BGPSymException(e);
         }
