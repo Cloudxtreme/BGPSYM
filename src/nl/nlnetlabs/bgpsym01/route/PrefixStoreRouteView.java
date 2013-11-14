@@ -132,11 +132,5 @@ public class PrefixStoreRouteView implements PrefixStore {
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
-    
-    public void dumpTables() {
-    }
-    
-    public void dumpTables2() {
-    }
 
 }

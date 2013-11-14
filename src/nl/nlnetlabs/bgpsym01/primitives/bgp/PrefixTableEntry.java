@@ -16,7 +16,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 
 import org.apache.log4j.Logger;
 
-public class PrefixTableEntry implements EExternalizable {
+public class PrefixTableEntry implements EExternalizable, Cloneable  {
 
     private static Logger log = Logger.getLogger(PrefixTableEntry.class);
 

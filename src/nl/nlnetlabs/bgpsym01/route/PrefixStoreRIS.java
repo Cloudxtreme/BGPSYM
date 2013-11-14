@@ -124,13 +124,5 @@ public class PrefixStoreRIS implements PrefixStore {
     public List<NabsirUpdate> getList() {
         return updates;
     }
-    
-    public void dumpTables() {
-        
-    }
-    
-    public void dumpTables2() {
-        
-    }
 
 }

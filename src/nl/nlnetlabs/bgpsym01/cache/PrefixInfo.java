@@ -132,7 +132,7 @@ public class PrefixInfo implements EExternalizable {
         }
     }
 
-    public PrefixInfo getSimpleCopy() {
+    public PrefixInfo clone() {
         PrefixInfo copy = new PrefixInfo();
         copy.prefix = prefix;
         copy.currentEntry = currentEntry;
