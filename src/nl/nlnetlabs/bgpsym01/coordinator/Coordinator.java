@@ -1,5 +1,6 @@
 package nl.nlnetlabs.bgpsym01.coordinator;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import nl.nlnetlabs.bgpsym01.command.MasterAckCommand;
@@ -9,6 +10,8 @@ import nl.nlnetlabs.bgpsym01.coordinator.helpers.CommandSenderHelper;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.DisconnectHelper;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.PropagationHelper;
 import nl.nlnetlabs.bgpsym01.main.SystemConstants;
+import nl.nlnetlabs.bgpsym01.main.Tools;
+import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
 import nl.nlnetlabs.bgpsym01.primitives.timers.TimeControllerFactory;
 import nl.nlnetlabs.bgpsym01.primitives.timers.TimeControllerImpl;
 import nl.nlnetlabs.bgpsym01.primitives.types.StaticThread;
@@ -57,10 +60,18 @@ public class Coordinator {
     public void controlTheGame() {
         
         setStarted();
+       
         
         
         // wait till guys set up their server connections
         commandSenderHelper.waitForAllHosts();
+        
+        // create results directory
+ 		String dirName = XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString();
+ 		File directory = new File(dirName);
+ 		if (!directory.exists() && !directory.mkdirs()) {
+ 			throw new BGPSymException("Unable to make directory: "+dirName);
+ 		}
 
         if (log.isInfoEnabled()) {
             log.info("sending acks");
