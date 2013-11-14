@@ -128,8 +128,6 @@ public class BGPProcess extends ShutdownadbleThread {
         if (prefixes != null && withdrawals != null) {
         	this.updateWithBoth++;
         }
-        
-        log.info(update);
     }
 
     @SuppressWarnings("unused")
