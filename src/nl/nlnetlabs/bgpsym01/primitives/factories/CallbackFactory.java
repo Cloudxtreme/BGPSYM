@@ -45,7 +45,7 @@ public class CallbackFactory {
     public static Callback getCallback(ASIdentifier id) {
         if (false && id.getType() == ASType.ROUTEVIEW) {
             return getCallbackRegister(id);
-        } else if (true || id.getInternalId()  == 0 || id.getInternalId()  == 1) {
+        } else if (false && id.getInternalId() % 1000 == 1) {
             // return getCallbackTimer(id);
             return getCallbackRegister(id);
 
