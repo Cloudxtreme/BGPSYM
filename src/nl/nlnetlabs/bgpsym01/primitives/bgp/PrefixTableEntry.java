@@ -16,7 +16,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 
 import org.apache.log4j.Logger;
 
-public class PrefixTableEntry implements EExternalizable, Cloneable {
+public class PrefixTableEntry implements EExternalizable {
 
     private static Logger log = Logger.getLogger(PrefixTableEntry.class);
 
@@ -39,14 +39,6 @@ public class PrefixTableEntry implements EExternalizable, Cloneable {
 
     public PrefixTableEntry() {
     }
-    
-    public PrefixTableEntry clone () {
-    	PrefixTableEntry pte = new PrefixTableEntry();
-    	pte.route = route.clone();
-    	pte.orignator = orignator;
-    	pte.containsMe = containsMe;
-    	return pte;
-    }
 
     public Route getRoute() {
         return route;
@@ -65,12 +57,12 @@ public class PrefixTableEntry implements EExternalizable, Cloneable {
         return orignator;
     }
 
-    public void setOriginator(ASIdentifier originator) {
+    public void setOrignator(ASIdentifier originator) {
         this.orignator = originator;
     }
 
-    public void setOriginator(Neighbor neighbor) {
-        setOriginator(neighbor.getASIdentifier());
+    public void setOrignator(Neighbor neighbor) {
+        setOrignator(neighbor.getASIdentifier());
     }
 
     @Override
@@ -123,7 +115,7 @@ public class PrefixTableEntry implements EExternalizable, Cloneable {
 
         // TODO - magic stuff where to find who is CISCO and who's not...
         boolean isFlapTimerImpl = in.readBoolean();
-        //log.warn("read flap timer!!!");
+        log.warn("read flap timer!!!");
 
         if (isFlapTimerImpl) {
             flapTimer = new FlapTimerImpl();

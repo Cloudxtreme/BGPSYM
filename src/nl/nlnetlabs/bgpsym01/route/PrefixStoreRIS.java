@@ -34,7 +34,7 @@ public class PrefixStoreRIS implements PrefixStore {
         this.neighbors = neighbors;
     }
 
-    private TimeController timeController;
+    private TimeController timeController = TimeControllerFactory.getTimeController();
 
     public void setAsId(ASIdentifier asId) {
         this.asId = asId;
@@ -124,12 +124,13 @@ public class PrefixStoreRIS implements PrefixStore {
     public List<NabsirUpdate> getList() {
         return updates;
     }
+    
+    public void dumpTables() {
+        
+    }
+    
+    public void dumpTables2() {
+        
+    }
 
-	public void setTimeController (TimeController timeController) {
-		this.timeController = timeController;
-	}
-
-	public TimeController getTimeCOntroller () {
-		return timeController;
-	}
 }

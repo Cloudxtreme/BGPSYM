@@ -22,7 +22,6 @@ public class EventBackendXStreamImpl implements EventBackend {
     }
 
     public Event getNext() {
-		log.debug("getting new event");
         Event event;
         try {
             event = (Event) ois.readObject();

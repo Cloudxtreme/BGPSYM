@@ -1,20 +1,16 @@
 package nl.nlnetlabs.bgpsym01.coordinator;
 
 import java.util.ArrayList;
-import java.io.File;
 
-import nl.nlnetlabs.bgpsym01.main.Tools;
 import nl.nlnetlabs.bgpsym01.command.MasterAckCommand;
 import nl.nlnetlabs.bgpsym01.command.ShutdownCommand;
 import nl.nlnetlabs.bgpsym01.command.SyncTimeCommand;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.CommandSenderHelper;
-import nl.nlnetlabs.bgpsym01.coordinator.helpers.ConnectHelper;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.DisconnectHelper;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.PropagationHelper;
 import nl.nlnetlabs.bgpsym01.main.SystemConstants;
 import nl.nlnetlabs.bgpsym01.primitives.timers.TimeControllerFactory;
 import nl.nlnetlabs.bgpsym01.primitives.timers.TimeControllerImpl;
-import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
 import nl.nlnetlabs.bgpsym01.primitives.types.StaticThread;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 import nl.nlnetlabs.bgpsym01.xstream.XRegistry;
@@ -44,15 +40,11 @@ public class Coordinator {
 
     private RunMonitor runMonitor;
 
+    @SuppressWarnings("unused")
     private DisconnectHelper disconnectHelper;
 
-	private ConnectHelper connectHelper;
-
     private PropagationHelper propagationHelper;
-    
-    private PropagationHelper prefixPropagationHelper;
-    private PropagationHelper eventsPropagationHelper; 
-    
+
     private CommandSenderHelper commandSenderHelper;
 
     private boolean started = false;
@@ -63,40 +55,30 @@ public class Coordinator {
     }
 
     public void controlTheGame() {
+        
         setStarted();
+        
+        
         // wait till guys set up their server connections
-        log.info("wait for all hosts");
         commandSenderHelper.waitForAllHosts();
 
+        if (log.isInfoEnabled()) {
+            log.info("sending acks");
+        }
+
+        commandSenderHelper.sendToAllHosts(new MasterAckCommand());
+        commandSenderHelper.waitForAllHosts();
+
+        log.info("all hosts finished");
         // sync the time
         if (!syncTheTime()) {
             shutdown();
             return;
         }
 
-		// create results directory
-		String dirName = XProperties.getInstance().getResultDirectory() + File.separator + Tools.getInstance().getStartAsString();
-		File directory = new File(dirName);
-		if (!directory.exists() && !directory.mkdirs()) {
-			throw new BGPSymException("Unable to make directory: "+dirName);
-		}
-		
-		if (log.isInfoEnabled()) {
-            log.info("sending master ACK");
-        }
-		
-		commandSenderHelper.sendToAllHosts(new MasterAckCommand());
-        commandSenderHelper.waitForAllHosts();
-
         log.info("all set");
 
         // now we start sending updates
-
-        //propagationHelper.propagatePrefixes();
-        
-        //log.info("start events stream");
-        
-        //this.propagationHelper = getEventsPropagationHelper();
         
         propagationHelper.propagatePrefixes();
 
@@ -112,13 +94,10 @@ public class Coordinator {
     }
 
     public boolean syncTheTime() {
-    	log.info("syncing the time");
         long startTime = System.currentTimeMillis() + SYNC_CONSTANT;
         TimeControllerFactory.getTimeController();
         TimeControllerImpl.setStartTime(startTime);
         SyncTimeCommand stc = new SyncTimeCommand(startTime);
-        log.info("Start time = "+startTime);
-        
         for (int i = 0; i < SystemConstants.TIME_SYNC_TIMES; i++) {
             commandSenderHelper.sendToAllHosts(stc);
             commandSenderHelper.waitForAllHosts();
@@ -187,18 +166,6 @@ public class Coordinator {
         this.disconnectHelper = disconnectHelper;
     }
 
-	public DisconnectHelper getDisconnectHelper () {
-		return disconnectHelper;
-	}
-
-	public void setConnectHelper (ConnectHelper connectHelper) {
-		this.connectHelper = connectHelper;
-	}
-
-	public ConnectHelper getConnectHelper () {
-		return connectHelper;
-	}
-
     public ArrayList<XRegistry> getRegistries() {
         return registries;
     }
@@ -206,20 +173,5 @@ public class Coordinator {
     public void setRegistries(ArrayList<XRegistry> registries) {
         this.registries = registries;
     }
-    
-    public void setPrefixPropagationHelper (PropagationHelper helper) {
-    	this.prefixPropagationHelper = helper;
-    }
-    
-    public void setEventsPropagationHelper (PropagationHelper helper) {
-    	this.eventsPropagationHelper = helper;
-    }
-    
-    public PropagationHelper getPrefixPropagationHelper () {
-    	return prefixPropagationHelper;
-    }
-    
-    public PropagationHelper getEventsPropagationHelper () {
-    	return eventsPropagationHelper;
-    }
+
 }

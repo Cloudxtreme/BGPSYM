@@ -40,7 +40,6 @@ public class EventProcessor extends ShutdownadbleThread {
             }
 
             long waitingTime = eventStream.getWaitingTime();
-			log.info("waitingTime: "+waitingTime);
             if (waitingTime > 0) {
                 // eventStream.wait(waitingTime);
                 StaticThread.sleep(waitingTime);

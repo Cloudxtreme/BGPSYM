@@ -3,21 +3,16 @@ package nl.nlnetlabs.bgpsym01.main.tcp;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import nl.nlnetlabs.bgpsym01.cache.PrefixCacheImplBlock;
-import nl.nlnetlabs.bgpsym01.cache.ResultWriterLog;
 import nl.nlnetlabs.bgpsym01.callback.Callback;
 import nl.nlnetlabs.bgpsym01.command.AckCommand;
 import nl.nlnetlabs.bgpsym01.command.SetRegistryCommand;
@@ -29,9 +24,7 @@ import nl.nlnetlabs.bgpsym01.neighbor.impl.TCPConnection;
 import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
 import nl.nlnetlabs.bgpsym01.primitives.DiagnosticThread;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
-import nl.nlnetlabs.bgpsym01.primitives.bgp.BGPUpdate;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
-import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
 import nl.nlnetlabs.bgpsym01.primitives.factories.ASFactory;
 import nl.nlnetlabs.bgpsym01.primitives.factories.CallbackFactory;
 import nl.nlnetlabs.bgpsym01.primitives.factories.PrefixStoreFactory;
@@ -44,17 +37,14 @@ import nl.nlnetlabs.bgpsym01.primitives.types.IBGPModelImpl;
 import nl.nlnetlabs.bgpsym01.primitives.types.MessageInputGenerator;
 import nl.nlnetlabs.bgpsym01.primitives.types.MessageQueue;
 import nl.nlnetlabs.bgpsym01.primitives.types.MessageQueueImpl;
-import nl.nlnetlabs.bgpsym01.primitives.types.StaticThread;
 import nl.nlnetlabs.bgpsym01.process.BGPProcess;
 import nl.nlnetlabs.bgpsym01.route.MRAIStoreImpl;
 import nl.nlnetlabs.bgpsym01.route.MRAITimer;
 import nl.nlnetlabs.bgpsym01.route.MRAITimerImpl;
 import nl.nlnetlabs.bgpsym01.route.Policy;
-import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 import nl.nlnetlabs.bgpsym01.xstream.XComputeNodes;
 import nl.nlnetlabs.bgpsym01.xstream.XNeighbor;
 import nl.nlnetlabs.bgpsym01.xstream.XNode;
-import nl.nlnetlabs.bgpsym01.xstream.XPrefix;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 import nl.nlnetlabs.bgpsym01.xstream.XRegistry;
 import nl.nlnetlabs.bgpsym01.xstream.XSystem;
@@ -81,8 +71,6 @@ public class TCPStart {
     private ArrayList<XRegistry> registries;
 
     private ArrayList<XNode> nodes;
-    
-    private List<XPrefix> prefixes;
 
     private Map<ASIdentifier, BGPProcess> processes = new LinkedHashMap<ASIdentifier, BGPProcess>();
 
@@ -99,13 +87,6 @@ public class TCPStart {
     private XRegistry coordinator;
 
     private XProperties properties;
-    
-    public int prefixAggregationSize = 1;
-    
-    /*
-     *  how many prefix do we require in one message to double the sleeping time
-     */
-    private int prefixAggreagationSleeperMultiplier = 6;
 
     public TCPStart() {
         xStream = XStreamFactory.getXStream();
@@ -142,30 +123,25 @@ public class TCPStart {
         // help GC :)
         nodes = null;
         xStream = null;
-        
-     // send ack to coordinator
+
+        // send ack to coordinator - he will start sending us repropagation
+        // commands
         AckCommand ack = new AckCommand();
         cst.sendCommand(ack);
-        
-     // Now I can already start diagnostic thread
+
+        // Now I can already start diagnostic thread
         DiagnosticThread.init(processes.values(), cst);
-       
-        
-        if (properties.hasPrefixFile()) {
-        	//loadOurPrefixes();
-        	//registerPrefixes();
-        }
-        
+
         for (BGPProcess process : processes.values()) {
             try {
                 process.join();
-                /*PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
-                PrefixCacheImplBlock cache = (PrefixCacheImplBlock) store.getCache();
-                log.info("Total prefixes at end: "+ cache.size());*/
             } catch (InterruptedException e) {
                 // nothing to do here
-                log.error(e);
             }
+        }
+
+        if (log.isInfoEnabled()) {
+            log.info("all processes joined!");
         }
     }
 
@@ -238,12 +214,11 @@ public class TCPStart {
         try {
             loadProperties();
             loadRegistries();
-            //log.info("myNum=" + myNum + ", regs[myNum]=" + registries.get(myNum).getHost());
+            if (log.isDebugEnabled()) {
+                log.debug("myNum=" + myNum + ", regs[myNum]=" + registries.get(myNum).getHost());
+            }
             loadNodes();
             Prefix.init(properties.getPrefixArraySize());
-            /*if (properties.hasPrefixFile()) {
-            	loadPrefixesFromFile();
-            }*/
         } catch (FileNotFoundException e) {
             throw new BGPSymException(e);
         }
@@ -261,9 +236,6 @@ public class TCPStart {
     }
 
     private void loadProperties() throws FileNotFoundException {
-		//File xmlFile = new File(propertiesFile);
-
-		//properties = (XProperties) XStreamFactory.getXStream().fromXML(new FileInputStream(xmlFile));
         properties = (XProperties) XStreamFactory.getXStream().fromXML(new FileReader(propertiesFile));
         XProperties.setInstance(properties);
     }
@@ -281,15 +253,17 @@ public class TCPStart {
                 continue;
             }
 
+            if (log.isInfoEnabled()) {
+                // log.info("binding " + node + " to " + registry.getHost());
+            }
+
             Callback callback = CallbackFactory.getCallback(node.getAsIdentifier());
             BGPProcess process = new BGPProcess(callback);
 
             processes.put(node.getAsIdentifier(), process);
-			process.setRegistries(registries);
 
             node.getAsIdentifier().setProcess(process);
             process.setAsIdentifier(node.getAsIdentifier());
-			process.setResultWriterLog(new ResultWriterLog(process.getASIdentifier()));
         }
     }
 
@@ -314,7 +288,6 @@ public class TCPStart {
         if (nodes == null || nodes.size() == 0) {
             return;
         }
-
         for (XNode node : nodes) {
 
             if (node.getAsIdentifier().getProcessId() != myNum) {
@@ -329,6 +302,7 @@ public class TCPStart {
 
             ArrayList<XNeighbor> xNeighbors = node.getNeighbors();
             for (XNeighbor xN : xNeighbors) {
+
                 ASIdentifier id = xN.getAsIdentifier();
 
                 XRegistry xRegistry = registries.get(id.getProcessId());
@@ -387,12 +361,10 @@ public class TCPStart {
             process.start();
             Thread.yield();
         }
-
         serverSocketThread.start();
     }
 
-    @SuppressWarnings("unused")
-	private MRAITimer getMRAITimer(NeighborImplTCP n, boolean hasRealMRAITimer) {
+    private MRAITimer getMRAITimer(NeighborImplTCP n, boolean hasRealMRAITimer) {
         if (1 < 2) {
             MRAITimerImpl timer = new MRAITimerImpl();
             int threshhold = hasRealMRAITimer ? 30000 : 0;
@@ -431,12 +403,14 @@ public class TCPStart {
         } catch (IOException e) {
             throw new BGPSymException(e);
         }
+
     }
 
     private void loadNodes() throws FileNotFoundException {
         XSystem xSystem = (XSystem) xStream.fromXML(new FileReader(XProperties.getInstance().getNodesFileName()));
-
+        
         ASFactory.init(xSystem.getAses().size());
+        
         for (ASIdentifier as : xSystem.getAses()) {
             ASFactory.registerAS(as, as.getInternalId());
         }
@@ -452,138 +426,6 @@ public class TCPStart {
             log.error("registries.size() == " + registries.size() + ", hostCount=" + XProperties.getInstance().hostCount);
             System.exit(1);
         }
-    }
-    
-    @SuppressWarnings("unchecked")
-	private void loadPrefixesFromFile() {
-    	String prefixesFile = properties.getPrefixesFileName();
-    	
-    	List<XPrefix> prefixes;
-    	
-    	 try {
-             prefixes = (List<XPrefix>) XStreamFactory.getXStream().fromXML(new FileInputStream(prefixesFile));
-         } catch (FileNotFoundException e) {
-             log.error(e);
-             throw new BGPSymException(e);
-         }
-    	 
-    	 this.prefixes = prefixes;
-    }
-    
-    private void loadOurPrefixes() {
-        ArrayList<Integer> internalIds = new ArrayList<Integer>();
-        
-        Iterator<ASIdentifier> iterator = processes.keySet().iterator();
-        while (iterator.hasNext()) {
-        	internalIds.add(Integer.valueOf(iterator.next().getInternalId()));
-        }
-     
-        List<XPrefix> ourPrefixes = new ArrayList<XPrefix>();
-        
-        for (XPrefix xPrefix : prefixes) {
-        	if (internalIds.contains(Integer.valueOf(xPrefix.getAsInternalId()))) {
-        		ourPrefixes.add(xPrefix);
-        	}
-        }
-        
-        log.info("total internalids: "+internalIds.size()+" loaded "+prefixes.size()+" prefixes from file of which "+ourPrefixes.size()+" are ours.");
-        
-        //log.info("This slave has "+ourPrefixes.size()+" prefixes");
-        
-        this.prefixes = ourPrefixes;
-    }
-    
-    private BGPUpdate getUpdate (List<Prefix> prefixList, ASIdentifier asId) {
-    	ArrayList<Prefix> newPrefixList = new ArrayList<Prefix>();
-    	for (Prefix prefix : prefixList) {
-    		newPrefixList.add(prefix);
-    	}
-    	
-    	BGPUpdate u = new BGPUpdate();
-        u.setPrefixes(newPrefixList);
-        Route route = new Route();
-        route.createEmptyHops();
-        u.setRoute(route);
-        u.setSender(asId);
-        
-        return u;
-    }
-    
-    private void registerPrefixes() {
-    	long sleepingTime = properties.sleepingTime;
-    	
-    	Map<ASIdentifier, ArrayList<XPrefix>> prefixesMap = generatePrefixMap();
-    	
-    	List<Prefix> prefixList = new ArrayList<Prefix>(prefixAggregationSize);
-    	
-		//StaticThread.sleep(20000*myNum);
-
-    	for (Map.Entry<ASIdentifier, ArrayList<XPrefix>> entry : prefixesMap.entrySet()) {
-    		ASIdentifier asId = entry.getKey();
-    		
-    		if (asId.getInternalId() > 1600) {
-    			continue;
-    		}
-    		
-    		Iterator<XPrefix> iterator = entry.getValue().iterator();
-            XPrefix last = null;
-            
-            StaticThread.sleep(200);
-
-            while (iterator.hasNext()) {
-            	last = iterator.next();
-            	Prefix prefix = null;
-            	try {
-            		 prefix = Prefix.getInstance(last.getPrefixNum());
-            	}
-            	catch (ArrayIndexOutOfBoundsException e) {
-            		log.info("OutOfBounds: "+last.getPrefixNum());
-            	}
-            	prefixList.add(prefix);
-            	
-            	if (prefixList.size() == prefixAggregationSize || !iterator.hasNext()) {
-            		asId.getProcess().getQueue().addMessage(getUpdate(prefixList, asId));
-            		
-            		long sleepTime = (long) (sleepingTime * getSleepingTimeMultiplier(prefixList));
-            		prefixList.clear();
-            		StaticThread.sleep(sleepTime);
-            	}
-            }
-    	}
-    	
-    	log.info("done registering prefixes at "+getTimeController().getCurrentTime());
-    }
-    
-    /**
-     * Generate prefixes map - we can send prefixes from one neighbor together
-     * 
-     * @return map of prefixes {@link ASIdentifier} -> {@link ArrayList}
-     */
-    private Map<ASIdentifier, ArrayList<XPrefix>> generatePrefixMap() {
-        int count = properties.prefixStartingPoint;
-
-        Map<ASIdentifier, ArrayList<XPrefix>> prefixesMap = new LinkedHashMap<ASIdentifier, ArrayList<XPrefix>>();
-
-        // skip first X prefixes
-        Iterator<XPrefix> iterator = prefixes.iterator();
-        for (int i = 0; i < properties.prefixStartingPoint; i++) {
-            iterator.next();
-        }
-
-        while (iterator.hasNext() && count < properties.prefixCount) {
-            XPrefix prefix = iterator.next();
-
-            ASIdentifier asId = ASFactory.getInstance(prefix.getAsInternalId());
-            ArrayList<XPrefix> list = prefixesMap.get(asId);
-            if (list == null) {
-                list = new ArrayList<XPrefix>();
-                prefixesMap.put(asId, list);
-            }
-            list.add(prefix);
-            count++;
-        }
-        
-        return prefixesMap;
     }
 
     public int getMyNum() {
@@ -604,10 +446,6 @@ public class TCPStart {
 
     public void setProcesses(Map<ASIdentifier, BGPProcess> processes) {
         this.processes = processes;
-    }
-    
-    private double getSleepingTimeMultiplier(List<Prefix> prefixList) {
-        return (1 + ((double) (prefixList.size() - 1) / (double) prefixAggreagationSleeperMultiplier));
     }
 
 }

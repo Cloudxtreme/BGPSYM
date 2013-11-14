@@ -100,7 +100,6 @@ public class CommandSenderHelperImpl implements CommandSenderHelper {
                 try {
                     wait();
                 } catch (InterruptedException e) {
-                	log.info(e);
                 }
             }
             allHostsHere = false;
@@ -132,7 +131,6 @@ public class CommandSenderHelperImpl implements CommandSenderHelper {
         long start = System.currentTimeMillis();
         sendToAllHosts(new SyncFilesCommand());
         waitForAllHosts();
-        
         if (log.isInfoEnabled()) {
             log.info("synced, time=" + (System.currentTimeMillis() - start));
         }

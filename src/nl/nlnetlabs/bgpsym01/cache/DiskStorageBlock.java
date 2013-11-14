@@ -49,7 +49,7 @@ public class DiskStorageBlock implements DiskStorage {
 
     int blocksCount = 0;
 
-    public FIFOQueue<Integer> freeBlocks = new FIFOQueueImpl<Integer>(64);
+    FIFOQueue<Integer> freeBlocks = new FIFOQueueImpl<Integer>(64);
 
     ByteArrayOutputStream baos1;
     ByteArrayOutputStream baos2;
@@ -244,7 +244,7 @@ public class DiskStorageBlock implements DiskStorage {
         }
     }
 
-    public Iterator<PrefixInfo> getPrefixesFromStream(ByteArrayInputStream bais) throws IOException {
+    Iterator<PrefixInfo> getPrefixesFromStream(ByteArrayInputStream bais) throws IOException {
 
         // how many prefixes there are
         int count = bais.read();
@@ -305,15 +305,4 @@ public class DiskStorageBlock implements DiskStorage {
         }
     }
 
-	public int getBlockSize () {
-		return this.blockSize;
-	}
-
-	public int getBlocksCount() {
-		return this.blocksCount;
-	}
-
-	public RandomAccessFile getFile () {
-		return this.file;
-	}
 }

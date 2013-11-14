@@ -10,7 +10,6 @@ import nl.nlnetlabs.bgpsym01.neighbor.Neighbors;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
 import nl.nlnetlabs.bgpsym01.primitives.types.Pair;
-import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 import nl.nlnetlabs.bgpsym01.route.output.OutputBuffer;
 import nl.nlnetlabs.bgpsym01.route.output.OutputState;
 
@@ -27,8 +26,6 @@ public class NeighborInvalidatorImpl implements NeighborInvalidator {
     private PrefixCache prefixCache;
 
     private Neighbors neighbors;
-    
-    private PrefixStoreMapImpl storeImpl;
 
     public void setNeighbors(Neighbors neighbors) {
         this.neighbors = neighbors;
@@ -89,9 +86,8 @@ public class NeighborInvalidatorImpl implements NeighborInvalidator {
     }
 
     private void invalidateNeighbor(Neighbor neighbor, List<Prefix> prefixes) {
-    	storeImpl.removePrefixesFromSender(neighbor.getASIdentifier());
         registerPrefixes(neighbor, prefixes);
-        neighbor.setValid(false); // !outputState.hasRegisteredPrefixes(neighbor)
+        neighbor.setValid(!outputState.hasRegisteredPrefixes(neighbor));
         outputBuffer.invalidate(neighbor, prefixes);
     }
 
@@ -114,10 +110,6 @@ public class NeighborInvalidatorImpl implements NeighborInvalidator {
             return null;
         }
         return pi.getCurrentEntry() == null ? null : pi.getCurrentEntry().getRoute();
-    }
-    
-    public void setPrefixStore (PrefixStoreMapImpl storeImpl) {
-    	this.storeImpl = storeImpl;
     }
 
 }

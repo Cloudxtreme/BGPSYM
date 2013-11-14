@@ -19,7 +19,7 @@ public class Prefix implements Comparable<Prefix>, Serializable {
         }
     }
 
-    public final static Prefix getInstance(int num) throws ArrayIndexOutOfBoundsException {
+    public final static Prefix getInstance(int num) {
         return array[num];
     }
 

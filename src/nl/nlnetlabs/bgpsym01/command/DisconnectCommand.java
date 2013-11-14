@@ -2,10 +2,10 @@ package nl.nlnetlabs.bgpsym01.command;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
-import nl.nlnetlabs.bgpsym01.neighbor.Neighbors;
+import nl.nlnetlabs.bgpsym01.main.SystemConstants;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.RunnableUpdate;
@@ -13,18 +13,11 @@ import nl.nlnetlabs.bgpsym01.primitives.bgp.Update;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataInputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 import nl.nlnetlabs.bgpsym01.process.BGPProcess;
-import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
-import nl.nlnetlabs.bgpsym01.route.output.OutputBufferImpl;
-import nl.nlnetlabs.bgpsym01.route.output.OutputStateImpl;
-
-import org.apache.log4j.Logger;
 
 /**
  * This command removes neighbors from queue of given asIdentifier
  */
 public class DisconnectCommand extends MasterCommand {
-
-	private static Logger log = Logger.getLogger(DisconnectCommand.class);
 
     private ASIdentifier asIdentifier;
 
@@ -44,34 +37,22 @@ public class DisconnectCommand extends MasterCommand {
          * 2. remove given neighbors
          * 3. remove prefixes
          */
+        BGPProcess process = jvm.getProcesses().get(asIdentifier);
         Update update = new RunnableUpdate() {
 
             @Override
             public void run(BGPProcess process) {
-            	Neighbors neighbors = process.getNeighbors();
-            	PrefixStoreMapImpl store = (PrefixStoreMapImpl) process.getStore();
-            	
-				//log.info("received disconnect command with ases: "+asIds+" "+process.getNeighbors().size());
                 for (ASIdentifier asId : asIds) {
-                	Neighbor neighbor = neighbors.getNeighbor(asId);
-
-                	OutputBufferImpl outputBuffer = (OutputBufferImpl) store.getOutputBuffer();
-                	outputBuffer.getBufferStore().removeAllAnnouncements(neighbor);
-                	
-                	neighbor.setValid(false);
-                	
-                	ArrayList<Prefix> prefixes = store.removePrefixesFromSender(asId);
-                	
-                	/*OutputStateImpl outputState = (OutputStateImpl) outputBuffer.getOutputState();
-                	outputState.registerPrefixes(neighbor, prefixes);*/
-                	
-                    //neighbors.remove(asId);
+                    process.getNeighbors().remove(asId);
+                    if (prefixes != null && prefixes.length > 0) {
+                        // TODO change this prefixes to list!
+                        process.getStore().prefixRemove(asId, Arrays.asList(prefixes));
+                    }
                 }
-
-				//log.info("total neighbors after: "+process.getNeighbors().size());
             }
+
         };
-        asIdentifier.getProcess().getQueue().addMessage(update);
+        process.getQueue().addMessage(update);
     }
 
     public ASIdentifier getAsIdentifier() {
@@ -85,12 +66,12 @@ public class DisconnectCommand extends MasterCommand {
     @Override
     protected void readInternalData(EDataInputStream in) throws IOException {
         asIdentifier = ASIdentifier.staticReadExternal(in);
-        /*int size = in.readInt();
+        int size = in.readInt();
         prefixes = new Prefix[size];
         for (int i = 0; i < size; i++) {
             prefixes[i] = Prefix.getInstance(in.readBits(SystemConstants.PREFIX_SIZE_BITS));
-        }*/
-        int size = in.readInt();
+        }
+        size = in.readInt();
         asIds = new ArrayList<ASIdentifier>(size);
         for (int i = 0; i < size; i++) {
             asIds.add(ASIdentifier.staticReadExternal(in));
@@ -100,13 +81,13 @@ public class DisconnectCommand extends MasterCommand {
     @Override
     protected void writeInternalData(EDataOutputStream out) throws IOException {
         asIdentifier.writeExternal(out);
-        /*int size = prefixes == null ? 0 : prefixes.length;
+        int size = prefixes == null ? 0 : prefixes.length;
         out.writeInt(size);
         if (size > 0) {
             for (Prefix prefix : prefixes) {
                 out.writeBits(prefix.getNum(), SystemConstants.PREFIX_SIZE_BITS);
             }
-        }*/
+        }
         out.writeList(asIds);
     }
 

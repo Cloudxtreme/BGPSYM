@@ -13,7 +13,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 
 import org.apache.log4j.Logger;
 
-public class PrefixInfo implements EExternalizable, Cloneable {
+public class PrefixInfo implements EExternalizable {
 
     private static Logger log = Logger.getLogger(PrefixInfo.class);
 
@@ -30,7 +30,7 @@ public class PrefixInfo implements EExternalizable, Cloneable {
         this.currentEntry = currentEntry;
         this.neighborsMap = neighborsMap;
     }
-    
+
     public PrefixInfo() {
     }
 
@@ -112,7 +112,7 @@ public class PrefixInfo implements EExternalizable, Cloneable {
         }
 
         if (getCurrentEntry() == null && neighborsMap.size() != 0) {
-            //log.warn("no current entry found! prefix=" + prefix + ", map.size()=" + neighborsMap.size());
+            log.warn("no current entry found! prefix=" + prefix + ", map.size()=" + neighborsMap.size());
         }
     }
 
@@ -132,10 +132,10 @@ public class PrefixInfo implements EExternalizable, Cloneable {
         }
     }
 
-    public PrefixInfo clone() {
+    public PrefixInfo getSimpleCopy() {
         PrefixInfo copy = new PrefixInfo();
         copy.prefix = prefix;
-        copy.currentEntry = currentEntry.clone();
+        copy.currentEntry = currentEntry;
         return copy;
     }
 

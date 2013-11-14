@@ -43,7 +43,6 @@ public class InvalidateUpdate extends RunnableUpdate {
     OutputState outputState;
     OutputBuffer outputBuffer;
     Neighbors neighbors;
-    PrefixStoreMapImpl storeImpl;
 
 
 
@@ -67,17 +66,15 @@ public class InvalidateUpdate extends RunnableUpdate {
         outputState = buffer.getOutputState();
         outputBuffer = buffer;
         neighbors = storeImpl.getNeighbors();
-        this.storeImpl = storeImpl;
     }
 
-    NeighborInvalidatorImpl createInvalidator(PrefixCache cache, OutputState outputState, OutputBuffer outputBuffer, PrefixStoreMapImpl storeImpl) {
+    NeighborInvalidatorImpl createInvalidator(PrefixCache cache, OutputState outputState, OutputBuffer outputBuffer) {
         // we use only parameters here, we do not acces fields
         NeighborInvalidatorImpl invalidator = new NeighborInvalidatorImpl();
         invalidator.setOutputBuffer(outputBuffer);
         invalidator.setPrefixCache(cache);
         invalidator.setOutputState(outputState);
         invalidator.setNeighbors(neighbors);
-        invalidator.setPrefixStore(storeImpl);
         return invalidator;
     }
 
@@ -101,7 +98,7 @@ public class InvalidateUpdate extends RunnableUpdate {
     public void run(BGPProcess process) {
         inferStuff(process.getStore());
         // call with attributes as parameters
-        NeighborInvalidator invalidator = createInvalidator(cache, outputState, outputBuffer, storeImpl);
+        NeighborInvalidator invalidator = createInvalidator(cache, outputState, outputBuffer);
         call(neighbors, invalidator);
     }
 

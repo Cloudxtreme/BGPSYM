@@ -1,5 +1,7 @@
 package nl.nlnetlabs.bgpsym01.cache;
 
+import java.util.LinkedHashMap;
+
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 
 public interface PrefixCache {
@@ -12,4 +14,5 @@ public interface PrefixCache {
 
     void flush();
 
+    public LinkedHashMap<Prefix, PrefixInfo> getTable();
 }

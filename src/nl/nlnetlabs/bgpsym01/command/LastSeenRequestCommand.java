@@ -63,15 +63,10 @@ public class LastSeenRequestCommand extends MasterCommand {
             @Override
             public void run(BGPProcess process) {
                 if (log.isInfoEnabled()) {
-                    log.info("getting prefixDataList");
+                    log.info("gettling prefixDataList");
                 }
-
                 assert process.getStore().getType() == PrefixStoreType.ROUTEVIEW;
                 PrefixStoreRouteView store = (PrefixStoreRouteView) process.getStore();
-
-				if (log.isInfoEnabled()) {
-					log.info("store retrieved");
-				}
 
                 final List<RouteViewDataResponse> list = getPrefixDataList(store.getPrefixDataList());
                 if (log.isInfoEnabled()) {

@@ -13,7 +13,6 @@ import nl.nlnetlabs.bgpsym01.coordinator.events.framework.EventProcessor;
 import nl.nlnetlabs.bgpsym01.coordinator.events.framework.EventStreamImpl;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.CommandSenderHelper;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.CommandSenderHelperImpl;
-import nl.nlnetlabs.bgpsym01.coordinator.helpers.ConnectHelper;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.DisconnectHelper;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.EventsSenderHelper;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.PropagationHelper;
@@ -48,13 +47,11 @@ public class CoordinatorMain {
     private void init(String[] args) {
         /*
          * 1. create your socket
-         * 2. read config info so that you know where you're standing
+         * 2. read config info so that you know what you're standing on
          * 3. listen for connection from the guys
-         * 4. wait till guys say they are ready
+         * 4. wait till guys say their ready
          * 5. ... 
          */
-
-		log.debug("start");
 
         try {
             // String workingDir = null;
@@ -94,12 +91,12 @@ public class CoordinatorMain {
             XSystem system = loadNodes();
             Prefix.init(XProperties.getInstance().getPrefixArraySize());
             // coordinator.setAses(system.getAses());
-            
-            log.info("setting up helpers");
+
             CommandSenderHelperImpl commandSenderHelper = new CommandSenderHelperImpl();
             commandSenderHelper.setAses(system.getAses());
             commandSenderHelper.setCommunicator(communicator);
             commandSenderHelper.setRegistries(computeNodes.getRegistries());
+            commandSenderHelper.setCommunicator(communicator);
             coordinator.setCommandSenderHelper(commandSenderHelper);
 
             DisconnectHelper disconnectHelper = new DisconnectHelper();
@@ -107,20 +104,9 @@ public class CoordinatorMain {
             disconnectHelper.setCommunicator(communicator);
             coordinator.setDisconnectHelper(disconnectHelper);
 
-			ConnectHelper connectHelper = new ConnectHelper();
-			connectHelper.setNodes(system.getNodes());
-			connectHelper.setCommunicator(communicator);
-			coordinator.setConnectHelper(connectHelper);
+            coordinator.setPropagationHelper(getPropagationHelper(commandSenderHelper));
 
-            //coordinator.setPropagationHelper(getPropagationHelper(commandSenderHelper, disconnectHelper, connectHelper));
-
-			//coordinator.setPrefixPropagationHelper(getPrefixPropagationHelper(commandSenderHelper));
-			coordinator.setEventsPropagationHelper(getEventsPropagationHelper(commandSenderHelper, disconnectHelper, connectHelper));
             tools.createDiagFile();
-            
-            coordinator.setPropagationHelper(coordinator.getEventsPropagationHelper());
-            
-            log.info("starting the game");
 
             coordinator.controlTheGame();
 
@@ -130,54 +116,9 @@ public class CoordinatorMain {
         }
 
     }
-    
-    public PropagationHelper getPrefixPropagationHelper (CommandSenderHelper commandSenderHelper) {
-    	XProperties properties = XProperties.getInstance();
-    	
-    	PropagationHelperImpl propagationHelper = new PropagationHelperImpl();
-        propagationHelper.setCommandSenderHelper(commandSenderHelper);
-        propagationHelper.setPrefixAggregationSize(properties.getPrefixAggregationSize());
-        if (XProperties.getInstance().hasPrefixFile()) {
-            List<XPrefix> prefixes = loadPrefixesFromFile();
-            propagationHelper.setPrefixes(prefixes);
-        }
-        
-        return propagationHelper;
-    }
-    
-    public PropagationHelper getEventsPropagationHelper (CommandSenderHelper commandSenderHelper, DisconnectHelper disconnectHelper, ConnectHelper connectHelper) {
-    	XProperties properties = XProperties.getInstance();
-    	
-    	EventsSenderHelper helper = new EventsSenderHelper();
-        EventProcessor processor = new EventProcessor();
-        processor.setDataMeasurement(new DataMeasurementImpl());
-        EventStreamImpl stream = new EventStreamImpl();
-        
-        EventBackendXStreamImpl backend = null;
-        try {
-            backend = new EventBackendXStreamImpl(new FileReader(properties.getEventsFileName()));
-        } catch (FileNotFoundException e) {
-            log.error(e);
-            throw new BGPSymException(e);
-        } catch (IOException e) {
-            log.error(e);
-            throw new BGPSymException(e);
-        }
-        
-        stream.setBackend(backend);
-        stream.setCommandSenderHelper(commandSenderHelper);
-		stream.setDisconnectHelper(disconnectHelper);
-		stream.setConnectHelper(connectHelper);
-		
-        processor.setEventStream(stream);
-        
-        helper.setProcessor(processor);
-		
-        return helper;
-    }
 
     // its public only for tests...
-    public PropagationHelper getPropagationHelper(CommandSenderHelper commandSenderHelper, DisconnectHelper disconnectHelper, ConnectHelper connectHelper) {
+    public PropagationHelper getPropagationHelper(CommandSenderHelper commandSenderHelper) {
         XProperties properties = XProperties.getInstance();
 
         if (properties.isUseEventsFile()) {
@@ -185,7 +126,6 @@ public class CoordinatorMain {
             EventProcessor processor = new EventProcessor();
             processor.setDataMeasurement(new DataMeasurementImpl());
             EventStreamImpl stream = new EventStreamImpl();
-            
             EventBackendXStreamImpl backend = null;
             try {
                 backend = new EventBackendXStreamImpl(new FileReader(properties.getEventsFileName()));
@@ -196,16 +136,10 @@ public class CoordinatorMain {
                 log.error(e);
                 throw new BGPSymException(e);
             }
-            
             stream.setBackend(backend);
-            stream.setCommandSenderHelper(commandSenderHelper);
-			stream.setDisconnectHelper(disconnectHelper);
-			stream.setConnectHelper(connectHelper);
-			
             processor.setEventStream(stream);
-            
             helper.setProcessor(processor);
-			
+            stream.setCommandSenderHelper(commandSenderHelper);
             return helper;
         } else {
             PropagationHelperImpl propagationHelper = new PropagationHelperImpl();
@@ -215,7 +149,6 @@ public class CoordinatorMain {
                 List<XPrefix> prefixes = loadPrefixesFromFile();
                 propagationHelper.setPrefixes(prefixes);
             }
-            
             return propagationHelper;
         }
     }
@@ -223,7 +156,6 @@ public class CoordinatorMain {
     @SuppressWarnings("unchecked")
     private List<XPrefix> loadPrefixesFromFile() {
         String prefixesFile = XProperties.getInstance().getPrefixesFileName();
-        
         List<XPrefix> prefixes;
         try {
             prefixes = (List<XPrefix>) XStreamFactory.getXStream().fromXML(new FileInputStream(prefixesFile));
@@ -231,7 +163,6 @@ public class CoordinatorMain {
             log.error(e);
             throw new BGPSymException(e);
         }
-        
         return prefixes;
     }
 

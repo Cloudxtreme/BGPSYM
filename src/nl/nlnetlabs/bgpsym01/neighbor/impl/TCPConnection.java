@@ -37,5 +37,7 @@ public class TCPConnection {
         msg.setUpdate(update);
 
         serverSocketThread.send(socketChannel, msg);
+
     }
+
 }

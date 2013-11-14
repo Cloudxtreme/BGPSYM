@@ -15,8 +15,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("u")
 public class BGPUpdate implements Cloneable, Update {
 
-    private static final int PREFIXES_LENGTH_BITS = 18;
-    private static final int WITHDRAWAL_LENGTH_BITS = 18;
+    private static final int PREFIXES_LENGTH_BITS = 16;
+    private static final int WITHDRAWAL_LENGTH_BITS = 10;
 
     /* 
      * though having an array instead of prefixes here would be better in some aspects,
@@ -31,17 +31,13 @@ public class BGPUpdate implements Cloneable, Update {
     private Route route;
 
     private long readyTime;
-    
-    private boolean isDisconnect;
 
     public BGPUpdate() {
-    	isDisconnect = false;
     }
 
     public BGPUpdate(ASIdentifier sender) {
         super();
         this.sender = sender;
-        isDisconnect = false;
     }
 
     public BGPUpdate(ASIdentifier sender, Route route) {
@@ -113,8 +109,6 @@ public class BGPUpdate implements Cloneable, Update {
             route = new Route();
             route.readExternal(in);
         }
-        
-        isDisconnect = in.readBoolean();
     }
 
     public void writeExternal(EDataOutputStream out) throws IOException {
@@ -146,8 +140,6 @@ public class BGPUpdate implements Cloneable, Update {
         if (route != null) {
             route.writeExternal(out);
         }
-        
-        out.writeBoolean(isDisconnect);
     }
 
     @Override
@@ -188,14 +180,6 @@ public class BGPUpdate implements Cloneable, Update {
 
     public void setReadyTime(long readyTime) {
         this.readyTime = readyTime;
-    }
-    
-    public void setDisconnect () {
-    	this.isDisconnect = true;
-    }
-    
-    public boolean isDisconnect () {
-    	return this.isDisconnect;
     }
 
 }

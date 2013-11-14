@@ -11,11 +11,7 @@ import nl.nlnetlabs.bgpsym01.command.MasterCommand;
 import nl.nlnetlabs.bgpsym01.main.tcp.AbstractCommunicationThread;
 import nl.nlnetlabs.bgpsym01.xstream.XRegistry;
 
-import org.apache.log4j.Logger;
-
 public class SelectorThread extends AbstractCommunicationThread {
-
-    private static Logger log = Logger.getLogger(SelectorThread.class);
 
     @Override
     protected boolean reportIdle() {

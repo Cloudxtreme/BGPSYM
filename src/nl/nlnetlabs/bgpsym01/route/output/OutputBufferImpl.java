@@ -88,13 +88,12 @@ public class OutputBufferImpl implements OutputBuffer {
         bufferStore.addAnnouncement(entity);
     }
 
-    public void flush(ASIdentifier asIdentifier) {
-        Neighbor neighbor = neighbors.getNeighbor(asIdentifier);
+    public void flush(ASIdentifier asId) {
+             
+        Neighbor neighbor = neighbors.getNeighbor(asId);
         try {
-        	if (neighbor.isValid()) {
-        		processForANeighbor(neighbor, bufferStore.announcementsIterator(neighbor), true);
-            	bufferStore.clearAnnouncements(neighbor);
-        	}
+            processForANeighbor(neighbor, bufferStore.announcementsIterator(neighbor), true);
+            bufferStore.clearAnnouncements(neighbor);
         } catch (Exception e) {
             // it's ok - there was nothing to send, happens during tests
         }
@@ -107,9 +106,7 @@ public class OutputBufferImpl implements OutputBuffer {
 
     private void processAnnouncements() {
         for (Neighbor neighbor : neighbors) {
-        	if (neighbor.isValid()) {
-        		processForANeighbor(neighbor, bufferStore.announcementsIterator(), false);
-        	}
+            processForANeighbor(neighbor, bufferStore.announcementsIterator(), false);
         }
         // clear the list...
         bufferStore.clearAnnouncements();
@@ -118,8 +115,7 @@ public class OutputBufferImpl implements OutputBuffer {
     private int allAnn;
     private int defAnn;
 
-    @SuppressWarnings("unused")
-	private void annProcess(boolean deferred) {
+    private void annProcess(boolean deferred) {
         allAnn++;
         if (deferred) {
             defAnn++;
@@ -131,8 +127,7 @@ public class OutputBufferImpl implements OutputBuffer {
         }
     }
 
-    @SuppressWarnings("unused")
-	private void processForANeighbor(Neighbor neighbor, Iterator<OutputAddEntity> iterator, boolean unflushing) {
+    private void processForANeighbor(Neighbor neighbor, Iterator<OutputAddEntity> iterator, boolean unflushing) {
         // if timer - rewrite it all to store
 
         if (EL.queueDebug && log.isInfoEnabled()) {
@@ -160,7 +155,6 @@ public class OutputBufferImpl implements OutputBuffer {
                 // remove the old one
                 bufferStore.removeAnnouncement(neighbor, entity.getPrefix());
                 outputState.deferred(neighbor, entity.getPrefix(), entity.getLastRoute());
-
                 bufferStore.addAnnouncement(neighbor, entity);
             }
             mraiStore.register(neighbor.getASIdentifier(), timer);
@@ -175,7 +169,6 @@ public class OutputBufferImpl implements OutputBuffer {
         ArrayList<Prefix> withdrawals = new ArrayList<Prefix>();
         while (iterator.hasNext()) {
             OutputAddEntity entity = iterator.next();
-            //log.info("processing: "+entity.getPrefix()+ " route: "+entity.getRoute() + "last route: "+entity.getLastRoute());
             UpdateToSendType updateType = outputState.getUpdateType(neighbor, entity.getPrefix(), entity.getRoute(), entity.getLastRoute());
 
 
@@ -229,18 +222,15 @@ public class OutputBufferImpl implements OutputBuffer {
         }
     }
 
-    //@SuppressWarnings("unused")
-	private boolean createAndSendUpdate(Neighbor neighbor, Route route, List<Prefix> list, List<Prefix> withdrawals) {        
+    private boolean createAndSendUpdate(Neighbor neighbor, Route route, List<Prefix> list, List<Prefix> withdrawals) {
+        if (EL.queueDebug && log.isInfoEnabled()) {
+            log.info("X7, send " + list + " to " + neighbor.getASIdentifier());
+        }
         BGPUpdate update = new BGPUpdate(asIdentifier, route == null ? null : route.copyWithMeOnPath(asIdentifier));
         update.setPrefixes(list);
         update.setWithdrawals(withdrawals);
         callback.updateSend(neighbor.getASIdentifier(), update);
         neighbor.send(update);
-        
-        if (log.isInfoEnabled()) {
-            //log.info("X7, send " + list + " and withdrawals: "+withdrawals+" to " + neighbor.getASIdentifier() + "route: "+update.getRoute());
-        }
-        
         return true;
     }
 
@@ -253,10 +243,6 @@ public class OutputBufferImpl implements OutputBuffer {
 
         // timers don't matter for withdrawals...
         for (Neighbor neighbor : neighbors) {
-        	if (!neighbor.isValid()) {
-        		continue;
-        	}
-        	
             Iterator<OutputRemoveEntity> iterator = bufferStore.withdrawalsIterator();
             ArrayList<Prefix> withdrawals = new ArrayList<Prefix>();
             while (iterator.hasNext()) {
@@ -324,19 +310,12 @@ public class OutputBufferImpl implements OutputBuffer {
          *  3. OutputState does not need to be notified
          */
 
-        // 1. if prefixList is empty we want to remove ALL announcements for this neighbor
-    	if (prefixList == null) {
-    		bufferStore.removeAllAnnouncements(neighbor);
-    	}
-    	else {
-	        for (Prefix prefix: prefixList) {
-	            bufferStore.removeAnnouncement(neighbor, prefix);
-	        }
-    	}
+        // 1
+        for (Prefix prefix: prefixList) {
+            bufferStore.removeAnnouncement(neighbor, prefix);
+        }
         // 2
-    	if (prefixList != null) {
-    		createAndSendUpdate(neighbor, null, null, prefixList);
-    	}
+        createAndSendUpdate(neighbor, null, null, prefixList);
     }
 
     void addAnnouncements(Neighbor neighbor, List<Pair<Prefix, Route>> prefixes) {

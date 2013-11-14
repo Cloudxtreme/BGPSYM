@@ -52,4 +52,5 @@ public enum PeerRelation {
 	public int getValue() {
 		return value;
 	}
+
 }

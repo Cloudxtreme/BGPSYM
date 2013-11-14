@@ -42,7 +42,6 @@ public class ResultWriterRouteView extends ResultWriter {
         if (outputStream == null) {
             outputStream = getOutputStream(response, outputStream);
         }
-		log.info("writing: "+asId.toString() + " ; " + response.toString());
         outputStream.write(asId.toString() + " ; " + response.toString() + "\n");
 
     }

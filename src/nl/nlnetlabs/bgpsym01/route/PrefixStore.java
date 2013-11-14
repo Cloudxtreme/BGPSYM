@@ -6,7 +6,6 @@ import java.util.Collection;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
-import nl.nlnetlabs.bgpsym01.primitives.timers.TimeController;
 
 public interface PrefixStore {
 
@@ -35,7 +34,4 @@ public interface PrefixStore {
     public void flush(ASIdentifier asId);
 
     public void unflap(Prefix prefix, ASIdentifier asId);
-
-	public void setTimeController(TimeController timeController);
-
 }

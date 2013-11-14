@@ -14,8 +14,7 @@ public class PolicyImplRel implements Policy {
     private static Logger log = Logger.getLogger(PolicyImplRel.class);
     private static XProperties properties = XProperties.getInstance();
 
-    @SuppressWarnings("unused")
-	public boolean isBetter(ASIdentifier myAsId, Prefix prefix, Route route1, Neighbor n1, Route route2, Neighbor n2) {
+    public boolean isBetter(ASIdentifier myAsId, Prefix prefix, Route route1, Neighbor n1, Route route2, Neighbor n2) {
 
         boolean outcome = false;
         PeerRelation pr1 = n1 == null ? null : (PeerRelation) n1.getAttachment();
@@ -29,12 +28,9 @@ public class PolicyImplRel implements Policy {
             // the lower preference the better
             outcome = pr2.getPreference() < pr1.getPreference();
         } else {
-        	if (route1 == null || route2 == null || n1 == null || n2 == null) {
-        		log.info("prefix: "+prefix+" r1: "+route1+" n1: "+n1+" r2: "+route2+" n2:"+n2);
-        	}
-        	
-            int l1 = getRelativeLength(myAsId, n1.getASIdentifier(), route1, pr1);
-            int l2 = getRelativeLength(myAsId, n2.getASIdentifier(), route2, pr2);
+
+            int l1 = getRelativeLenght(myAsId, n1.getASIdentifier(), route1, pr1);
+            int l2 = getRelativeLenght(myAsId, n2.getASIdentifier(), route2, pr2);
             outcome = l2 < l1;
         }
 
@@ -45,7 +41,7 @@ public class PolicyImplRel implements Policy {
         return outcome;
     }
 
-    private int getRelativeLength(ASIdentifier asIdentifier, ASIdentifier neighborAsId, Route route, PeerRelation peerRelation) {
+    private int getRelativeLenght(ASIdentifier asIdentifier, ASIdentifier neighborAsId, Route route, PeerRelation peerRelation) {
         // for 50% of neighbors add 1 to the path length...
         int v = (neighborAsId.getInternalId() * 17 + asIdentifier.getInternalId() * 19) % 20;
         // int hops = route.getHops().length + peerRelation.getPreference();
@@ -59,38 +55,37 @@ public class PolicyImplRel implements Policy {
         if (route.isFrom(neighbor.getASIdentifier())) {
             return false;
         }
+        // if (route.getPathLength() > 18) {
+        // log.info("size=" + route.getPathLength());
+        // }
 
-		switch (pr) {
-			case CUSTOMER:
-			case SIBLING:
-			case ROUTEVIEWMONITOR:
-			case RISMONITOR:
-				return true;
-			case PEER:
-			case PROVIDER:
-				// get the sender neighbor
-	
-				// if it is mine route - send it to everybody
-				if (route.getPathLength() == 0) {
-					return true;
-				}
+        switch (pr) {
+        case CUSTOMER:
+        case SIBLING:
+        case ROUTEVIEWMONITOR:
+        case RISMONITOR:
+            return true;
+        case PEER:
+        case PROVIDER:
+            // get the sender neighbor
 
-				Neighbor sender = neighbors.getNeighbor(route.getSender());
+            // if it is mine route - send it to everybody
+            if (route.getPathLength() == 0) {
+                return true;
+            }
 
-				PeerRelation relation = null;
-				relation = (PeerRelation) sender.getAttachment();
-				
-				if (relation == PeerRelation.CUSTOMER || relation == PeerRelation.SIBLING) {
-					// I want to send things from my customer and sibling to my
-					// provider and my peer
-					return true;
-				}
-				
-				return false;
-	
-			default:
-				throw new RuntimeException("WTF, pr=" + pr);
-		}
+            Neighbor sender = neighbors.getNeighbor(route.getSender());
+            PeerRelation relation = (PeerRelation) sender.getAttachment();
+            if (relation == PeerRelation.CUSTOMER || relation == PeerRelation.SIBLING) {
+                // I want to send things from my customer and sibling to my
+                // provider and my peer
+                return true;
+            }
+            return false;
+
+        default:
+            throw new RuntimeException("WTF, pr=" + pr);
+        }
     }
 
 }

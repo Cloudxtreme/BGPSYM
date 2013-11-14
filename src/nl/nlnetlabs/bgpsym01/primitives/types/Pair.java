@@ -11,14 +11,6 @@ public class Pair<X, T> {
         this.value = value;
     }
 
-	public X getKey () {
-		return key;
-	}
-
-	public T getValue() {
-		return value;
-	}
-
     @Override
     public int hashCode() {
         return (key == null ? -7 : key.hashCode()) * 300234 + (value == null ? -8 : value.hashCode()) * 2;

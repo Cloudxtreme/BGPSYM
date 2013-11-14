@@ -3,8 +3,6 @@ package nl.nlnetlabs.bgpsym01.command;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataInputStream;
@@ -14,8 +12,6 @@ import nl.nlnetlabs.bgpsym01.process.BGPProcess;
 
 public class InvalidateCommand extends MasterCommand {
 
-	static Logger log = Logger.getLogger(InvalidateCommand.class);
-	
     private ASIdentifier asIdentifier;
     private List<Prefix> prefixes;
     private boolean validate;
@@ -25,7 +21,7 @@ public class InvalidateCommand extends MasterCommand {
         return neighborsIdentifier;
     }
 
-    public InvalidateUpdate getUpdate() {
+    InvalidateUpdate getUpdate() {
         InvalidateUpdate update = new InvalidateUpdate();
         update.setNeighborId(neighborsIdentifier);
         update.setPrefixes(prefixes);
@@ -41,42 +37,29 @@ public class InvalidateCommand extends MasterCommand {
     @Override
     public void process() {
         BGPProcess process = jvm.getProcesses().get(asIdentifier);
-        log.info("Received Invalidation of "+neighborsIdentifier+" with "+validate);
-        InvalidateUpdate update = getUpdate();        
+        InvalidateUpdate update = getUpdate();
         process.getQueue().addMessage(update);
     }
 
     @Override
-    protected void readInternalData(EDataInputStream in) throws IOException { 
-    	asIdentifier = ASIdentifier.staticReadExternal(in);
-        validate = in.readBoolean();
-        
-    	int totalPrefixes = in.readInt();
-    	if (totalPrefixes > 0) {
-    		prefixes = in.readPrefixList();
-    	}
-    	
+    protected void readInternalData(EDataInputStream in) throws IOException {
+        prefixes = in.readPrefixList();
         if (in.readBoolean()) {
             neighborsIdentifier = ASIdentifier.staticReadExternal(in);
         }
-        
+        asIdentifier = ASIdentifier.staticReadExternal(in);
+        validate = in.readBoolean();
     }
 
     @Override
     protected void writeInternalData(EDataOutputStream out) throws IOException {
-    	asIdentifier.writeExternal(out);
-    	out.writeBoolean(validate);
-    	
-    	int totalPrefixes = prefixes == null ? 0 : prefixes.size();
-    	out.writeInt(totalPrefixes);
-    	if (totalPrefixes > 0) {
-    		out.writePrefixList(prefixes);
-    	}
-    	
+        out.writePrefixList(prefixes);
         out.writeBoolean(neighborsIdentifier != null);
         if (neighborsIdentifier != null) {
             neighborsIdentifier.writeExternal(out);
         }
+        asIdentifier.writeExternal(out);
+        out.writeBoolean(validate);
     }
 
     @Override

@@ -2,17 +2,12 @@ package nl.nlnetlabs.bgpsym01.command;
 
 import java.io.IOException;
 
-import nl.nlnetlabs.bgpsym01.process.BGPProcess;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Update;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataInputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 
-import org.apache.log4j.Logger;
-
 public class AnnounceCommand extends MasterCommand {
-
-	private static Logger log = Logger.getLogger(AnnounceCommand.class);
 
     private CommandType type = CommandType.ANNOUNCE;
 

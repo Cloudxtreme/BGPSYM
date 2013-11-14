@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import nl.nlnetlabs.bgpsym01.callback.Callback;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbors;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
@@ -16,31 +17,35 @@ import nl.nlnetlabs.bgpsym01.route.Policy;
 
 public class OutputStateImpl implements OutputState {
 
+    public Policy getPolicy() {
+        return policy;
+    }
+
+    public ASIdentifier getAsIdentifier() {
+        return asIdentifier;
+    }
+
+    public Neighbors getNeighbors() {
+        return neighbors;
+    }
+
     private Policy policy;
 
     private ASIdentifier asIdentifier;
-
-    private Neighbors neighbors;
-
-    Map<Pair<Neighbor, Prefix>, Route> map;
-
-    Map<Neighbor, List<Prefix>> filteredPrefixes;
 
     public void setAsIdentifier(ASIdentifier asIdentifier) {
         this.asIdentifier = asIdentifier;
     }
 
+    private Neighbors neighbors;
+
     public void setNeighbors(Neighbors neighbors) {
         this.neighbors = neighbors;
     }
 
-	public Map<Pair<Neighbor, Prefix>, Route> getMap () {
-		return this.map;
-	}
+    Map<Pair<Neighbor, Prefix>, Route> map;
 
-	public Map<Neighbor, List<Prefix>> getPrefixes () {
-		return this.filteredPrefixes;
-	}
+    Map<Neighbor, List<Prefix>> filteredPrefixes;
 
     public void setPolicy(Policy policy) {
         this.policy = policy;
@@ -53,24 +58,15 @@ public class OutputStateImpl implements OutputState {
 
     public void registerPrefixes(Neighbor neighbor, List<Prefix> prefixes) {
         List<Prefix> list = filteredPrefixes.get(neighbor);
-        
         if (list == null) {
             list = new ArrayList<Prefix>();
             filteredPrefixes.put(neighbor, list);
         }
         // remove saved data about prefixes
-        if (prefixes == null) {
-        	map.clear();
-        	list.clear();
+        for (Prefix prefix : prefixes) {
+            map.remove(new Pair<Neighbor, Prefix>(neighbor, prefix));
         }
-        else {
-	        for (Prefix prefix : prefixes) {
-	            map.remove(new Pair<Neighbor, Prefix>(neighbor, prefix));
-	        }
-	        
-	        list.addAll(prefixes);
-        }
-        
+        list.addAll(prefixes);
     }
 
     public OutputState.UpdateToSendType getUpdateType(Neighbor neighbor, Prefix prefix, Route route, Route lastRoute) {
@@ -164,6 +160,11 @@ public class OutputStateImpl implements OutputState {
         } else {
             lastRouteOut = lastRoute;
         }
+        
+       /* if (lastRouteOut != null && lastRoute != null
+                && !lastRouteOut.equals(lastRoute))
+                    System.out.println("getLastRoute = lastRouteOut: " + lastRouteOut + " lastRoute: " + lastRoute);
+        */
         // if the route was not advertised, then the withdrawal was sent;
         return wasAdvertised(asIdentifier, neighbor, lastRouteOut) ? lastRouteOut : null;
     }
@@ -188,13 +189,7 @@ public class OutputStateImpl implements OutputState {
         if (list == null) {
             return;
         }
-        
-        if (prefixes == null) {
-        	list.clear();
-        }
-        else {
-        	list.removeAll(prefixes);
-        }
+        list.removeAll(prefixes);
     }
 
     public boolean hasRegisteredPrefixes(Neighbor neighbor) {
@@ -202,15 +197,4 @@ public class OutputStateImpl implements OutputState {
         return list == null ? false : !list.isEmpty();
     }
 
-    public Policy getPolicy() {
-        return policy;
-    }
-
-    public ASIdentifier getAsIdentifier() {
-        return asIdentifier;
-    }
-
-    public Neighbors getNeighbors() {
-        return neighbors;
-    }
 }

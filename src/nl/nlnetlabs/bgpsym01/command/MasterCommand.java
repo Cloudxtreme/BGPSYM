@@ -7,11 +7,7 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EDataInputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.NotImplementedException;
 
-import org.apache.log4j.Logger;
-
 public abstract class MasterCommand extends CoordinationCommand {
-
-	private static Logger log = Logger.getLogger(MasterCommand.class);
 
     private int processId;
 

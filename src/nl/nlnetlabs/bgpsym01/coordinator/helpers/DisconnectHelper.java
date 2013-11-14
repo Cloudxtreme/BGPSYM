@@ -5,10 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 import nl.nlnetlabs.bgpsym01.command.DisconnectCommand;
-import nl.nlnetlabs.bgpsym01.command.InvalidateCommand;
 import nl.nlnetlabs.bgpsym01.coordinator.Communicator;
 import nl.nlnetlabs.bgpsym01.coordinator.Coordinator;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
@@ -22,15 +19,13 @@ import nl.nlnetlabs.bgpsym01.xstream.XNode;
  * @see DisconnectHelperTest
  */
 public class DisconnectHelper {
-	
-	static Logger log = Logger.getLogger(DisconnectHelper.class);
 
     private ArrayList<XNode> nodes;
 
     private Communicator communicator;
 
     /**
-     * Performs user disconnection from ALL his neighbor(s)
+     * Performs user disconnection from all his neighbor(s)
      * 
      * @param user
      * 
@@ -48,7 +43,7 @@ public class DisconnectHelper {
     }
 
     /**
-     * Performs user disconnection from the specified neighbor(s). Disconnection works in
+     * Performs user disconnection from his neighbor(s). Disconnection works in
      * both directions, so what is in fact performed are link failures.
      * 
      * package access for testing purposes
@@ -56,7 +51,7 @@ public class DisconnectHelper {
      * @param user
      *            user to be disconnected
      * @param neighbors
-     *            neighbors to disconnect the user from, if <i>null</i> then
+     *            neighbors to disconnect the user from, if <i>null<i> then
      *            disconnecting from all his neighbors
      * 
      * @see DisconnectHelperTest#testSendDisconnect()
@@ -66,25 +61,6 @@ public class DisconnectHelper {
          * 1. send disconnect to this user with neighbors queue
          * 2. send info to his neighbors
          */
-    	
-    	/*for (ASIdentifier asId : neighbors) {
-    		log.info("sending invalidate from: "+user+" to: "+asId+" and vice versa");
-    		
-    		InvalidateCommand icUser = new InvalidateCommand();
-    		icUser.setAsIdentifier(user);
-    		icUser.setValidate(false);
-    		icUser.setNeighborsIdentifier(asId);
-    		icUser.setProcessId(user.getProcessId());
-    		
-	    	InvalidateCommand icNeighbor = new InvalidateCommand();
-	    	icNeighbor.setAsIdentifier(asId);
-	    	icNeighbor.setValidate(false);
-	    	icNeighbor.setNeighborsIdentifier(user);
-	    	icNeighbor.setProcessId(asId.getProcessId());
-	    	
-	    	communicator.sendCommand(icUser);
-	    	communicator.sendCommand(icNeighbor);
-    	}*/
 
         DisconnectCommand dc = new DisconnectCommand();
         // send to the user
@@ -92,8 +68,6 @@ public class DisconnectHelper {
         dc.setAsIds(neighbors);
         dc.setProcessId(user.getProcessId());
         communicator.sendCommand(dc);
-        
-        log.info("sending disconnect cmd with user: "+user+" and neighbors: "+neighbors);
 
         List<ASIdentifier> tmpList = new LinkedList<ASIdentifier>();
         tmpList.add(user);
@@ -105,7 +79,7 @@ public class DisconnectHelper {
         }
 
         // delete from nodes
-        /*nodes.get(user.getInternalId()).getNeighbors().removeAll(neighbors);
+        nodes.get(user.getInternalId()).getNeighbors().removeAll(neighbors);
         for (ASIdentifier asId : neighbors) {
             Iterator<XNeighbor> iterator = nodes.get(asId.getInternalId()).getNeighbors().iterator();
             while (iterator.hasNext()) {
@@ -115,7 +89,7 @@ public class DisconnectHelper {
                     break;
                 }
             }
-        }*/
+        }
     }
 
     public void setNodes(ArrayList<XNode> nodes) {

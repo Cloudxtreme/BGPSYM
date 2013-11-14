@@ -15,7 +15,6 @@ import nl.nlnetlabs.bgpsym01.primitives.timers.FlapStore;
 import nl.nlnetlabs.bgpsym01.primitives.timers.FlapTimerFactory;
 import nl.nlnetlabs.bgpsym01.primitives.timers.FlapTimerFactoryMock;
 import nl.nlnetlabs.bgpsym01.primitives.timers.FlapTimerFactoryReal;
-import nl.nlnetlabs.bgpsym01.primitives.timers.TimeController;
 import nl.nlnetlabs.bgpsym01.primitives.timers.TimeControllerFactory;
 import nl.nlnetlabs.bgpsym01.route.MRAIStore;
 import nl.nlnetlabs.bgpsym01.route.Policy;
@@ -40,25 +39,19 @@ public class PrefixStoreFactory {
 
     public static PrefixStore createStore(ASIdentifier asIdentifier, Neighbors neighbors, Callback callback, Policy policy, MRAIStore mraiStore,
             FlapStore flapStore) {
-
-		TimeController timeController = TimeControllerFactory.getTimeController();
         switch (asIdentifier.getType()) {
         case RIS:
-            PrefixStoreRIS prefixStoreRIS = new PrefixStoreRIS();
-            prefixStoreRIS.setAsId(asIdentifier);
-            prefixStoreRIS.setNeighbors(neighbors);
-			prefixStoreRIS.setTimeController(timeController);
-            return prefixStoreRIS;
+            PrefixStoreRIS store = new PrefixStoreRIS();
+            store.setAsId(asIdentifier);
+            store.setNeighbors(neighbors);
+            return store;
         case ROUTEVIEW:
             PrefixStoreRouteView prefixStoreRouteView = new PrefixStoreRouteView();
-            prefixStoreRouteView.setTimeController(timeController);
+            prefixStoreRouteView.setTimeController(TimeControllerFactory.getTimeController());
             prefixStoreRouteView.setCallback(CallbackFactory.getCallback(asIdentifier));
             return prefixStoreRouteView;
         case NORMAL:
-             PrefixStore prefixStore = createStoreMapImpl(asIdentifier, neighbors, callback, policy, mraiStore, flapStore);
-			 prefixStore.setTimeController(timeController);
-
-			 return prefixStore;
+            return createStoreMapImpl(asIdentifier, neighbors, callback, policy, mraiStore, flapStore);
         default:
             throw new BGPSymException("unknown type: " + asIdentifier.getType());
         }
@@ -73,7 +66,7 @@ public class PrefixStoreFactory {
         tOutputBuffer.setCallback(callback);
         tOutputBuffer.setNeighbors(neighbors);
 
-        OutputState state = createOutputState(asIdentifier, neighbors, policy);
+        OutputState state = createOutpuState(asIdentifier, neighbors, policy);
         tOutputBuffer.setOutputState(state);
 
         PrefixStoreMapImpl store = new PrefixStoreMapImpl();
@@ -109,7 +102,7 @@ public class PrefixStoreFactory {
         return store;
     }
 
-    private static OutputState createOutputState(ASIdentifier asIdentifier, Neighbors neighbors, Policy policy) {
+    private static OutputState createOutpuState(ASIdentifier asIdentifier, Neighbors neighbors, Policy policy) {
         OutputStateImpl state = new OutputStateImpl();
         state.setPolicy(policy);
         state.setNeighbors(neighbors);
@@ -127,6 +120,8 @@ public class PrefixStoreFactory {
         } else {
             factory = new FlapTimerFactoryMock();
         }
+               
+        factory = new FlapTimerFactoryMock();
         return factory;
     }
 

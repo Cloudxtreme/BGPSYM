@@ -4,16 +4,10 @@ import java.util.NoSuchElementException;
 
 import nl.nlnetlabs.bgpsym01.coordinator.events.Event;
 import nl.nlnetlabs.bgpsym01.coordinator.helpers.CommandSenderHelper;
-import nl.nlnetlabs.bgpsym01.coordinator.helpers.ConnectHelper;
-import nl.nlnetlabs.bgpsym01.coordinator.helpers.DisconnectHelper;
 import nl.nlnetlabs.bgpsym01.primitives.timers.TimeControllerFactory;
 import nl.nlnetlabs.bgpsym01.primitives.types.NotImplementedException;
 
-import org.apache.log4j.Logger;
-
 public class EventStreamImpl implements EventStream {
-
-	private static Logger log = Logger.getLogger(EventStreamImpl.class);
 
     private EventBackend backend;
 
@@ -22,10 +16,6 @@ public class EventStreamImpl implements EventStream {
     private Event current;
 
     private CommandSenderHelper commandSenderHelper;
-
-	private DisconnectHelper disconnectHelper;
-
-	private ConnectHelper connectHelper;
 
     public EventStreamImpl() {
     }
@@ -78,8 +68,6 @@ public class EventStreamImpl implements EventStream {
 
     private void enrichEvent(Event event) {
         event.setCommandSenderHelper(commandSenderHelper);
-		event.setDisconnectHelper(disconnectHelper);
-		event.setConnectHelper(connectHelper);
     }
 
     public void remove() {
@@ -97,14 +85,6 @@ public class EventStreamImpl implements EventStream {
     public void setCommandSenderHelper(CommandSenderHelper commandSenderHelper) {
         this.commandSenderHelper = commandSenderHelper;
     }
-
-	public void setDisconnectHelper(DisconnectHelper disconnectHelper) {
-		this.disconnectHelper = disconnectHelper;
-	}
-
-	public void setConnectHelper(ConnectHelper connectHelper) {
-		this.connectHelper = connectHelper;
-	}
 
     public void shutdown() {
     }

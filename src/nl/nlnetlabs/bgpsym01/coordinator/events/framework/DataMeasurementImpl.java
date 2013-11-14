@@ -9,7 +9,6 @@ import nl.nlnetlabs.bgpsym01.command.ResultWriterRouteView;
 import nl.nlnetlabs.bgpsym01.coordinator.events.Event;
 import nl.nlnetlabs.bgpsym01.coordinator.events.EventAnnounce;
 import nl.nlnetlabs.bgpsym01.coordinator.events.EventLastSeen;
-import nl.nlnetlabs.bgpsym01.coordinator.events.EventLog;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASType;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
@@ -37,9 +36,7 @@ public class DataMeasurementImpl implements DataMeasurement {
             resultWriter.setDataMeasurement(this);
             setRouteViewsSize(resultWriter);
             LastSeenResponseCommand.setResultWriter(resultWriter);
-        } else if (event instanceof EventLog) {
-			//log.debug("EventState");
-		}		
+        }
     }
 
     private void setRouteViewsSize(ResultWriterRouteView resultWriter) {

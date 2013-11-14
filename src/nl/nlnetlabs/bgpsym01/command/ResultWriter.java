@@ -10,11 +10,7 @@ import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
 import nl.nlnetlabs.bgpsym01.primitives.factories.XStreamFactory;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 
-import org.apache.log4j.Logger;
-
 abstract public class ResultWriter {
-
-	private static Logger log = Logger.getLogger(ResultWriter.class);
 
     private static final String INFO_FILE_NAME = "info";
     private static final String PROP_FILE_NAME = "properties.info";

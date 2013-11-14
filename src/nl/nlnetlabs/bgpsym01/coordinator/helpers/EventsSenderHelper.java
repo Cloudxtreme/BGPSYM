@@ -15,6 +15,7 @@ public class EventsSenderHelper implements PropagationHelper {
     }
 
     public void propagatePrefixes() {
+        System.out.println("Propagate prefixes");
         processor.start();
         try {
             while (processor.isAlive()) {

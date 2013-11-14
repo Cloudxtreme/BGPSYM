@@ -111,19 +111,19 @@ public class MessageQueueImpl implements MessageQueue {
         long diff = System.currentTimeMillis() - time;
         if (diff > maxDiscrepancy) {
             if (overloaded == 0) {
-                log.debug("real world diff=" + diff + ", time=" + time + ", now=" + System.currentTimeMillis());
+                log.warn("real world diff=" + diff + ", time=" + time + ", now=" + System.currentTimeMillis());
                 Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                 overloaded++;
-                if (log.isDebugEnabled()) {
-                    log.debug("overloading...");
+                if (log.isInfoEnabled()) {
+                    log.info("overloading...");
                 }
             } else {
                 overloaded++;
             }
         } else if (overloaded > 0 && (!hasSomething || diff < maxDiscrepancy / 64)) {
             Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
-            if (log.isDebugEnabled()) {
-                log.debug("UNoverloading..., count=" + overloaded);
+            if (log.isInfoEnabled()) {
+                log.info("UNoverloading..., count=" + overloaded);
             }
             overloaded = 0;
         }

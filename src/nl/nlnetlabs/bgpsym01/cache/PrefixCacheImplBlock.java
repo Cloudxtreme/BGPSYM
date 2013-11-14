@@ -1,10 +1,8 @@
 package nl.nlnetlabs.bgpsym01.cache;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
@@ -29,7 +27,7 @@ public class PrefixCacheImplBlock implements PrefixCache {
 
     // private static final int PREFIX_CACHE_SIZE = 100;
     // TODO [values here]
-    Map<Prefix, PrefixInfo> table = Collections.synchronizedMap(new LinkedHashMap<Prefix, PrefixInfo>(XProperties.getInstance().prefixCacheSize * 2, (float) 0.80, true));
+    LinkedHashMap<Prefix, PrefixInfo> table = new LinkedHashMap<Prefix, PrefixInfo>(XProperties.getInstance().prefixCacheSize * 2, (float) 0.80, true);
 
     private boolean doLog;
 
@@ -57,14 +55,6 @@ public class PrefixCacheImplBlock implements PrefixCache {
             container.giveBack(current.getValue().getNeighborsMap());
         }
     }
-
-	public Map<Prefix, PrefixInfo> getTable() {
-		return this.table;
-	}
-	
-	public int size () {
-		return table.size();
-	}
 
     private void storeBlock() {
         try {
@@ -120,17 +110,14 @@ public class PrefixCacheImplBlock implements PrefixCache {
         if (log.isDebugEnabled()) {
             log.debug("creating new prefix for " + prefix);
         }
-
         PrefixInfo prefixInfo = new PrefixInfo();
         prefixInfo.setPrefix(prefix);
         prefixInfo.setNeighborsMap(container.getMap());
         table.put(prefix, prefixInfo);
 
-        //log.info("creating new prefix for " + prefix+ "; size: "+table.size());
-
         if (doLog && log.isInfoEnabled()) {
             if (prefixesCreated++ % CREATED_LOGGING_INTERVAL == 0) {
-                log.debug("last= " + prefix + ", created " + prefixesCreated);
+                log.info("last= " + prefix + ", created " + prefixesCreated);
             }
         }
     }
@@ -181,5 +168,9 @@ public class PrefixCacheImplBlock implements PrefixCache {
 
     public void setContainer(NeighborsMapsContainer container) {
         this.container = container;
+    }
+    
+    public LinkedHashMap<Prefix, PrefixInfo> getTable() {
+        return table;
     }
 }

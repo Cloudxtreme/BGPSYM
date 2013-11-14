@@ -117,6 +117,9 @@ public class PropagationHelperImpl implements PropagationHelper {
      */
     public void propagatePrefixes() {
         XProperties properties = XProperties.getInstance();
+        
+        log.info("Propagate prefixes");
+        
         if (prefixes == null) {
             propagateEasy(properties);
         } else {
@@ -127,6 +130,8 @@ public class PropagationHelperImpl implements PropagationHelper {
     private void propagateFromList(XProperties properties) {
         // just propagate one after another
 
+        log.info("Propagate prefixes from List");
+        
         Map<ASIdentifier, ArrayList<XPrefix>> prefixesMap = generatePrefixMap();
 
         int sent = 0;
@@ -144,6 +149,7 @@ public class PropagationHelperImpl implements PropagationHelper {
             while (iterator.hasNext()) {
                 last = iterator.next();
                 prefixList.add(Prefix.getInstance(last.getPrefixNum()));
+                log.info("Added prefix " + last.getPrefixNum());
 
                 /* send it if the queue is already full or we have nothing more to send
                  * clear the queue

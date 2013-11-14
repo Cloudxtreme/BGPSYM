@@ -60,12 +60,12 @@ public class ASIdentifier implements Comparable<ASIdentifier>, EExternalizable {
 
     public ASIdentifier(String id, int internalId) {
         this.id = id;
-        if (internalId >= 1 << AS_SIZE_BITS) {
-            String msg = "asId=" + internalId + " is bigger than max value=" + (1 << AS_SIZE_BITS);
+        if (internalId >= 1L << AS_SIZE_BITS) {
+            String msg = "asId=" + internalId + " is bigger than max value=" + (1L << AS_SIZE_BITS);
             log.error(msg);
             throw new RuntimeException(msg);
         }
-        this.internalId = internalId;
+        this.internalId = (int) internalId;
     }
 
     public String getASNum() {

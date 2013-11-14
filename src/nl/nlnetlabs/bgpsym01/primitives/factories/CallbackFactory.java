@@ -43,18 +43,16 @@ public class CallbackFactory {
     }
 
     public static Callback getCallback(ASIdentifier id) {
-		if (false && id.getType() == ASType.NORMAL) {
+        if (false && id.getType() == ASType.ROUTEVIEW) {
             return getCallbackRegister(id);
-        } else if (false && id.getInternalId() % 1000 == 1) {
+        } else if (true || id.getInternalId()  == 0 || id.getInternalId()  == 1) {
             // return getCallbackTimer(id);
             return getCallbackRegister(id);
 
             /*        } else if (id.getInternalId() % 1000 == 0 || id.getInternalId() == 5745) {
                         return getCallbackRegister(id);*/
         } else {
-			//return getCallbackRegister(id);
-			return getCallbackMock();
+            return getCallbackMock();
         }
     }
-
 }

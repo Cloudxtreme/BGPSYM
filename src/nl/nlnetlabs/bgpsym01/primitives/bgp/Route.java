@@ -10,7 +10,6 @@ import nl.nlnetlabs.bgpsym01.primitives.types.EDataOutputStream;
 import nl.nlnetlabs.bgpsym01.primitives.types.EExternalizable;
 
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -22,7 +21,7 @@ public class Route implements EExternalizable {
 
     private static Logger log = Logger.getLogger(Route.class);
 
-    public ASIdentifier[] hops;
+    private ASIdentifier[] hops;
 
     @Override
     public boolean equals(Object obj) {
@@ -34,27 +33,17 @@ public class Route implements EExternalizable {
 
     @Override
     public int hashCode() {
-        return (hops == null) ? -3 : hops.hashCode();
+        if (hops == null) {
+            return -3;
+        }
+        return hops.hashCode();
     }
 
     public Route() {
     }
-    
-    public Route (ASIdentifier[] hops) {
-    	this.hops = hops;
-    }
 
     public ASIdentifier[] getHops() {
         return hops;
-    }
-    
-    public Route clone () {
-    	Route clone = new Route();
-    	if (hops != null && hops.length > 0) {
-    		clone.hops = new ASIdentifier[hops.length];
-    		System.arraycopy(hops, 0, clone.hops, 0, hops.length);
-    	}
-    	return clone;
     }
 
     public Route copyWithMeOnPath(ASIdentifier asIdentifier) {
@@ -67,8 +56,6 @@ public class Route implements EExternalizable {
             n.hops = new ASIdentifier[1];
             n.hops[0] = asIdentifier;
         }
-        //log.info("old route: "+hops+" new route: "+n);
-        
         return n;
     }
 
@@ -81,13 +68,14 @@ public class Route implements EExternalizable {
     }
 
     public int getPathLength() {
-        return (hops == null) ? 0 : hops.length;
+        if (hops == null) {
+            return 0;
+        }
+        return hops.length;
     }
 
     public boolean containsMe(ASIdentifier asIdentifier) {
-        if (log.isDebugEnabled()) {
-            log.debug("we have: " + hops + ", looking for: " + asIdentifier);
-        }
+        
         if (hops == null) {
             return false;
         }
@@ -101,21 +89,8 @@ public class Route implements EExternalizable {
 
     @Override
     public String toString() {
+        
         return hops == null ? null : Arrays.toString(hops);
-    }
-    
-    public JSONArray toJSONArray () {
-    	JSONArray result = new JSONArray();
-    	
-    	if (hops == null) {
-    		return result;
-    	}
-    	
-    	for (int i = 0; i < hops.length; i++) {
-    		result.put(hops[i].getInternalId());
-    	}
-    	
-    	return result;
     }
 
     public void readExternal(EDataInputStream in) throws IOException {
@@ -139,14 +114,6 @@ public class Route implements EExternalizable {
                 out.writeBits(hop.getInternalId(), SystemConstants.AS_SIZE_BITS);
             }
         }
-    }
-    
-    public ASIdentifier getOrigin () {
-    	if (hops == null) {
-    		return null;
-    	}
-    	
-    	return hops[0];
     }
 
     public ASIdentifier getSender() {

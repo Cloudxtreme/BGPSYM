@@ -105,54 +105,31 @@ public class BGPProcess extends ShutdownadbleThread {
             sender = asIdentifier;
         }
         
-        if (update.isDisconnect()) {
-        	((PrefixStoreMapImpl) store).removePrefixesFromSender(sender);
-        	
-        	synchronized(neighbors) {
-        		neighbors.remove(sender);
-        	}
-        	// TODO reconnect?
-        	return;
-        }
-        
         this.updates++;
         
         List<Prefix> prefixes = update.getPrefixes();
         
         MessageQueueImpl msgQueue = (MessageQueueImpl)messageQueue;
 
-        //if (asIdentifier.getInternalId() == 9503) {
-        //	log.info("received update from "+sender+" with prefixes: "+prefixes+" and route: "+update.getRoute()+" at "+msgQueue.getTimeController().getCurrentTime());
-        //}
-        //log.info("with withdrawals: "+update.getWithdrawals());
-        
         if (prefixes != null) {
         	this.receivedPrefixes += prefixes.size();
         	this.updateWithPrefixes++;
             Route route = update.getRoute();
             store.prefixReceived(sender, prefixes, route);
-            
-            //if (this.updateWithPrefixes % 500000 == 0) {
-            	log.info(update);
-            //}
         }
-
+        
         Collection<Prefix> withdrawals = update.getWithdrawals();
         if (withdrawals != null) {
         	this.receivedWithdrawals += withdrawals.size();
         	this.updateWithWithdrawals++;
             store.prefixRemove(sender, withdrawals);
-            
-            log.info(update);
         }
         
         if (prefixes != null && withdrawals != null) {
         	this.updateWithBoth++;
         }
         
-        if (EL.queueDebug && log.isInfoEnabled()) {
-            log.info("X7, processed...");
-        }
+        log.info(update);
     }
 
     @SuppressWarnings("unused")

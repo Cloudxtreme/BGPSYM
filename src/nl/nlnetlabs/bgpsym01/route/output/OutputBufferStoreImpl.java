@@ -34,20 +34,6 @@ public class OutputBufferStoreImpl implements OutputBufferStore {
     public Iterator<OutputAddEntity> announcementsIterator(Neighbor neighbor) {
         return neighborAnnouncements.get(neighbor).iterator();
     }
-    
-    public void removeAllAnnouncements(Neighbor neighbor) {
-    	ArrayList<OutputAddEntity> list = neighborAnnouncements.get(neighbor);
-        if (list == null || list.size() == 0) {
-            return;
-        }
-        
-        Iterator<OutputAddEntity> iterator = list.iterator();
-        while (iterator.hasNext()) {
-        	iterator.next();
-            iterator.remove();
-        }
-    }
-    
 
     // TODO: this is very linear - probably Map would do better...
     public OutputAddEntity removeAnnouncement(Neighbor neighbor, Prefix prefix) {
