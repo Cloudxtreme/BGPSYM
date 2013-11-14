@@ -13,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
+import nl.nlnetlabs.bgpsym01.cache.ResultWriterLog;
 import nl.nlnetlabs.bgpsym01.callback.Callback;
 import nl.nlnetlabs.bgpsym01.command.AckCommand;
 import nl.nlnetlabs.bgpsym01.command.SetRegistryCommand;
@@ -264,6 +265,7 @@ public class TCPStart {
 
             node.getAsIdentifier().setProcess(process);
             process.setAsIdentifier(node.getAsIdentifier());
+            process.setResultWriterLog(new ResultWriterLog(process.getASIdentifier()));
         }
     }
 
