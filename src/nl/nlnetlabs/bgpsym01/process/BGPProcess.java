@@ -123,6 +123,7 @@ public class BGPProcess extends ShutdownadbleThread {
         	this.receivedWithdrawals += withdrawals.size();
         	this.updateWithWithdrawals++;
             store.prefixRemove(sender, withdrawals);
+            log.info(update);
         }
         
         if (prefixes != null && withdrawals != null) {
