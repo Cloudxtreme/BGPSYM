@@ -111,7 +111,7 @@ public class BGPProcess extends ShutdownadbleThread {
         
         MessageQueueImpl msgQueue = (MessageQueueImpl)messageQueue;
 
-        if (prefixes != null) {
+        if (prefixes != null && prefixes.size() > 0) {
         	this.receivedPrefixes += prefixes.size();
         	this.updateWithPrefixes++;
             Route route = update.getRoute();
@@ -119,14 +119,14 @@ public class BGPProcess extends ShutdownadbleThread {
         }
         
         Collection<Prefix> withdrawals = update.getWithdrawals();
-        if (withdrawals != null) {
+        if (withdrawals != null && withdrawals.size() > 0) {
         	this.receivedWithdrawals += withdrawals.size();
         	this.updateWithWithdrawals++;
             store.prefixRemove(sender, withdrawals);
             log.info(update);
         }
         
-        if (prefixes != null && withdrawals != null) {
+        if (prefixes != null && prefixes.size() > 0 && withdrawals != null && withdrawals.size() > 0) {
         	this.updateWithBoth++;
         }
     }

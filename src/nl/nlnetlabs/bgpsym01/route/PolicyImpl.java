@@ -68,8 +68,6 @@ public class PolicyImpl implements Policy {
 			}
 			outcome = true;
 		} else {
-			
-			
 			outcome = route2.getHops().length < route1.getHops().length;
 		}
 
