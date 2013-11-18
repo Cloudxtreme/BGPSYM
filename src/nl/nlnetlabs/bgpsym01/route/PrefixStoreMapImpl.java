@@ -242,6 +242,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
             outputBuffer.add(new OutputAddEntity(prefixInfo, best.getRoute(), currentRoute));
             output = true;
         } else if (currentRoute != null) {
+        	log.info("No best route for: "+prefix+" with current route: "+currentRoute+" from: "+originator);
             callback.prefixUnregistered(originator, prefix, currentRoute, null);
             prefixInfo.setCurrentEntry(null);
             outputBuffer.add(new OutputRemoveEntity(prefixInfo, currentRoute));
