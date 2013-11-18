@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import nl.nlnetlabs.bgpsym01.cache.PrefixCache;
@@ -56,6 +57,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
 
     private XProperties properties;
     int prefixesReceived = 0;
+    
+    int noBest = 0;
 
     public PrefixStoreMapImpl() {
         properties = XProperties.getInstance();
@@ -202,7 +205,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
         boolean output = false;
 
         Prefix prefix = prefixInfo.getPrefix();
-        for (ASIdentifier asId : prefixInfo.getNeighborsMap().keySet()) {
+        Set<ASIdentifier> neighborSet = prefixInfo.getNeighborsMap().keySet();
+        for (ASIdentifier asId : neighborSet) {
             PrefixTableEntry pte = prefixInfo.getNeighborsMap().get(asId);
 
             if (!pte.isValid()) {
@@ -242,7 +246,8 @@ public class PrefixStoreMapImpl implements PrefixStore {
             outputBuffer.add(new OutputAddEntity(prefixInfo, best.getRoute(), currentRoute));
             output = true;
         } else if (currentRoute != null) {
-        	log.info("No best route for: "+prefix+" with current route: "+currentRoute+" from: "+originator);
+        	noBest++;
+        	log.info("No best "+noBest+" route for: "+prefix+" with current route: "+currentRoute+" from: "+originator+" neighborSet: "+neighborSet);
             callback.prefixUnregistered(originator, prefix, currentRoute, null);
             prefixInfo.setCurrentEntry(null);
             outputBuffer.add(new OutputRemoveEntity(prefixInfo, currentRoute));
