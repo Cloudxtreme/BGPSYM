@@ -246,8 +246,6 @@ public class PrefixStoreMapImpl implements PrefixStore {
             outputBuffer.add(new OutputAddEntity(prefixInfo, best.getRoute(), currentRoute));
             output = true;
         } else if (currentRoute != null) {
-        	noBest++;
-        	log.info("No best "+noBest+" route for: "+prefix+" with current route: "+currentRoute+" from: "+originator+" neighborSet: "+neighborSet);
             callback.prefixUnregistered(originator, prefix, currentRoute, null);
             prefixInfo.setCurrentEntry(null);
             outputBuffer.add(new OutputRemoveEntity(prefixInfo, currentRoute));
@@ -396,7 +394,7 @@ public class PrefixStoreMapImpl implements PrefixStore {
         long s3 = System.currentTimeMillis();
         if (s3 - start > 300) {
             if (log.isInfoEnabled()) {
-                log.info(s2 - start + ", " + (s3 - s2) + ", count=" + prefixes.size() + ", longest=" + longest);
+                //log.info(s2 - start + ", " + (s3 - s2) + ", count=" + prefixes.size() + ", longest=" + longest);
             }
         }
 
