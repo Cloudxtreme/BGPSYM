@@ -267,6 +267,8 @@ public class TCPStart {
             process.setAsIdentifier(node.getAsIdentifier());
             process.setResultWriterLog(new ResultWriterLog(process.getASIdentifier()));
         }
+        
+        log.info("registered myself with "+processes.size()+" processes");
     }
 
     private MessageInputGenerator getMessageInputGenerator(MessageQueue queue, ASIdentifier asId, int asSize) {
