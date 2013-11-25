@@ -148,7 +148,8 @@ public class ResultWriterLog {
 			/*Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
 			responseList.add(prefixDataList);*/
 			
-			responseList.add(new LinkedHashMap<Prefix, PrefixInfo>(store.getCache().getTable()));
+			//responseList.add(new LinkedHashMap<Prefix, PrefixInfo>(store.getCache().getTable()));
+			state += getStats(store.getCache().getTable());
 			
 			/*OutputBufferImpl outputBuffer = (OutputBufferImpl) store.getOutputBuffer();
 			OutputStateImpl outputState = (OutputStateImpl) outputBuffer.getOutputState();
@@ -200,7 +201,7 @@ public class ResultWriterLog {
 					
 					//result.append(getStats(responseList.get(i)));
 					
-					result.append(getStats(responseList.get(i)));
+					//result.append(getStats(responseList.get(i)));
 
 					//stream.write("</rs></l>".getBytes());
 					result.append("</l>");
