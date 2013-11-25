@@ -59,8 +59,7 @@ public class PolicyImpl implements Policy {
 		}
 	}
 
-	public boolean isBetter(ASIdentifier myAsId, Prefix prefix, Route route1,
-			Neighbor n1, Route route2, Neighbor n2) {
+	public boolean isBetter(ASIdentifier myAsId, Prefix prefix, Route route1, Neighbor n1, Route route2, Neighbor n2) {
 		boolean outcome = false;
 		if (route1 == null) {
 			if (log.isDebugEnabled()) {
@@ -68,7 +67,7 @@ public class PolicyImpl implements Policy {
 			}
 			outcome = true;
 		} else {
-			outcome = route2.getHops().length <= route1.getHops().length;
+			outcome = route2.getHops().length < route1.getHops().length;
 		}
 
 		if (log.isDebugEnabled()) {
