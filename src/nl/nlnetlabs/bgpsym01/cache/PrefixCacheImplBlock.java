@@ -71,39 +71,41 @@ public class PrefixCacheImplBlock implements PrefixCache {
     }
 
     private void loadPrefix(Prefix prefix) {
+    	
+    	synchronized (table) {
+    		if (table.get(prefix) == null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("trying to load prefix " + prefix);
+                }
+                while (table.size() > XProperties.getInstance().prefixCacheSize) {
+                    // we have to store a block to load a new one
+                    storeBlock();
+                }
 
-        if (table.get(prefix) == null) {
-            if (log.isDebugEnabled()) {
-                log.debug("trying to load prefix " + prefix);
+                Iterator<PrefixInfo> iterator = storage.readPrefix(prefix);
+                if (iterator == null) {
+                    createNewPrefix(prefix);
+                    return;
+                }
+                boolean found = false;
+                while (iterator.hasNext()) {
+                    PrefixInfo prefixInfo = iterator.next();
+                    /*                if (log.isInfoEnabled()) {
+                                        if (table.get(prefixInfo.getPrefix()) != null) {
+                                            // this is a BAD thing!
+                                            log.warn("prefix " + prefixInfo.getPrefix() + " is already present in the table");
+                                        }
+                                    }*/
+                    table.put(prefixInfo.getPrefix(), prefixInfo);
+                    found = true;
+                }
+                if (!found) {
+                    log.info("1");
+                    log.warn("this is bad for prefix=" + prefix.getNum());
+                    createNewPrefix(prefix);
+                }
             }
-            while (table.size() > XProperties.getInstance().prefixCacheSize) {
-                // we have to store a block to load a new one
-                storeBlock();
-            }
-
-            Iterator<PrefixInfo> iterator = storage.readPrefix(prefix);
-            if (iterator == null) {
-                createNewPrefix(prefix);
-                return;
-            }
-            boolean found = false;
-            while (iterator.hasNext()) {
-                PrefixInfo prefixInfo = iterator.next();
-                /*                if (log.isInfoEnabled()) {
-                                    if (table.get(prefixInfo.getPrefix()) != null) {
-                                        // this is a BAD thing!
-                                        log.warn("prefix " + prefixInfo.getPrefix() + " is already present in the table");
-                                    }
-                                }*/
-                table.put(prefixInfo.getPrefix(), prefixInfo);
-                found = true;
-            }
-            if (!found) {
-                log.info("1");
-                log.warn("this is bad for prefix=" + prefix.getNum());
-                createNewPrefix(prefix);
-            }
-        }
+		}
     }
 
     private void createNewPrefix(Prefix prefix) {
@@ -113,7 +115,10 @@ public class PrefixCacheImplBlock implements PrefixCache {
         PrefixInfo prefixInfo = new PrefixInfo();
         prefixInfo.setPrefix(prefix);
         prefixInfo.setNeighborsMap(container.getMap());
-        table.put(prefix, prefixInfo);
+        
+        synchronized (table) {
+        	table.put(prefix, prefixInfo);
+		}        
 
         if (doLog && log.isInfoEnabled()) {
             if (prefixesCreated++ % CREATED_LOGGING_INTERVAL == 0) {
@@ -144,7 +149,9 @@ public class PrefixCacheImplBlock implements PrefixCache {
 
     public void setPrefixInfo(Prefix prefix, PrefixInfo prefixInfo) {
         // TODO count distinct prefixes
-        table.put(prefix, prefixInfo);
+    	synchronized (table) {
+    		table.put(prefix, prefixInfo);
+		}
     }
 
     public void setDoLog(boolean doLog) {

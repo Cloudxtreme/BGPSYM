@@ -33,6 +33,8 @@ import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 
 import org.apache.log4j.Logger;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
+
 public class PrefixStoreMapImpl implements PrefixStore {
 
     private static Logger log = Logger.getLogger(PrefixStoreMapImpl.class);
@@ -71,21 +73,24 @@ public class PrefixStoreMapImpl implements PrefixStore {
 		if (cache instanceof PrefixCacheImplBlock) {
 			LinkedHashMap<Prefix, PrefixInfo> prefixes = (LinkedHashMap<Prefix, PrefixInfo>) ((PrefixCacheImplBlock) cache).getTable();
 
-			Iterator<Entry<Prefix, PrefixInfo>> iterator = prefixes.entrySet().iterator();
+			synchronized (prefixes) {
+				Iterator<Entry<Prefix, PrefixInfo>> iterator = prefixes.entrySet().iterator();
 
-			while (iterator.hasNext()) {
-				Entry<Prefix, PrefixInfo> current = iterator.next();
-				PrefixInfo info = current.getValue();
-				Prefix currentPrefix = current.getKey();
+				while (iterator.hasNext()) {
+					Entry<Prefix, PrefixInfo> current = iterator.next();
+					PrefixInfo info = current.getValue();
+					Prefix currentPrefix = current.getKey();
 
-				PrefixTableEntry entry = info.getCurrentEntry();
-				if (entry != null) {
-					Route route = entry.getRoute();
-					if (route != null && route.isFrom(sender)) {
-						prefixesToRemove.add(currentPrefix);
+					PrefixTableEntry entry = info.getCurrentEntry();
+					if (entry != null) {
+						Route route = entry.getRoute();
+						if (route != null && route.isFrom(sender)) {
+							prefixesToRemove.add(currentPrefix);
+						}
 					}
 				}
 			}
+			
 
 			if (prefixesToRemove.size() > 0) {
 				// log.info("prefixes to delete: "+prefixesToDelete);

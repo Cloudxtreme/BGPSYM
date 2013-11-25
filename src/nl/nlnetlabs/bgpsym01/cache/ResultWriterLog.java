@@ -149,7 +149,11 @@ public class ResultWriterLog {
 			responseList.add(prefixDataList);*/
 			
 			//responseList.add(new LinkedHashMap<Prefix, PrefixInfo>(store.getCache().getTable()));
-			state += getStats(store.getCache().getTable());
+			
+			LinkedHashMap<Prefix, PrefixInfo> table = store.getCache().getTable();
+			synchronized (table) {
+				state += getStats(table);
+			}
 			
 			/*OutputBufferImpl outputBuffer = (OutputBufferImpl) store.getOutputBuffer();
 			OutputStateImpl outputState = (OutputStateImpl) outputBuffer.getOutputState();
