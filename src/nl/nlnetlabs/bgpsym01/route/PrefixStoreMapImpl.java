@@ -33,8 +33,6 @@ import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 
 import org.apache.log4j.Logger;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.sym;
-
 public class PrefixStoreMapImpl implements PrefixStore {
 
     private static Logger log = Logger.getLogger(PrefixStoreMapImpl.class);
