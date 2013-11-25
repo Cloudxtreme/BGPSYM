@@ -111,11 +111,11 @@ public class MessageQueueImpl implements MessageQueue {
         long diff = System.currentTimeMillis() - time;
         if (diff > maxDiscrepancy) {
             if (overloaded == 0) {
-                log.warn("real world diff=" + diff + ", time=" + time + ", now=" + System.currentTimeMillis());
+                //log.warn("real world diff=" + diff + ", time=" + time + ", now=" + System.currentTimeMillis());
                 Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                 overloaded++;
                 if (log.isInfoEnabled()) {
-                    log.info("overloading...");
+                    //log.info("overloading...");
                 }
             } else {
                 overloaded++;
@@ -123,7 +123,7 @@ public class MessageQueueImpl implements MessageQueue {
         } else if (overloaded > 0 && (!hasSomething || diff < maxDiscrepancy / 64)) {
             Thread.currentThread().setPriority(Thread.NORM_PRIORITY);
             if (log.isInfoEnabled()) {
-                log.info("UNoverloading..., count=" + overloaded);
+                //log.info("UNoverloading..., count=" + overloaded);
             }
             overloaded = 0;
         }
