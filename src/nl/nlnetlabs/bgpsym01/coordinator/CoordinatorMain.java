@@ -104,7 +104,7 @@ public class CoordinatorMain {
             disconnectHelper.setCommunicator(communicator);
             coordinator.setDisconnectHelper(disconnectHelper);
 
-            coordinator.setPropagationHelper(getPropagationHelper(commandSenderHelper));
+            coordinator.setPropagationHelper(getPropagationHelper(commandSenderHelper, disconnectHelper));
 
             tools.createDiagFile();
 
@@ -118,7 +118,7 @@ public class CoordinatorMain {
     }
 
     // its public only for tests...
-    public PropagationHelper getPropagationHelper(CommandSenderHelper commandSenderHelper) {
+    public PropagationHelper getPropagationHelper(CommandSenderHelper commandSenderHelper, DisconnectHelper disconnectHelper) {
         XProperties properties = XProperties.getInstance();
 
         if (properties.isUseEventsFile()) {
@@ -140,6 +140,7 @@ public class CoordinatorMain {
             processor.setEventStream(stream);
             helper.setProcessor(processor);
             stream.setCommandSenderHelper(commandSenderHelper);
+            stream.setDisconnectHelper(disconnectHelper);
             return helper;
         } else {
             PropagationHelperImpl propagationHelper = new PropagationHelperImpl();

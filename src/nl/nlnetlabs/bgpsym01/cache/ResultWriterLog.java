@@ -1,32 +1,27 @@
 package nl.nlnetlabs.bgpsym01.cache;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import nl.nlnetlabs.bgpsym01.main.Tools;
-import nl.nlnetlabs.bgpsym01.command.RouteViewDataResponse;
 import nl.nlnetlabs.bgpsym01.primitives.BGPSymException;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.ASIdentifier;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Prefix;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.PrefixTableEntry;
 import nl.nlnetlabs.bgpsym01.primitives.bgp.Route;
-import nl.nlnetlabs.bgpsym01.primitives.factories.XStreamFactory;
 import nl.nlnetlabs.bgpsym01.process.BGPProcess;
 import nl.nlnetlabs.bgpsym01.xstream.XProperties;
 import nl.nlnetlabs.bgpsym01.neighbor.Neighbor;
@@ -35,9 +30,6 @@ import nl.nlnetlabs.bgpsym01.route.PrefixStoreMapImpl;
 
 import org.apache.log4j.Logger;
 import org.json.XML;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.CompactWriter;
 
 public class ResultWriterLog {
 	private static final String OUTPUT_FILENAME_PREFIX = "log_";
@@ -50,23 +42,12 @@ public class ResultWriterLog {
 	
 	private List<String> logs;
 
-	private XStream xStream;
-
-	//private List<Collection<RouteViewDataResponse>> responseList;
-	
-	private List<Map<Prefix,PrefixInfo>> responseList; 
-	
-	private List<Map<Neighbor, List<Prefix>>> filtered;
 	
 	private Map<String, Integer> values;
 	
 	public ResultWriterLog(ASIdentifier asId) {
 		this.asId = asId;
 		this.logs = new ArrayList<String>();
-		xStream = XStreamFactory.getXStream();
-		//responseList = new ArrayList<Collection<RouteViewDataResponse>>();
-		responseList = new ArrayList<Map<Prefix,PrefixInfo>>();
-		filtered = new ArrayList<Map<Neighbor, List<Prefix>>>();
 		values = new HashMap<String, Integer>();
 		
 		// p w u up uw ub
@@ -145,21 +126,11 @@ public class ResultWriterLog {
 
 			state += "</ns>";
 			
-			/*Collection<RouteViewDataResponse> prefixDataList = store.getPrefixDataList();
-			responseList.add(prefixDataList);*/
-			
-			//responseList.add(new LinkedHashMap<Prefix, PrefixInfo>(store.getCache().getTable()));
-			
 			LinkedHashMap<Prefix, PrefixInfo> table = store.getCache().getTable();
 			synchronized (table) {
 				state += getStats(table);
 			}
 			
-			/*OutputBufferImpl outputBuffer = (OutputBufferImpl) store.getOutputBuffer();
-			OutputStateImpl outputState = (OutputStateImpl) outputBuffer.getOutputState();
-			
-			filtered.add(clone(outputState.getPrefixes()));*/
-
 			logs.add(state);
 	}
 
@@ -169,52 +140,16 @@ public class ResultWriterLog {
 			
 			StringBuffer result = new StringBuffer();
 			
-			try {
-				int i = 0;
-				
+			try {				
 				result.append("<ls>");
-				
-				//stream.write("<ls>".getBytes());
 				
 				for (String log : logs) {
 					result.append(log);
-					//stream.write(log.getBytes());
 					
-					
-					//stream.write("<f>".getBytes());
-					/*result.append("<f>");
-					Iterator<Entry<Neighbor, List<Prefix>>> iteratorPrefixes = this.filtered.get(i).entrySet().iterator();
-					while (iteratorPrefixes.hasNext()) {
-						Entry<Neighbor, List<Prefix>> entry = iteratorPrefixes.next();
-						Neighbor neighbor = entry.getKey();
-						
-						String prefixString = "";
-						for (Prefix prefix : entry.getValue()) {
-							prefixString += prefix+"|";
-						}
-						
-						String n = "<n as=\""+neighbor.getASIdentifier()+"\" p=\""+prefixString+"\" />";
-						//stream.write(n.getBytes());
-						result.append(n);
-					}					
-					
-					result.append("</f>");*/
-					
-					//stream.write("</f>".getBytes());
-					//stream.write("<rs>".getBytes());
-					
-					//result.append(getStats(responseList.get(i)));
-					
-					//result.append(getStats(responseList.get(i)));
-
-					//stream.write("</rs></l>".getBytes());
 					result.append("</l>");
-					
-					i++;
 				}
 				
 				result.append("</ls>");
-				//stream.write("</ls>".getBytes());
 				stream.write(XML.toJSONObject(result.toString()).toString().getBytes());
 			}
 			finally {
@@ -225,7 +160,6 @@ public class ResultWriterLog {
 		}
 	}
 	
-	//public String getStats (Collection<RouteViewDataResponse> responses) {
 	public String getStats (Map<Prefix, PrefixInfo> prefixes) {
 		StringBuffer result = new StringBuffer();
 		
@@ -254,24 +188,6 @@ public class ResultWriterLog {
 				reachableASes.add(route.getOrigin());
 			}
 		}
-		
-		/*Iterator<RouteViewDataResponse> iteratorResponses = responses.iterator();
-		RouteViewDataResponse currentResponse;
-		while (iteratorResponses.hasNext()) {
-			currentResponse = iteratorResponses.next();
-			
-			Route route = currentResponse.route;
-			
-			if (route == null || route.getOrigin() == null) {
-				lostRoutes++;
-				continue;
-			}
-			
-			totalRouteLength += route.getHops().length;
-			totalRoutes++;
-			
-			reachableASes.add(route.getOrigin());
-		}*/
 		 
 		float averageRouteLength = (totalRoutes> 0) ? totalRouteLength / totalRoutes : 0;
 		
