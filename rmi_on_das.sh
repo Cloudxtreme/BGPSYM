@@ -13,7 +13,7 @@ rm -rf $STORAGE_DIR
 
 INST_COUNT=1
 DEFAULT_XMX=24g
-DEFAULT_NEW=64m
+DEFAULT_NEW=512m
 DEFAULT_FRACTION=60
 
 WORKING_DIR=`dirname $3`
@@ -48,11 +48,15 @@ COLLECTOR="-XX:+UseConcMarkSweepGC -XX:SurvivorRatio=16 -XX:CMSInitiatingOccupan
 
 MYNUM=$1
 
+HPROF="-agentlib:hprof=cpu=samples,heap=sites,lineno=y,thread=y,force=y,file=/var/scratch/jlf200/hprof/hprofi_$MYNUM"
+
+HPROF=""
+
 for i in `seq 1 $INST_COUNT`; do
 	NUM=$[MYNUM+i-1]
 	if [ "x$debug" == "x1" ]; then
 		DEBUG="-XX:+PrintGCDetails -verbose:gc -XX:+PrintGCTimeStamps -Xloggc:/var/scratch/$USER/gc/gc_logfile_$NUM"
 	fi
-	java $MEMORY -server -enableassertions  -cp $CP $LOG4J -XX:+DisableExplicitGC $DEBUG $COLLECTOR  nl.nlnetlabs.bgpsym01.main.tcp.TCPStart $NUM $2 $3 2> "logs/log_$NUM" &
+	java $HPROF $MEMORY -server -enableassertions  -cp $CP $LOG4J -XX:+DisableExplicitGC $DEBUG $COLLECTOR  nl.nlnetlabs.bgpsym01.main.tcp.TCPStart $NUM $2 $3 2> "logs/log_$NUM" &
 	sleep 0.5
 done
