@@ -8,8 +8,11 @@ fi
 #-XX:+UseParallelGC 
 #-XX:+PrintGCDetails 
 
+DEFAULT_XMX=24g
+DEFAULT_NEW=512m
+
 if [ "$MEMORY" == "" ]; then
-	MEMORY="-Xmx3000m"
+	MEMORY="-Xmx$DEFAULT_XMX -Xms$DEFAULT_XMX -XX:NewSize=$DEFAULT_NEW -XX:MaxNewSize=$DEFAULT_NEW"
 fi
 
 CP="lib/xmlpull-1.1.3.1.jar:lib/xpp3_min-1.1.4c.jar:lib/xstream-1.4.4.jar:lib/log4j-1.2.15.jar:lib/compress.jar:lib/commons-compress-1.5.jar"
@@ -30,4 +33,4 @@ PWD=`pwd`
 
 DEBUG="-XX:+PrintGCDetails -verbose:gc -XX:+PrintGCTimeStamps -Xloggc:/var/scratch/$USER/gc/gc_logfile_coordinator"
 #-XX:+UseConcMarkSweepGC
-java $MEMORY -Xmx20g -Xms20g -XX:NewSize=700m -XX:MaxNewSize=700m -server $DEBUG -enableassertions  -cp $CP $LOG4J -XX:+UseConcMarkSweepGC nl.nlnetlabs.bgpsym01.coordinator.CoordinatorMain $1 $2 2> "logs/coordinator" &
+java $MEMORY -server $DEBUG -enableassertions  -cp $CP $LOG4J -XX:+UseConcMarkSweepGC nl.nlnetlabs.bgpsym01.coordinator.CoordinatorMain $1 $2 2> "logs/coordinator" &
